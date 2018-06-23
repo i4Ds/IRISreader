@@ -1,8 +1,11 @@
-# <img src="irisreader.png" width="100" height="100"/> &nbsp; irisreader #
+# <img src="irisreader.png" width="100" height="100"/> &nbsp; IRISreader #
 
-The _irisreader_ library provides functionality to read level 2 data of the [IRIS satellite](https://www.nasa.gov/mission_pages/iris/index.html) and to preprocess it for big data applications. 
-It is designed to read the data similiar to solar soft's [read_iris_l2](http://iris.lmsal.com/itn26/iris_level2.html).
+The _IRISreader_ library provides functionality to read IRIS level 2 data
+by the [IRIS satellite](https://www.nasa.gov/mission_pages/iris/index.html) and to process it for big data applications. 
 
+_Warning_:
+IRISreader is currently under heavy development and not yet available in a
+stable version.
 
 ## Installation ##
 
