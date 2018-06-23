@@ -1,0 +1,15 @@
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(test_iris_data_cube)
+    suite.addTest(test_sji_obj)
+    suite.addTest(test_raster_obj)
+    suite.addTest(test_combined_raster)
+    suite.addTest(test_observation)
+    suite.addTest(test_obs_iterator)
+    suite.addTest(test_get_lines)
+    suite.addTest(test_image_cropper)
+    suite.addTest(test_image_cube_cropper)
+    suite.addTest(test_spectrum_smoother)
+    suite.addTest(test_spectrum_scaler)
+    suite.addTest(test_spectrum_interpolator)
+    return suite

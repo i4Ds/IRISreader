@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>irisreader.coalignment.goes_data &mdash; irisreader 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="irisreader 0.2 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> irisreader
+          
+
+          
+            
+            <img src="../../../_static/irisreader.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reading.html">Reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../coalignment.html">Co-alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">irisreader</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>irisreader.coalignment.goes_data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for irisreader.coalignment.goes_data</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">irisreader.config</span> <span class="k">import</span> <span class="n">GOES_BASE_URL</span>
+
+<span class="c1"># TODO: create a downloader utility function?</span>
+
+
+<div class="viewcode-block" id="goes_data"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data">[docs]</a><span class="k">class</span> <span class="nc">goes_data</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents an interface to GOES X-ray flux data. An instantiated</span>
+<span class="sd">    object will download all GOES15 XRS data between the given dates and will</span>
+<span class="sd">    store it in the specified data directory. Data that are already present</span>
+<span class="sd">    will not be downloaded again. The stored data is made accessible as a</span>
+<span class="sd">    pandas data frame which can then be plotted with `plot` or interpolated to</span>
+<span class="sd">    other points in time with `interpolate`. Optionally, the data are only</span>
+<span class="sd">    loaded upon first read access.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start_date : datetime.datetime</span>
+<span class="sd">        Start date/time of the time window for which GOES data should be </span>
+<span class="sd">        downloaded.</span>
+<span class="sd">    end_date : datetime.datetime</span>
+<span class="sd">        End date/time of the time window for which GOES data should be </span>
+<span class="sd">        downloaded.</span>
+<span class="sd">    data_dir : string</span>
+<span class="sd">        Data directory in which the downloaded data will be stored.</span>
+<span class="sd">    lazy_eval : boolean</span>
+<span class="sd">        Whether or not data should only be loaded upon first read access.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------    </span>
+<span class="sd">    start_date : datetime.datetime</span>
+<span class="sd">        Start date/time of the GOES X-ray flux data time window</span>
+<span class="sd">    end_date : datetime.datetime</span>
+<span class="sd">        End date/time of the GOES X-ray flux data time window</span>
+<span class="sd">    data:</span>
+<span class="sd">        Pandas data frame with GOES data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="o">=</span> <span class="n">data_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lazy_eval</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+
+    <span class="c1"># catch attribute requests to perform lazy loading if necessary</span>
+    <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">==</span><span class="s2">&quot;data&quot;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">)</span>
+            
+    <span class="c1"># function to load data and download files if necessary</span>
+    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        
+        <span class="c1"># create data directory if not present</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="p">)</span>
+            
+        <span class="c1"># download files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_files</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="p">)</span>
+        
+        <span class="c1"># parse files and concatenate data frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span> <span class="p">[]</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_file</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="p">)</span> <span class="p">)</span>
+            
+    <span class="c1"># function to download all required goes data for a certain time span</span>
+    <span class="k">def</span> <span class="nf">_get_files</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="p">):</span>
+        <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">end_date</span><span class="o">-</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">day</span><span class="p">)</span>
+            <span class="n">date_str</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">target_file_name</span> <span class="o">=</span> <span class="s2">&quot;g15_xrs_2s_&quot;</span> <span class="o">+</span> <span class="n">date_str</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">date_str</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+            <span class="n">target_url</span> <span class="o">=</span> <span class="n">GOES_BASE_URL</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/goes15/csv/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_download_file</span><span class="p">(</span> <span class="n">target_url</span><span class="p">,</span> <span class="n">target_file_name</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">target_file_name</span> <span class="p">)</span>
+
+    <span class="c1"># function to download a file if it is not yet present                     </span>
+    <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">target_file_name</span> <span class="p">):</span>
+        
+        <span class="c1"># download data</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span> <span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;Downloading &quot;</span> <span class="o">+</span> <span class="n">target_file_name</span> <span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span> <span class="n">url</span> <span class="p">)</span>
+        
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s2">&quot;File could not be downloaded&quot;</span> <span class="p">)</span>
+
+    <span class="c1"># function to parse goes csv data into a pandas data frame</span>
+    <span class="k">def</span> <span class="nf">_parse_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span> <span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Skip lines until data: label is read</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;data:&quot;</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span> <span class="n">f</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time_tag&quot;</span><span class="p">],</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;time_tag&quot;</span> <span class="p">)</span>
+
+
+<div class="viewcode-block" id="goes_data.plot"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">restrict_to_obstime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function plots the GOES X-ray flux around the given time period.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        restrict_to_obstime : boolean</span>
+<span class="sd">            If True, only the flux within the observation time period will be </span>
+<span class="sd">            plotted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># prepare a data frame with zero values set to NaN (such that matplotlib does not plot them)</span>
+        <span class="n">plot_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">plot_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:][</span><span class="s1">&#39;A_FLUX&#39;</span><span class="p">][</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;A_FLUX&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">plot_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:][</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">][</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+        <span class="c1"># plot the fluxes</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A_FLUX&#39;</span><span class="p">,</span> <span class="s1">&#39;B_FLUX&#39;</span><span class="p">],</span> <span class="n">logy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;GOES X-ray Flux&quot;</span> <span class="p">)</span>
+        
+        <span class="c1"># restrict plot to observation time period if desired, otherwise draw</span>
+        <span class="c1"># shaded region and dashed restriction lines where the observation</span>
+        <span class="c1"># takes place</span>
+        <span class="k">if</span> <span class="n">restrict_to_obstime</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        
+        <span class="c1"># draw magnitudes with dashed lines </span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span> <span class="p">)</span>
+        
+        <span class="c1"># set a magnitude scale on the right</span>
+        <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span> <span class="s1">&#39;log&#39;</span> <span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mf">3e-8</span><span class="p">,</span> <span class="mf">3e-7</span><span class="p">,</span> <span class="mf">3e-6</span><span class="p">,</span> <span class="mf">3e-5</span><span class="p">,</span> <span class="mf">3e-4</span><span class="p">])</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">minorticks_off</span><span class="p">()</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
+        
+        <span class="c1"># set boundaries, labels and legend</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mf">1e-9</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Watts / m$^2$&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Universal Time&quot;</span><span class="p">)</span></div>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span> <span class="p">[</span><span class="s1">&#39;GOES 15 0.5-1 $\AA$&#39;</span><span class="p">,</span> <span class="s1">&#39;GOES 15 1-8 $\AA$&#39;</span><span class="p">]</span> <span class="p">)</span>
+ 
+        
+<div class="viewcode-block" id="goes_data.interpolate"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">iris_timestamps</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">]</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function takes timestamps from `iris_data_cube.get_timestamps()`</span>
+<span class="sd">        (UNIX time - seconds since Thursday, 1 January 1970 00:00:00) and</span>
+<span class="sd">        computes interpolated GOES flux data.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iris_timestamps : float</span>
+<span class="sd">            Array with timestamps from `iris_data_cube.get_timestamps()` or </span>
+<span class="sd">            `combined_raster.get_timestamps()`.</span>
+<span class="sd">        field : string</span>
+<span class="sd">            &#39;B_FLUX&#39; (default) for the 1-8 Angstrom X-ray flux or &#39;A_FLUX&#39; for</span>
+<span class="sd">            the 0.5-1 Angstrom X-ray flux.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            List with interpolated GOES fluxes in W/m^2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">goes_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">-</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span> <span class="n">x</span><span class="o">=</span><span class="n">goes_timestamps</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span> <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span> <span class="n">iris_timestamps</span> <span class="p">)</span>
+    
+<div class="viewcode-block" id="goes_data.get_peak_flux"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.get_peak_flux">[docs]</a>    <span class="k">def</span> <span class="nf">get_peak_flux</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">flux</span><span class="o">=</span><span class="s1">&#39;B_FLUX&#39;</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the peak flux measured in the observation time period.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field : str</span>
+<span class="sd">            &#39;B_FLUX&#39; (default) for the 1-8 Angstrom X-ray flux or &#39;A_FLUX&#39; for</span>
+<span class="sd">            the 0.5-1 Angstrom X-ray flux.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Peak flux in W/m^2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fluxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">)][</span><span class="n">flux</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">fluxes</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span> <span class="n">fluxes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span></div></div>
+            <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Cédric Huwyler.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
