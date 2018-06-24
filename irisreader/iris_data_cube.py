@@ -14,16 +14,16 @@ class iris_data_cube( object ):
     """This class implements an abstraction of an IRIS FITS file, specifically it gives
     access to data cubes and individual image headers stored in the different
     extensions. It provides a prototype for sji_cube and raster_cube and 
-    should not be used outside of this package.
+    should only be used internally.
     
     Parameters
     ----------
     filename : string
-        Path to the IRIS SJI FITS file.
+        Path to the IRIS FITS file.
     line : string
         Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
     keep_null : boolean
-        Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.
+        Controls whether images that are NULL (-200) everywhere are removed from the data cube (keep_null=False) or not (keep_null=True).
         
         
     Attributes
@@ -43,11 +43,13 @@ class iris_data_cube( object ):
     line_info : str
         Description of the selected line.
     n_steps : int
-        Number of time steps in the data cube.
+        Number of time steps in the data cube (this is affected by the keep_null argument).
     primary_headers: dict
         Dictionary with primary headers of the FITS file (lazy loaded).
     time_specific_headers: dict
         List of dictionaries with time-specific headers of the selected line (lazy loaded).  
+    shape : tuple
+        Shape of the data cube (this is affected by the keep_null argument)
     """
     
     # constructor

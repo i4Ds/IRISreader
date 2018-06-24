@@ -68,7 +68,12 @@ class goes_data:
         
         # create data directory if not present
         if not os.path.exists( self._data_dir ):
-            os.mkdir( self._data_dir )
+            try:
+                os.mkdir( self._data_dir )
+            except: # write to the local folder if no permission to create directory
+                self._data_dir = "goes_data"
+                os.mkdir( self._data_dir )
+                
             
         # download files
         self._get_files( self.start_date, self.end_date )

@@ -22,5 +22,5 @@ MIRRORS = {
 DEFAULT_MIRROR = "lmsal"
 
 # goes base url
-GOES_BASE_URL = "https://satdat.ngdc.noaa.gov/sem/goes/data/full"
+GOES_BASE_URL = "https://satdat.ngdc.noaa.gov/sem/goes/data/full/"
 #GOES_BASE_URL = "http://server1071.cs.technik.fhnw.ch/goes/xrs/"
