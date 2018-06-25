@@ -143,33 +143,33 @@ class goes_data:
         if restrict_to_obstime:
             ax.set_xlim([self.start_date, self.end_date])
         else:
-            ax.axvspan( self.start_date, self.end_date, alpha=0.05, color='red' )
+            #ax.axvspan( self.start_date, self.end_date, alpha=0.05, color='red' )
             ax.axvline( x=self.start_date, color='red', linestyle='--', linewidth=1.0 )
             ax.axvline( x=self.end_date, color='red', linestyle='--', linewidth=1.0 )
         
         # draw magnitudes with dashed lines 
-        ax.axhline( y=1e-3, color='black', linestyle='--', linewidth=1.0 )
         ax.axhline( y=1e-4, color='black', linestyle='--', linewidth=1.0 )
         ax.axhline( y=1e-5, color='black', linestyle='--', linewidth=1.0 )
         ax.axhline( y=1e-6, color='black', linestyle='--', linewidth=1.0 )
         ax.axhline( y=1e-7, color='black', linestyle='--', linewidth=1.0 )
         ax.axhline( y=1e-8, color='black', linestyle='--', linewidth=1.0 )
         
-        # set a magnitude scale on the right
-        ax2 = ax.twinx()
-        ax2.set_ylim( ax.get_ylim() )
-        ax2.set_yscale( 'log' )
-        ax2.set_yticks([3e-8, 3e-7, 3e-6, 3e-5, 3e-4])
-        ax2.set_yticklabels(['A', 'B', 'C', 'M', 'X'])
-        ax2.minorticks_off()
-        ax2.tick_params( right=False )
-        
         # set boundaries, labels and legend
         ax.set_ylim([1e-9, 1e-2])
         ax.set_ylabel(r'Watts / m$^2$')
         ax.set_xlabel("Universal Time")
         ax.legend( ['GOES 15 0.5-1 $\AA$', 'GOES 15 1-8 $\AA$'] )
- 
+
+        # set a magnitude scale on the right
+        ax2 = ax.twinx()
+        ax2.set_yscale( 'log' )
+        ax2.set_ylim( ax.get_ylim() )
+        ax2.set_yticks([3e-8, 3e-7, 3e-6, 3e-5, 3e-4])
+        ax2.set_yticklabels(['A', 'B', 'C', 'M', 'X'])
+        ax2.minorticks_off()
+        ax2.tick_params( right=False )
+        
+         
         
     def interpolate( self, iris_timestamps, field=['B_FLUX'] ):
         """
@@ -216,3 +216,12 @@ class goes_data:
             return np.nanmax( fluxes)
         else:
             return None
+
+
+if __name__ == "__main__":
+    start = dt.datetime(2014, 3, 28, 14, 00)
+    end = dt.datetime(2014, 3, 30, 12, 00) # how does this work?
+    
+    g = goes_data( start, end, "/tmp/goes", lazy_eval=True )
+    g.plot()
+    print( g.get_peak_flux() )
