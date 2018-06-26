@@ -74,30 +74,38 @@ class obs_iterator:
         return self
 
     # return next observation
-    def next(self):
+    def __next__(self):
+        self._i += 1
         try:
-            self._i += 1
-            try:
-                # close previous observation
-                if not self._current_obs is None:
-                    self._current_obs.close() # TODO: why does this not work??
+            # close previous observation
+            if not self._current_obs is None:
+                self._current_obs.close()
                     
-                # open next observation
+            # open next observation and stop iteration if no observations are left
+            try:
                 self._current_obs = observation( self.directories[self._i-1], keep_null=self._keep_null )
-                return self._current_obs
+                    
+            except IndexError:
+                self._i = 0
+                raise StopIteration
+                    
+            return self._current_obs
             
-            # Continue with the next observation if there was an error in the current one
-            except Exception as e:
-                if self._display_errors:
-                    print( '\033[91m' + "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." + '\033[0m' )
-                return self.next()
+        # Continue with the next observation if there was an error in the current one
+        except Exception as e:
         
-        # Stop iteration if no observations are left
-        except IndexError:
-            self._i = 0
-            raise StopIteration
+            # pass StopIteration through
+            if e.__class__ == StopIteration:
+                raise StopIteration
+                
+            # display error if desired
+            if self._display_errors:
+                print( '\033[91m' + "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." + '\033[0m' )
             
-    # add support for python 3
-    __next__ = next
+            # return next valid observation
+            return self.next()
+        
+    # add support for python 2
+    next = __next__
 
 
