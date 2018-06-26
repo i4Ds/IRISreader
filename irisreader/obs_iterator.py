@@ -88,7 +88,7 @@ class obs_iterator:
             
             # Continue with the next observation if there was an error in the current one
             except Exception as e:
-                if self.display_errors:
+                if self._display_errors:
                     print( '\033[91m' + "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." + '\033[0m' )
                 return self.next()
         
