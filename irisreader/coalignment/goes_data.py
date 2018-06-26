@@ -143,7 +143,7 @@ class goes_data:
         if restrict_to_obstime:
             ax.set_xlim([self.start_date, self.end_date])
         else:
-            #ax.axvspan( self.start_date, self.end_date, alpha=0.05, color='red' )
+            ax.axvspan( self.start_date, self.end_date, alpha=0.05, color='red' )
             ax.axvline( x=self.start_date, color='red', linestyle='--', linewidth=1.0 )
             ax.axvline( x=self.end_date, color='red', linestyle='--', linewidth=1.0 )
         
