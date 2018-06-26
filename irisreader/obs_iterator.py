@@ -21,6 +21,8 @@ class obs_iterator:
         Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.
     read_42 : boolean
         Whether to read observations with an OBSID starting with 42 (mostly for tests and maintenance).
+    display_errors : boolean
+        Whether to show errors that occured in opening individual observations or just to ignore them
     
     Attributes
     ----------
@@ -32,7 +34,7 @@ class obs_iterator:
     """
     
     # constructor
-    def __init__( self, path="", keep_null=False, read_42=False ):
+    def __init__( self, path="", keep_null=False, read_42=False, display_errors=True ):
         
         # set variables
         self._keep_null = keep_null
@@ -41,6 +43,7 @@ class obs_iterator:
         self._n = 0
         self._i = 0
         self._current_obs = None
+        self._display_errors = display_errors
         
         # get a list of directories containing a date_time_obsid string
         if path != "":
@@ -85,7 +88,8 @@ class obs_iterator:
             
             # Continue with the next observation if there was an error in the current one
             except Exception as e:
-                print( '\033[91m' + "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." + '\033[0m' )
+                if self.display_errors:
+                    print( '\033[91m' + "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." + '\033[0m' )
                 return self.next()
         
         # Stop iteration if no observations are left
