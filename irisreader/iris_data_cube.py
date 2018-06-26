@@ -8,7 +8,7 @@ from warnings import warn
 import copy
 from irisreader.config import DEBUG_LAZY_LOADING_LEVEL
 from irisreader.coalignment import goes_data
-from irisreader.utils.date import to_epoch, from_Tformat
+from irisreader.utils.date import to_epoch, from_Tformat, to_Tformat
 
 class iris_data_cube( object ):
     """This class implements an abstraction of an IRIS FITS file, specifically it gives
@@ -337,7 +337,7 @@ class iris_data_cube( object ):
             # fill dictionaries and set DATE_OBS to the real DATE_OBS = STARTOBS + TIME
             for i in range(0, self._fits_file[extension].shape[0]):
                 res[i] = dict( zip( header_keys.keys(), self._fits_file[extension].data[i,list(header_keys.values())] ) )
-                res[i]['DATE_OBS'] = (dt.strptime( self._fits_file[0].header['STARTOBS'] , '%Y-%m-%dT%H:%M:%S.%f' ) + timedelta(seconds=res[i]['TIME'])).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
+                res[i]['DATE_OBS'] = to_Tformat( from_Tformat( self._fits_file[0].header['STARTOBS'] ) + timedelta(seconds=res[i]['TIME']))
 
             return res
         
@@ -538,3 +538,8 @@ class iris_data_cube( object ):
         else:
             return np.array([])
         
+        
+if __name__ == "__main__":
+    #fits_data1 = iris_data_cube( 'data/IRIS_SJI_test.fits' )
+    fits_data1 = iris_data_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
+    fits_data2 = iris_data_cube( 'data/IRIS_raster_test1.fits', line="Mg" )
