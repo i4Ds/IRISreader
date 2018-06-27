@@ -3,9 +3,11 @@
 # TODO: should also work when all SJI files are corrupt.
 
 # import libraries
-import os
+import os, sys
 import pandas as pd
 import warnings
+from irisreader.utils.date import to_Tformat, full_obsid
+from IPython.core.display import HTML
 from irisreader import sji_cube, raster_cube, combined_raster, get_lines
 from irisreader.has_line import find_line
 from irisreader.coalignment import goes_data, hek_data
@@ -255,6 +257,7 @@ class observation:
         self.desc = self.sji[0].desc
         self.start_date = self.sji[0].start_date
         self.end_date = self.sji[0].end_date
+        self.full_obsid = full_obsid( self.start_date, self.obsid )
         
         # create the goes loader
         self.goes = goes_data( self.start_date, self.end_date, path + "/goes_data", lazy_eval=True )
@@ -290,6 +293,15 @@ class observation:
                     result.append(os.path.join(path, file))
         
             return sorted( result )
+
+    # function to get HEK URL
+    def get_hek_url( self ):
+        s = to_Tformat( self.start_date, milliseconds=False ).replace( ":", "%3A" )
+        url = "http://www.lmsal.com/hek/hcr?cmd=view-event&event-id=ivo%3A%2F%2Fsot.lmsal.com%2FVOEvent%23VOEvent_IRIS_" + self.full_obsid + "_" + s + s + ".xml"
+        if 'ipykernel' in sys.modules:
+            return HTML( "<a href=\"" + url + "\" target=\"_blank\">" + url + "</a>" )
+        else:
+            return url
 
     # function to close files
     def close( self ):

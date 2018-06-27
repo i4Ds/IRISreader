@@ -39,7 +39,7 @@ class hek_data:
         
         if not lazy_eval:
             self.data = load_hek_data( self.start_date, self.end_date )
-
+        
     def __getattribute__( self, name ):
         if name=="data" and object.__getattribute__( self, "data" ) is None:
             self.data = load_hek_data( self.start_date, self.end_date )
@@ -47,6 +47,10 @@ class hek_data:
         else:
             return object.__getattribute__( self, name )
         
+    def get_flares( self ):
+        fields = ['fl_goescls', 'hpc_radius', 'hpc_x', 'hpc_y']
+        return self.data[self.data.event_type == 'FL'][ fields ]
+
 
 def load_hek_data( start_date, end_date ):
     """

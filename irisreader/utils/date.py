@@ -28,6 +28,12 @@ def to_Tformat( date, milliseconds=True ):
         date_str = dt.strftime( date , T_FORMAT_S )
     return date_str
 
+def full_obsid( start_date, obsid ):
+    """
+    Docstring
+    """
+    return dt.strftime( start_date , "%Y%m%d_%H%M%S_" + obsid )
+
 def to_epoch( date ):
     """
     Docstring
