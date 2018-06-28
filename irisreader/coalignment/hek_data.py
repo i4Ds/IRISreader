@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import numpy as np
 
+from datetime import timedelta
 from irisreader.utils.date import to_Tformat
 
 class hek_data:
@@ -69,8 +70,9 @@ def load_hek_data( start_date, end_date ):
     float
         Pandas data frame with HEK events.
     """
-    hek_events = []
     
+    # get HEK events within +/- two hours of the observation time frame
+    hek_events = []
     page = 1
     while True:
         r = requests.get("http://www.lmsal.com/hek/her", params={
@@ -78,8 +80,8 @@ def load_hek_data( start_date, end_date ):
             "cmd": "search",
             "type": "column",
             "event_type": "fl,ar",  # Flares and active regions
-            "event_starttime": to_Tformat( start_date ),
-            "event_endtime": to_Tformat( end_date ),
+            "event_starttime": to_Tformat( start_date-timedelta(hours=2) ),
+            "event_endtime": to_Tformat( end_date+timedelta(hours=2) ),
             "event_coordsys": "helioprojective",
             "x1": "-1200",
             "x2": "1200",
@@ -101,7 +103,10 @@ def load_hek_data( start_date, end_date ):
         hek_events += events
 
         page += 1
-        
-    return pd.DataFrame( hek_events )
-
+    
+    # convert results to a data frame and filter out events that stopped before the observation time or started after the observation time    
+    df = pd.DataFrame( hek_events )
+    df = df[np.logical_and( df.event_starttime < to_Tformat( end_date ), df.event_endtime > to_Tformat( start_date ) )]
+    
+    return df
 
