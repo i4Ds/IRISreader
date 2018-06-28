@@ -48,7 +48,7 @@ class hek_data:
             return object.__getattribute__( self, name )
         
     def get_flares( self ):
-        fields = ['fl_goescls', 'hpc_radius', 'hpc_x', 'hpc_y']
+        fields = ['fl_goescls', 'event_starttime', 'event_endtime', 'event_peaktime', 'hpc_radius', 'hpc_x', 'hpc_y']
         return self.data[self.data.event_type == 'FL'][ fields ]
 
 
