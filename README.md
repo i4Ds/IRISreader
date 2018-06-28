@@ -23,3 +23,8 @@ To test it go to the Python console, cd to the IRISreader directory and run:
 ## Documentation ##
 
 The documentation is available [here](https://www.cs.technik.fhnw.ch/iris/irisreader_docs/).
+
+## Contact ##
+
+For questions and suggestions, please contact me via
+[email](mailto:cedric.huwyler@fhnw.ch).
