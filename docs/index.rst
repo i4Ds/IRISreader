@@ -15,6 +15,7 @@ and to preprocess it for big data applications.
    :caption: Contents:
 
    installation
+   tutorial
    reading
    preprocessing
    coalignment
