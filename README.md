@@ -22,7 +22,7 @@ To test it go to the Python console, cd to the IRISreader directory and run:
 
 ## Documentation ##
 
-The documentation is available [here](https://www.cs.technik.fhnw.ch/iris/irisreader_docs/).
+The documentation is available [here](https://i4ds.github.io/IRISreader/).
 
 ## Contact ##
 
