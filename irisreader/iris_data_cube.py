@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from astropy.io import fits
+from astropy.wcs import WCS
 from datetime import datetime as dt, timedelta
 import numpy as np
 import os
@@ -157,6 +158,9 @@ class iris_data_cube( object ):
         self._ymax = None
         self._cropped = False
         
+        # initialize WCS object
+        # self._wcs = WCS( self._fits_file[self._selected_ext].header )
+        
 
     # lazy load _valid_images, time_specific_headers and n_steps
     def __getattribute__( self, name ):
@@ -236,10 +240,6 @@ class iris_data_cube( object ):
     
     def __exit__( self ):
         self.close()
-        
-    # return the description upon a print call
-    def __str__( self ):
-        return self.desc
     
     # close the file
     def close( self ):

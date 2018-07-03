@@ -3,6 +3,7 @@
 import numpy as np
 import copy
 import os
+import warnings
 from irisreader import raster_cube
 from irisreader.config import DEBUG_LAZY_LOADING_LEVEL
 from irisreader.coalignment import goes_data
@@ -60,7 +61,7 @@ class combined_raster( object ):
         if not isinstance( filenames, (list, tuple) ):
             filenames = [filenames]
         
-        # open raster files
+        # open raster files (disable individual cube warnings)
         self._raster_data = []
         for raster_file in sorted( filenames ):
             self._raster_data.append( raster_cube( raster_file, line=line, keep_null=keep_null ) )
@@ -144,14 +145,23 @@ class combined_raster( object ):
         else:
             return object.__getattribute__( self, name )
 
+    # return the description upon a print call
+    def __str__( self ):
+        return "raster line window: {}\n(n_steps, n_y, n_lambda) = {}".format( self.line_info, self.shape )
+    
+    def __repr__( self ):
+        return self.__str__()
+
     # function to lazily prepare individual numbers of steps and total
     def _prepare_n_raster_steps( self ):
         if DEBUG_LAZY_LOADING_LEVEL >= 2: print("DEBUG: [combined raster] Lazy loading individual raster steps")
         n_steps = 0
         n_raster_steps = [0]*self.n_raster
         for i in range( self.n_raster ):
-            n_raster_steps[i] = self._raster_data[i].n_steps
-            n_steps += n_raster_steps[i]
+            with warnings.catch_warnings(): # ignore warnings by individual rasters
+                warnings.simplefilter("ignore")
+                n_raster_steps[i] = self._raster_data[i].n_steps
+                n_steps += n_raster_steps[i]
         self.n_raster_steps = n_raster_steps
         self.n_steps = n_steps
         self.shape = tuple( [ self.n_steps ] + list( self._raster_data[0]._fits_file[ self._raster_data[0]._selected_ext ].shape[1:] ) )
@@ -221,10 +231,6 @@ class combined_raster( object ):
     
     def __exit__( self ):
         self.close()
-        
-    # print behaviour        
-    def __str__( self ):
-        return self.desc
     
     # caller to behave like a data array
     def __getitem__( self, index ):

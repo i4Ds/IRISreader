@@ -111,6 +111,13 @@ class raster_cube( iris_data_cube ):
         else:
             return object.__getattribute__( self, name )
 
+    # return the description upon a print call
+    def __str__( self ):
+        return "raster line window: {}\n(n_steps, n_y, n_lambda) = {}".format( self.line_info, self.shape )
+    
+    def __repr__( self ):
+        return self.__str__()
+
     # function to prepare time_specific_headers
     def _prepare_time_specific_headers( self ):
         if DEBUG_LAZY_LOADING_LEVEL >= 3: print("DEBUG: [raster cube] Lazy loading time specific headers")

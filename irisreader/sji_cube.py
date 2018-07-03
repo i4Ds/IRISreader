@@ -90,6 +90,12 @@ class sji_cube( iris_data_cube ):
         else:
             return object.__getattribute__( self, name )
 
+    # return the description upon a print call
+    def __str__( self ):
+        return "SJI line window: {}\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
+    
+    def __repr__( self ):
+        return self.__str__()
 
     # function to prepare combined headers
     def _prepare_combined_headers( self ):

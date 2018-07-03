@@ -59,6 +59,13 @@ class sji_loader:
         """Returns number of items"""
         return len( self._sji_data )
             
+    def __str__( self ):
+        """Return available lines when printed"""
+        return "SJI loader with the following available lines:\n\n" + self.get_lines().to_string()
+    
+    def __repr__( self ):
+        return self.__str__()
+    
     def __call__( self, text ):
         """Caller to (lazily) behave like a function"""
         line = find_line( self._line_info, text )
@@ -149,6 +156,13 @@ class raster_loader:
     def __len__( self ):
         """Returns number of items"""
         return len( self._raster_data )
+                
+    def __str__( self ):
+        """Return available lines when printed"""
+        return "raster loader with the following available lines:\n\n" + self.get_lines().to_string()
+    
+    def __repr__( self ):
+        return self.__str__()
     
     def __call__( self, line ):
         """Caller to (lazily) behave like a function"""
@@ -273,6 +287,9 @@ class observation:
         if not self.raster is None:
             desc += "\n\nraster lines:\n" + str(self.raster.get_lines())
         return desc
+    
+    def __repr__( self ):
+        return self.__str__()
     
     # functions to enter and exit a context
     def __enter__( self ):
