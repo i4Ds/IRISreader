@@ -95,7 +95,6 @@ class iris_data_cube( object ):
         self._last_data_ext = max( data_cube_extensions )
         
         # set extension for selected line
-        #self._selected_ext = 1
         if line == '':
             self._selected_ext = self._first_data_ext # choose first line by default
         elif self._line2extension( line ) != -1: 
@@ -528,7 +527,6 @@ class iris_data_cube( object ):
             
             if not inplace:
                 return self
-        
         
     # function to add goes xray intensity
     def get_goes_flux( self ):        

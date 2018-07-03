@@ -51,9 +51,16 @@ class sji_loader:
         for sji in self._sji_data:
             sji.close()
     
-    def __getitem__( self, i ):
-        """Caller to (lazily) behave like a list"""
-        return self._sji_data[i]
+    def __getitem__( self, line ):
+        """Caller to (lazily) behave like a list or dictionary"""
+
+        # check if the line is a string and if yes convert it to an index
+        if isinstance( line, str ):
+            line = find_line( self._line_info, line )
+            if line < 0:
+                raise ValueError("The desired spectral window could not be found!")
+            
+        return self._sji_data[line]
     
     def __len__( self ):
         """Returns number of items"""
@@ -66,13 +73,9 @@ class sji_loader:
     def __repr__( self ):
         return self.__str__()
     
-    def __call__( self, text ):
+    def __call__( self, line ):
         """Caller to (lazily) behave like a function"""
-        line = find_line( self._line_info, text )
-        if line < 0:
-            raise ValueError("The desired spectral window could not be found!")
-        else:
-            return self._sji_data[line]
+        return self.__getitem__( line )
         
     def has_line( self, description ):
         """
@@ -147,12 +150,20 @@ class raster_loader:
             if raster != []:
                 raster.close()
            
-    def __getitem__( self, i ):
-        """Caller to (lazily) behave like a list"""
-        if self._raster_data[i] == []:
-            self._load(i)
-        return self._raster_data[i]
+    def __getitem__( self, line ):
+        """Caller to (lazily) behave like a list or dictionary"""
+        # check if the line is a string and if yes convert it to an index
+        if isinstance( line, str ):
+            line = find_line( self._line_info, line )
+            if line < 0:
+                raise ValueError("The desired spectral window could not be found!")
     
+        # load the desired data cube if not yet loaded
+        if self._raster_data[line] == []:
+            self._load( line )
+            
+        return self._raster_data[line] 
+        
     def __len__( self ):
         """Returns number of items"""
         return len( self._raster_data )
@@ -166,12 +177,7 @@ class raster_loader:
     
     def __call__( self, line ):
         """Caller to (lazily) behave like a function"""
-        line = find_line( self._line_info, line )
-        if line < 0:
-            raise ValueError("The desired spectral window could not be found!")
-        if self._raster_data[line] == []:
-            self._load( line )
-        return self._raster_data[line]
+        return self.__getitem__( line )
     
     def has_line( self, description ):
         """
@@ -281,7 +287,7 @@ class observation:
         
     # define print output
     def __str__( self ):
-        desc = self.desc
+        desc = self.desc + "\n" + to_Tformat( self.start_date, milliseconds=False ).replace("T", " ") + " - " + to_Tformat( self.end_date, milliseconds=False ).replace("T", " ")
         if not self.sji is None: 
             desc += "\n\nSJI lines:\n" + str(self.sji.get_lines())
         if not self.raster is None:
