@@ -118,9 +118,8 @@ class sji_cube( iris_data_cube ):
             self.headers[i]['CRVAL2'] = self.headers[i]['YCENIX']
             self.headers[i]['EXPTIME'] = self.headers[i]['EXPTIMES']            
 
-    # function to get coordinates for a particular image
-    # TODO: introduce more generic pixel2coords and coords2pixel functions
-    def get_coordinates( self, step ):
+    # function to get axis coordinates for a particular image
+    def get_axis_coordinates( self, step ):
         """
         Returns coordinates for the image at the given time step.
         
@@ -135,18 +134,21 @@ class sji_cube( iris_data_cube ):
             List [coordinates along x axis, coordinates along y axis]
         """
 
-        # see e.g. https://fits.gsfc.nasa.gov/wcs/coordinates.pdf
-        # or http://www.aanda.org/articles/aa/pdf/2002/45/aah3859.pdf
-        # TODO: check how satellite rotations enters with PC matrix, is this correct?
-        h = self.primary_headers
-        x = h['PC1_1'] * h['CRVAL1'] + h['CDELT1'] * ( np.arange( h['NAXIS1'] ) - h['CRPIX1'] )
-        y = h['PC2_2'] * h['CRVAL2'] + h['CDELT2'] * ( np.arange( h['NAXIS2'] ) - h['CRPIX2'] )
-
+        # create input for wcs.all_pix2world: list of triples (x,y,t)
+        # evaluated only at coordinate axes (to be fast)
+        arr_x = [[x,0,step] for x in range(self.shape[2])]
+        arr_y = [[0,y,step] for y in range(self.shape[1])]
+        
+        # pass pixel lists to wcs.all_pix2world and extract axis values
+        # convert from degrees to arcseconds by multiplying with 3600
+        coords_x = self._wcs.all_pix2world( arr_x, 1 )[:,0] * 3600
+        coords_y = self._wcs.all_pix2world( arr_y, 1 )[:,1] * 3600
+        
         # Return bounded units if image is cropped
         if self._cropped:
-            return [ x[self._xmin:self._xmax], y[self._ymin:self._ymax] ]
+            return [ coords_x[self._xmin:self._xmax], coords_y[self._ymin:self._ymax] ]
         else:
-            return [ x, y ]
+            return [ coords_x, coords_y ]
 
     # function to plot an image step
     def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9 ):
@@ -179,26 +181,33 @@ class sji_cube( iris_data_cube ):
         vmax = np.percentile( image, cutoff_percentile )
 
         # set image extent and labels according to choice of units
+        ax = plt.subplot(111)
+        
         if units == 'coordinates':
-            units = self.get_coordinates( step=step )
+            units = self.get_axis_coordinates( step=step )
             extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]
-            plt.xlabel("solar x [arcsec]")
-            plt.ylabel("solar y [arcsec]")
+            ax.set_xlabel("solar x [arcsec]")
+            ax.set_ylabel("solar y [arcsec]")
 
         elif units == 'pixels':
             extent = [ 0, image.shape[1], 0, image.shape[0] ]
-            plt.xlabel("camera x")
-            plt.ylabel("camera y")
+            ax.set_xlabel("camera x")
+            ax.set_ylabel("camera y")
         else:
             raise ValueError( "Plot units '" + units + "' not defined!" )
             
         # create title
-        plt.title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
+        ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
 
         # show image
-        plt.imshow( image, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+        ax.imshow( image, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+        ax.set_aspect('equal')
         plt.show()
         
         # delete image variable (otherwise memory mapping keeps file open)
         del image
-    
+
+# remove this
+if __name__ == "__main__":
+    sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits" )
+    sji.plot( 0, units="coordinates" )

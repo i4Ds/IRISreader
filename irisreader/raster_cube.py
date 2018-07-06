@@ -169,8 +169,7 @@ class raster_cube( iris_data_cube ):
 
     # function to get units for a particular image
     # TODO: Include PC matrix for satellite rotation??
-    # TODO: Are the units the same for all steps?? -> ask Lucia
-    def get_coordinates( self, step ):
+    def get_axis_coordinates2( self, step ):
         """Returns coordinates for the image at the given time step.
         
         Parameters
@@ -194,6 +193,40 @@ class raster_cube( iris_data_cube ):
             return [ x[self._xmin:self._xmax], y[self._ymin:self._ymax] ]
         else:
             return [ x, y ]
+        
+        
+        # function to get axis coordinates for a particular image
+    def get_axis_coordinates( self, step ):
+        """
+        Returns coordinates for the image at the given time step.
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the coordinates for.
+
+        Returns
+        -------
+        float
+            List [coordinates along x axis, coordinates along y axis]
+        """
+
+        # create input for wcs.all_pix2world: list of triples (x,y,t)
+        # evaluated only at coordinate axes (to be fast)
+        arr_x = [[x,0,step] for x in range(self.shape[2])]
+        arr_y = [[0,y,step] for y in range(self.shape[1])]
+        
+        # pass pixel lists to wcs.all_pix2world and extract axis values
+        # convert from degrees to arcseconds by multiplying with 3600
+        coords_x = self._wcs.all_pix2world( arr_x, 1 )[:,0] * 1e10
+        coords_y = self._wcs.all_pix2world( arr_y, 1 )[:,1] * 3600
+        
+        # Return bounded units if image is cropped
+        if self._cropped:
+            return [ coords_x[self._xmin:self._xmax], coords_y[self._ymin:self._ymax] ]
+        else:
+            return [ coords_x, coords_y ]        
+        
         
     # function to get interpolated image step
     def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks ):
@@ -224,7 +257,7 @@ class raster_cube( iris_data_cube ):
         
         from irisreader.preprocessing import spectrum_interpolator
         interpolator = spectrum_interpolator( lambda_min, lambda_max, n_breaks )
-        lambda_units = self.get_coordinates( step )[0]
+        lambda_units = self.get_axis_coordinates( step )[0]
         return interpolator.fit_transform( self.get_image_step( step ), lambda_units )
         
     # function to plot an image step
@@ -257,31 +290,41 @@ class raster_cube( iris_data_cube ):
         vmax = np.percentile( image, cutoff_percentile )
 
         # set image extent and labels according to choice of units
+        ax = plt.subplot(111)
+        
         if units == 'coordinates':
-            units = self.get_coordinates( step=step )
+            units = self.get_axis_coordinates( step=step )
             extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]
-            plt.xlabel("r'$\lambda$ [$\AA$]'")
-            plt.ylabel("solar y [arcsec]")            
+            ax.set_xlabel( r'$\lambda$ [$\AA$]' )
+            ax.set_ylabel("solar y [arcsec]")            
 
         elif units == 'pixels':
             extent = [ 0, image.shape[1], 0, image.shape[0] ]
-            plt.xlabel("camera x")
-            plt.ylabel("camera y")
+            ax.set_xlabel("camera x")
+            ax.set_ylabel("camera y")
         else:
             raise ValueError( "Plot units '" + units + "' not defined!" )
 
         # set title
-        plt.title( self.line_specific_headers['WAVENAME'] + "\n" + self.time_specific_headers[step]['DATE_OBS'] )        
+        ax.set_title( self.line_specific_headers['WAVENAME'] + "\n" + self.time_specific_headers[step]['DATE_OBS'] )        
 
         # show image
         if y is None:
-            plt.imshow( image, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+            ax.imshow( image, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+
         else:
-            plt.ylabel("photon count (y=" + str(y) + ")")
-            plt.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )
+            ax.set_ylabel("photon count / s (y=" + str(y) + ")")
+            ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )
+            
+        ax.set_aspect('auto')
 
         plt.show()
         
         # delete image variable (otherwise memory mapping keeps file open)
         del image        
         
+# remove this
+if __name__ == "__main__":
+    raster = raster_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_raster_t000_r00000.fits", line="Mg" )
+    raster.plot(0, units="coordinates")
+    raster.plot(0, units="coordinates", y=100)

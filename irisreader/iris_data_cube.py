@@ -5,7 +5,7 @@ from astropy.wcs import WCS
 from datetime import datetime as dt, timedelta
 import numpy as np
 import os
-from warnings import warn
+import warnings
 import copy
 from irisreader.config import DEBUG_LAZY_LOADING_LEVEL
 from irisreader.coalignment import goes_data
@@ -64,9 +64,6 @@ class iris_data_cube( object ):
         # open file
         self._fits_file = fits.open( filename )
         self._closed = False
-        
-        # correct possible errors
-        self._fits_file.verify('fix')
 
         # get FITS type
         if 'INSTRUME' in self._fits_file[0].header.keys() and 'SJI' in self._fits_file[0].header['INSTRUME']:
@@ -105,7 +102,6 @@ class iris_data_cube( object ):
                               ' window is either not found or specified'
                               ' ambiguously.'))
         
-        # TODO: is this necessary? Should already have been excluded above
         # check whether the extensions come with the right dimensions
         if len( self._fits_file[ self._selected_ext ].shape ) != 3:
             raise ValueError( "The data extension does not contain a three-dimensional data cube!" )
@@ -157,8 +153,17 @@ class iris_data_cube( object ):
         self._ymax = None
         self._cropped = False
         
-        # initialize WCS object
-        # self._wcs = WCS( self._fits_file[self._selected_ext].header )
+        # initialize WCS object and suppress warnings
+        # set CDELT3 to a tiny value if zero (otherwise wcs produces singular PC matrix)
+        # see e.g. discussion at https://github.com/sunpy/irispy/issues/78
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            if self._fits_file[self._selected_ext].header['CDELT3'] == 0:
+                self._fits_file[self._selected_ext].header['CDELT3'] = 1e-10
+                self._wcs = WCS( self._fits_file[self._selected_ext].header )
+                self._fits_file[self._selected_ext].header['CDELT3'] = 0
+            else:
+                self._wcs = WCS( self._fits_file[self._selected_ext].header )
         
 
     # lazy load _valid_images, time_specific_headers and n_steps
@@ -196,7 +201,7 @@ class iris_data_cube( object ):
         
         # TODO: annoying warning message -- can the raster check whether its part of a combined raster and not output it?
         if valid_images == []:
-            warn("This data cube contains no valid images!")
+            warnings.warn("This data cube contains no valid images!")
         
         self._valid_images = valid_images
         self.n_steps = len( valid_images )
@@ -425,7 +430,7 @@ class iris_data_cube( object ):
         # TODO: This is not very beautiful, replace this in the future
         if divide_by_exptime:
             if self.headers == [-1]:
-                warn("Exposure time is not available at the iris_data_cube level, did not divide by exposure time.")
+                warnings.warn("Exposure time is not available at the iris_data_cube level, did not divide by exposure time.")
             else:                
                 img[img>0] /= self.headers[step]['EXPTIME']
 
