@@ -200,7 +200,7 @@ class raster_cube( iris_data_cube ):
 
     
     # function to convert coordinates to pixels (wrapper for wcs)
-    def coords2pix( self, step, wl_solar_coordinates ):
+    def coords2pix( self, step, wl_solar_coordinates, round_pixels=True ):
         """
         Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.
         
@@ -219,7 +219,7 @@ class raster_cube( iris_data_cube ):
         """
         
         conversion = [co.UNIT_M_NM, co.UNIT_DEC_ARCSEC]
-        return co.coords2pix( self._wcs, step, wl_solar_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+        return co.coords2pix( self._wcs, step, wl_solar_coordinates, conversion, round_pixels=round_pixels, xmin=self._xmin, ymin=self._ymin )
 
         
     # function to get axis coordinates for a particular image
@@ -340,12 +340,4 @@ class raster_cube( iris_data_cube ):
 # remove this
 if __name__ == "__main__":
     raster = raster_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_raster_t000_r00000.fits", line="Mg" )
-    raster.plot(0, units="coordinates")
-    #raster.plot(0, units="coordinates", y=100)
-    
-    raster.plot(0)
-    
-    point = np.array([0,0])
-    raster.pix2coords( 0, point )
 
-    print( raster.coords2pix( 0, np.array([2791, 65]) ) )

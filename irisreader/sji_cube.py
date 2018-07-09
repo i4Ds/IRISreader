@@ -146,7 +146,7 @@ class sji_cube( iris_data_cube ):
 
     
     # function to convert coordinates to pixels (wrapper for wcs)
-    def coords2pix( self, step, solar_coordinates ):
+    def coords2pix( self, step, solar_coordinates, round_pixels=True ):
         """
         Returns pixel coordinates for the list of given solar coordinates.
         
@@ -165,7 +165,7 @@ class sji_cube( iris_data_cube ):
         """
         
         conversion = [co.UNIT_DEC_ARCSEC, co.UNIT_DEC_ARCSEC]
-        return co.coords2pix( self._wcs, step, solar_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+        return co.coords2pix( self._wcs, step, solar_coordinates, conversion, round_pixels=round_pixels, xmin=self._xmin, ymin=self._ymin )
 
     # function to get axis coordinates for a particular image
     def get_axis_coordinates( self, step ):
