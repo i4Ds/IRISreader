@@ -541,7 +541,6 @@ class iris_data_cube( object ):
         else:
             return np.array([])
         
-        
 if __name__ == "__main__":
     #fits_data1 = iris_data_cube( 'data/IRIS_SJI_test.fits' )
     fits_data1 = iris_data_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )

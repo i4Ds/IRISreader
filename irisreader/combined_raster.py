@@ -104,8 +104,15 @@ class combined_raster( object ):
         self.line_specific_headers = {}
         self.headers = []
         
-        # indicator whether data cube has been cropped
+        # cropping boundaries and indicator whether data cube has been cropped
+        self._xmin = None
+        self._xmax = None
+        self._ymin = None
+        self._ymax = None
         self._cropped = False
+
+        # wcs object
+        self._wcs = self._raster_data[0]._wcs
         
         
     # lazy load the headers
@@ -267,6 +274,7 @@ class combined_raster( object ):
             self._raster_data[i]._cropped = True
         self.shape = tuple( [self.shape[0], self._raster_data[i]._ymax-self._raster_data[i]._ymin, self._raster_data[i]._xmax-self._raster_data[i]._xmin] )
         self._cropped = True
+        self._xmin, self._xmax, self._ymin, self._ymax = bounds
         
     # function to remove an image step from the data cube
     def _remove_image_steps( self, steps ):

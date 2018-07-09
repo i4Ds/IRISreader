@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from irisreader import iris_data_cube
 from irisreader.config import DEBUG_LAZY_LOADING_LEVEL
+from irisreader.utils import coordinates as co
 
 # define SJI class
 class sji_cube( iris_data_cube ):
@@ -118,6 +119,54 @@ class sji_cube( iris_data_cube ):
             self.headers[i]['CRVAL2'] = self.headers[i]['YCENIX']
             self.headers[i]['EXPTIME'] = self.headers[i]['EXPTIMES']            
 
+    # function to convert pixels to coordinates (wrapper for wcs)
+    def pix2coords( self, step, pixel_coordinates ):
+        """
+        Returns solar coordinates for the list of given pixel coordinates.
+        
+        **Caution**: This function takes pixel coordinates in the form [x,y] while
+        images come as [y,x]
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the solar coordinates for. 
+        pixel_coordinates : np.array
+            Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
+            in the format [x,y]
+            
+        Returns
+        -------
+        float
+            Numpy array with shape (pixel_pairs,2) containing solar coordinates
+        """
+
+        conversion = [co.UNIT_DEC_ARCSEC, co.UNIT_DEC_ARCSEC]
+        return co.pix2coords( self._wcs, step, pixel_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+
+    
+    # function to convert coordinates to pixels (wrapper for wcs)
+    def coords2pix( self, step, solar_coordinates ):
+        """
+        Returns pixel coordinates for the list of given solar coordinates.
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the pixel coordinates for. 
+        solar_coordinates : np.array
+            Numpy array with shape (coordinate_pairs,2) that contains solar coordinates
+            in the form [lat/lon] in units of arcseconds
+            
+        Returns
+        -------
+        float
+            Numpy array with shape (coordinate_pairs,2) containing pixel coordinates
+        """
+        
+        conversion = [co.UNIT_DEC_ARCSEC, co.UNIT_DEC_ARCSEC]
+        return co.coords2pix( self._wcs, step, solar_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+
     # function to get axis coordinates for a particular image
     def get_axis_coordinates( self, step ):
         """
@@ -134,21 +183,9 @@ class sji_cube( iris_data_cube ):
             List [coordinates along x axis, coordinates along y axis]
         """
 
-        # create input for wcs.all_pix2world: list of triples (x,y,t)
-        # evaluated only at coordinate axes (to be fast)
-        arr_x = [[x,0,step] for x in range(self.shape[2])]
-        arr_y = [[0,y,step] for y in range(self.shape[1])]
+        conversion = [co.UNIT_DEC_ARCSEC, co.UNIT_DEC_ARCSEC]
+        return co.get_axis_coordinates( self._wcs, step, self.shape, conversion, self._xmin, self._xmax, self._ymin, self._ymax )
         
-        # pass pixel lists to wcs.all_pix2world and extract axis values
-        # convert from degrees to arcseconds by multiplying with 3600
-        coords_x = self._wcs.all_pix2world( arr_x, 1 )[:,0] * 3600
-        coords_y = self._wcs.all_pix2world( arr_y, 1 )[:,1] * 3600
-        
-        # Return bounded units if image is cropped
-        if self._cropped:
-            return [ coords_x[self._xmin:self._xmax], coords_y[self._ymin:self._ymax] ]
-        else:
-            return [ coords_x, coords_y ]
 
     # function to plot an image step
     def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9 ):
@@ -210,4 +247,11 @@ class sji_cube( iris_data_cube ):
 # remove this
 if __name__ == "__main__":
     sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits" )
-    sji.plot( 0, units="coordinates" )
+
+    sji.plot(0, units="coordinates")
+
+    image = sji.get_image_step( 0 ).clip(min=0) ** 0.4    
+    plt.imshow( image, origin="lower", cmap="gist_heat", vmax=7 )
+    point = np.array( [-150,120] )
+    solar_point = sji.coords2pix( 0, point )
+    plt.scatter( solar_point[0], solar_point[1], marker="+", c="yellow" )

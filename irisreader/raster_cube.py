@@ -6,6 +6,12 @@ import numpy as np
 import re
 from irisreader import iris_data_cube
 from irisreader.config import DEBUG_LAZY_LOADING_LEVEL
+from irisreader.utils import coordinates as co
+
+
+# some unit conversions
+UNIT_M_NM = 1e10
+UNIT_DEC_ARCSEC = 3600
 
 # define raster class
 class raster_cube( iris_data_cube ):
@@ -165,37 +171,58 @@ class raster_cube( iris_data_cube ):
             # set EXPTIME = EXPTIMEF in FUV and EXPTIME = EXPTIMEN in NUV (this is not modified in IDL!)
             waveband = self.headers[i]['TDET'+str(self._selected_ext)][0]
             self.headers[i]['EXPTIME'] = self.headers[i]['EXPTIME'+waveband]
-            
 
-    # function to get units for a particular image
-    # TODO: Include PC matrix for satellite rotation??
-    def get_axis_coordinates2( self, step ):
-        """Returns coordinates for the image at the given time step.
+        
+    # function to convert pixels to coordinates (wrapper for wcs)
+    def pix2coords( self, step, pixel_coordinates ):
+        """
+        Returns wavelength in Angstrom / solar y coordinates for the list of given pixel coordinates.
+        
+        **Caution**: This function takes pixel coordinates in the form [x,y] while
+        images come as [y,x]
         
         Parameters
         ----------
         step : int
-            The time step in the raster to get the coordinates for.
-
+            The time step in the raster to get the coordinates for. 
+        pixel_coordinates : np.array
+            Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
+            in the format [x,y]
+            
         Returns
         -------
         float
-            List [coordinates along wavelength axis, coordinates along y axis]
+            Numpy array with shape (pixel_pairs,2) containing wavelength in angstrom / solar y coordinate
+        """
+
+        conversion = [co.UNIT_M_NM, co.UNIT_DEC_ARCSEC]
+        return co.pix2coords( self._wcs, step, pixel_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+
+    
+    # function to convert coordinates to pixels (wrapper for wcs)
+    def coords2pix( self, step, wl_solar_coordinates ):
+        """
+        Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the pixel coordinates for. 
+        wl_solar_coordinates : np.array
+            Numpy array with shape (coordinate_pairs,2) that contains wavelength in 
+            angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds
+            
+        Returns
+        -------
+        float
+            Numpy array with shape (coordinate_pairs,2) containing pixel coordinates
         """
         
-        h = self.line_specific_headers
-        x = h['CRVAL1'] + h['CDELT1'] * (np.arange(h['NAXIS1'])-h['CRPIX1'])
-        crval2 = self.time_specific_headers[step]['YCENIX'] # see _prepare_combined_headers
-        y = crval2 + h['CDELT2'] * (np.arange(h['NAXIS2'])-h['CRPIX2'])
-    
-        # Return bounded coordinates if image is cropped
-        if self._cropped:
-            return [ x[self._xmin:self._xmax], y[self._ymin:self._ymax] ]
-        else:
-            return [ x, y ]
+        conversion = [co.UNIT_M_NM, co.UNIT_DEC_ARCSEC]
+        return co.coords2pix( self._wcs, step, wl_solar_coordinates, conversion, xmin=self._xmin, ymin=self._ymin )
+
         
-        
-        # function to get axis coordinates for a particular image
+    # function to get axis coordinates for a particular image
     def get_axis_coordinates( self, step ):
         """
         Returns coordinates for the image at the given time step.
@@ -211,21 +238,8 @@ class raster_cube( iris_data_cube ):
             List [coordinates along x axis, coordinates along y axis]
         """
 
-        # create input for wcs.all_pix2world: list of triples (x,y,t)
-        # evaluated only at coordinate axes (to be fast)
-        arr_x = [[x,0,step] for x in range(self.shape[2])]
-        arr_y = [[0,y,step] for y in range(self.shape[1])]
-        
-        # pass pixel lists to wcs.all_pix2world and extract axis values
-        # convert from degrees to arcseconds by multiplying with 3600
-        coords_x = self._wcs.all_pix2world( arr_x, 1 )[:,0] * 1e10
-        coords_y = self._wcs.all_pix2world( arr_y, 1 )[:,1] * 3600
-        
-        # Return bounded units if image is cropped
-        if self._cropped:
-            return [ coords_x[self._xmin:self._xmax], coords_y[self._ymin:self._ymax] ]
-        else:
-            return [ coords_x, coords_y ]        
+        conversion = [co.UNIT_M_NM, co.UNIT_DEC_ARCSEC]
+        return co.get_axis_coordinates( self._wcs, step, self.shape, conversion, self._xmin, self._xmax, self._ymin, self._ymax )
         
         
     # function to get interpolated image step
@@ -327,4 +341,11 @@ class raster_cube( iris_data_cube ):
 if __name__ == "__main__":
     raster = raster_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_raster_t000_r00000.fits", line="Mg" )
     raster.plot(0, units="coordinates")
-    raster.plot(0, units="coordinates", y=100)
+    #raster.plot(0, units="coordinates", y=100)
+    
+    raster.plot(0)
+    
+    point = np.array([0,0])
+    raster.pix2coords( 0, point )
+
+    print( raster.coords2pix( 0, np.array([2791, 65]) ) )
