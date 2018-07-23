@@ -1,0 +1,15 @@
+[I 12:27:01.011 NotebookApp] The port 8888 is already in use, trying another port.
+[I 12:27:01.011 NotebookApp] The port 8889 is already in use, trying another port.
+[I 12:27:01.031 NotebookApp] JupyterLab beta preview extension loaded from /opt/anaconda/lib/python3.6/site-packages/jupyterlab
+[I 12:27:01.031 NotebookApp] JupyterLab application directory is /opt/anaconda/share/jupyter/lab
+[I 12:27:01.034 NotebookApp] Serving notebooks from local directory: /home/chuwyler/Desktop/IRISreader
+[I 12:27:01.034 NotebookApp] 0 active kernels
+[I 12:27:01.034 NotebookApp] The Jupyter Notebook is running at:
+[I 12:27:01.034 NotebookApp] http://localhost:8890/?token=18abd36627715096977eec8027a1eb2d029edce8417c6b54
+[I 12:27:01.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 12:27:01.036 NotebookApp] 
+    
+    Copy/paste this URL into your browser when you connect for the first time,
+    to login with a token:
+        http://localhost:8890/?token=18abd36627715096977eec8027a1eb2d029edce8417c6b54&token=18abd36627715096977eec8027a1eb2d029edce8417c6b54
+[I 12:27:01.204 NotebookApp] Accepting one-time-token-authenticated connection from 127.0.0.1

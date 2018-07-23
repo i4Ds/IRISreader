@@ -335,3 +335,8 @@ class observation:
             self.sji._close()
         if not self.raster is None:
             self.raster._close()
+         
+
+# remove this
+if __name__ == "__main__":
+    obs = observation( "/home/chuwyler/Desktop/FITS/20140906_112339_3820259253/" )
