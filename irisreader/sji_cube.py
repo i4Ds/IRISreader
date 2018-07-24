@@ -244,13 +244,13 @@ class sji_cube( iris_data_cube ):
         # delete image variable (otherwise memory mapping keeps file open)
         del image
 
-# function to get slit position (taking into account cropping)
-def get_slit_pos( self, step ):
-    pos = self.time_specific_headers[ step ]
-    if self._cropped:
-        return pos - self._xmin
-    else:
-        return pos
+    # function to get slit position (taking into account cropping)
+    def get_slit_pos( self, step ):
+        pos = self.time_specific_headers[ step ]['SLTPX1IX']
+        if self._cropped:
+            return pos - self._xmin
+        else:
+            return pos
 
 # remove this
 if __name__ == "__main__":
