@@ -156,6 +156,15 @@ class file_hub:
     
     # close a file and drop it from the stack
     def close( self, path ):
+        
+        # manually delete data objects, otherwise memory mapping will keep file open
+        # (http://docs.astropy.org/en/stable/io/fits/appendix/faq.html#id18)
+        if path in self._file_stack._paths:
+            idx = self._file_stack._paths.index( path )
+            for i in range( len( self._file_stack._handles[idx] ) ):
+                del self._file_stack._handles[idx][i].data
+    
+        # drop file from stack
         self._file_stack.drop( path )
         
     # reset file stack

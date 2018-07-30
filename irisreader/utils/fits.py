@@ -5,16 +5,35 @@ class CorruptFITSException( Exception ):
     pass
 
 # function that converts wavelength string into extension number
-# the image extensions are stored in extensions [1,ext-3] = [1,n_lines]
 def line2extension( header, line ):
     """
     Converts wavelength string into an extension number.
     Returns -1 if the line could not be found or several lines where found.
+    
+    Parameters
+    ----------
+    header : astropy.io.fits.header.Header
+        Primary header of the FITS file
+    line : str
+        Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
+
+    Returns
+    -------
+    location : int
+        -1 if if no or multiple matching lines are found,
+        otherwise extension number is returned.
     """
 
+    # get all headers that contain line information
     keys = [k for k in header.keys() if k.startswith("TDESC")]
+    
+    # make sure the line descriptions are sorted
     line_descriptions = [header[k] for k in sorted(keys)]
-    res = [s for s in line_descriptions if line in s]        
+    
+    # get all line descriptions that contain the line string
+    res = [s for s in line_descriptions if line in s]       
+    
+    # return -1 if no or multiple matching lines are found
     if len( res ) != 1: 
         return -1
     else:
@@ -25,6 +44,17 @@ def array2dict( header, data ):
     """
     Reads (key, index) pairs from the header of the extension and uses them
     to assign each row of the data array to a dictionary.
+    
+    Parameters
+    ----------
+    header : astropy.io.fits.header.Header
+        Header with the keys to the data array
+    data : numpy.ndarray
+        Data array
+
+    Returns
+    -------
+    list of header dictionaries
     """
     
     # some headers are not keys but real headers: remove them

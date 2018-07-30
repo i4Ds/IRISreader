@@ -16,11 +16,55 @@ import irisreader as ir
 from irisreader.utils.fits import line2extension, array2dict, CorruptFITSException
 from irisreader.utils.date import from_Tformat, to_Tformat
 
-DEBUG_LAZY_LOADING_LEVEL = 4
+DEBUG = True
 
 # IRIS data cube class
 class iris_data_cube:
+    """
+    This class implements an abstraction of an IRIS FITS file collection, 
+    specifically it appears as one single data cube, automatically discarding
+    images that are entirely null and concatenating multiple files. Moreover,
+    it provides basic access to image headers. It provides the basic 
+    functionalities needed for the classes sji_cube and raster_cube that then
+    implement more sji and raster-specific details. Hence, this class should 
+    only be used internally.
     
+    Parameters
+    ----------
+    files : string
+        Path or list of paths to the IRIS FITS file(s).
+    line : string
+        Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
+    keep_null : boolean
+        Controls whether images that are NULL (-200) everywhere are removed from the data cube (keep_null=False) or not (keep_null=True).
+        
+        
+    Attributes
+    ----------
+    type : str
+        Observation type: 'sji' or 'raster'.
+    obsid : str
+        Observation ID of the selected observation.
+    desc : str
+        Description of the selected observation.
+    start_date : str
+        Start date of the selected observation.
+    end_date : str
+        End date of the selected observation.
+    mode : str
+        Observation mode of the selected observation ('sit-and-stare' or 'raster').
+    line_info : str
+        Description of the selected line.
+    n_steps : int
+        Number of time steps in the data cube (this is affected by the keep_null argument).
+    primary_headers: dict
+        Dictionary with primary headers of the FITS file (lazy loaded).
+    time_specific_headers: dict
+        List of dictionaries with time-specific headers of the selected line (lazy loaded).  
+    shape : tuple
+        Shape of the data cube (this is affected by the keep_null argument)
+    """
+
     # constructor
     def __init__( self, files, line='', keep_null=False ):
                 
@@ -69,7 +113,7 @@ class iris_data_cube:
             raise CorruptFITSException(('Change the line parameter: The desired spectral window is either not found or specified ambiguously.'))
         
         # check the integrity of this first file
-        self.check_integrity( first_file )
+        self._check_integrity( first_file )
         
         # set obsid
         self.obsid = first_file[0].header['OBSID']
@@ -86,6 +130,9 @@ class iris_data_cube:
             self.mode = 'sit-and-stare'
         else:
             self.mode = 'n-step raster'
+
+        # number of files
+        self.n_files = len( self._files )
             
         # line information (SJI info is replaced by actual line information)
         self.line_info = first_file[0].header['TDESC'+str(self._selected_ext-self._first_data_ext+1)]
@@ -112,6 +159,10 @@ class iris_data_cube:
 
     # close all files
     def close( self ):
+        """
+        Closes the FITS file(s)
+        """
+        
         for file in self._files:
             ir.file_hub.close( file )
     
@@ -137,33 +188,46 @@ class iris_data_cube:
 
     # prepare valid steps
     # TODO: data is read twice here.. should we add an option to do everything in RAM??
-    # TODO: implement method that does not require this (iterator)
     def _prepare_valid_steps( self ):
-
-        if DEBUG_LAZY_LOADING_LEVEL >= 4: print("DEBUG: [iris_data_cube] Lazy loading valid images")
+        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading valid image steps")
         valid_steps = []
         
+        # go through all the files: make sure they are not corrupt with _check_integrity
         for file_no in range( len( self._files ) ):
+            
+            # request file from file hub
             f = ir.file_hub.open( self._files[ file_no ] )
-            for file_step in range( f[self._selected_ext].shape[0] ):
-                if self._keep_null or not np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 ):
-                    valid_steps.append( [file_no, file_step] )
+            
+            try:
+                # make sure that file is not corrupt
+                self._check_integrity( f )
+                
+                # check whether some images are -200 everywhere and if desired
+                # (keep_null=False), do not label these images as valid
+                for file_step in range( f[self._selected_ext].shape[0] ):
+                    if self._keep_null or not np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 ):
+                        valid_steps.append( [file_no, file_step] )
+                        
+            except CorruptFITSException as e:
+                warnings.warn("File #{} is corrupt, discarding it ({})".format( file_no, e ) )
             
         # raise a warning if the data cube contains no valid steps    
         if valid_steps == []:
             warnings.warn("This data cube contains no valid images!")
 
+        # update class instance variables
         self._valid_steps = np.array( valid_steps )
         self.n_steps = len( valid_steps )
         self.shape = tuple( [ self.n_steps ] + list( f[ self._selected_ext ].shape[1:] ) )
                
     # prepare primary headers
     def _prepare_primary_headers( self ):
-        if DEBUG_LAZY_LOADING_LEVEL >= 4: print("DEBUG: [iris_data_cube] Lazy loading primary headers")
+        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading primary headers")
         
-        # request first file from file hub:
+        # request first file from file hub
         first_file = ir.file_hub.open( self._files[0] )
         
+        # convert headers to dictionary and clean up some values
         self.primary_headers = dict( first_file[0].header )
         self.primary_headers['SAA'] = self.primary_headers['SAA'].strip() 
         self.primary_headers['NAXIS'] = 2
@@ -180,19 +244,27 @@ class iris_data_cube:
 
         
     # prepare time-specific headers out of second last extension
-    # TODO: how to make this clearer?
     def _prepare_time_specific_headers( self ):
-        if DEBUG_LAZY_LOADING_LEVEL >= 4: print("DEBUG: [iris_data_cube] Lazy loading time specific headers")
+        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading time specific headers")
         
         time_specific_headers = []
         file_no = 0
-        for file in self._files:
-            f = ir.file_hub.open( file )
+        
+        # go through all the files and read headers (avoid files that have no data or are corrupt)
+        file_numbers = np.unique( self._valid_steps[:,0] ) # files with valid images
+        for file_no in file_numbers:
+            
+            # request file from file hub
+            f = ir.file_hub.open( self._files[file_no] )
+            
+            # read headers from data array
             file_time_specific_headers = array2dict( f[self._n_ext-2].header, f[self._n_ext-2].data )
+            
+            # make sure only headers for valid images are included
             file_time_specific_headers = [file_time_specific_headers[i] for i in self._get_valid_steps( file_no )]
+            
+            # append headers to global time_specific_headers list
             time_specific_headers += file_time_specific_headers
-            file_no += 1
-
 
         # set a DATE_OBS header in each frame as DATE_OBS = STARTOBS + TIME
         startobs = from_Tformat( self.primary_headers['STARTOBS'] )
@@ -210,6 +282,7 @@ class iris_data_cube:
         raise NotImplementedError()
         
     # function to remove image steps from valid steps (e.g. by cropper)
+    # TODO: update combined headers in raster/SJI implementation
     def _remove_steps( self, steps ):
     
         # if steps is a single integer, put it into a list    
@@ -223,6 +296,10 @@ class iris_data_cube:
         self.n_steps = len( self._valid_steps )
         self.shape = tuple( [ self.n_steps ] + list( self.shape[1:] ) )
         
+        # update headers if already loaded
+        if not object.__getattribute__( self, "time_specific_headers" ) is None:
+            self._prepare_time_specific_headers()
+        
     # function to find file number and file step of a given time step
     def _whereat( self, step ):
         return self._valid_steps[ step, : ]
@@ -234,6 +311,19 @@ class iris_data_cube:
     # how to behave if called as a data array
     # TODO: mention why we are not using the section interface
     def __getitem__( self, index ):
+        """
+        Abstracts access to the data cube. While in the get_image_step function
+        data is loaded through the the section method to make sure that only
+        the image requested by the user is loaded into memory, this method
+        directly accesses the data object of the hdulist, allowing faster slicing
+        of data. Whenever only time slices are required (i.e. single images), 
+        the get_image_step function should be used instead, since access 
+        through the data object can lead to memory problems.
+        
+        If the data cube happens to be cropped, this method will automatically
+        abstract access to the cropped data. If keep_null=False, null images
+        will automatically be removed from the representation.
+        """
         
         # check dimensions - this rules out the ellisis (...) for the moment
         if len( index ) != 3:
@@ -246,12 +336,33 @@ class iris_data_cube:
         else:
             valid_steps = self._valid_steps[ index[0], : ]
         
+        # if image should be cropped make sure that slices stay slices (is about 30% faster)
+        if self._cropped:  
+            if isinstance( index[1], slice ):
+                a = self._ymin if index[1].start is None else index[1].start+self._ymin
+                b = self._ymax if index[1].stop is None else index[1].stop+self._ymin  
+                internal_index1 = slice( a, b, index[1].step )
+                
+            else:
+                internal_index1 = np.arange( self._ymin, self._ymax )[ index[1] ]
+                
+            if isinstance( index[2], slice ):
+                a = self._xmin if index[2].start is None else index[2].start+self._xmin
+                b = self._xmax if index[2].stop is None else index[2].stop+self._xmin  
+                internal_index2 = slice( a, b, index[2].step )
+                
+            else:
+                internal_index2 = np.arange( self._xmin, self._xmax )[ index[2] ]
+
+        else:
+            internal_index1 = index[1]
+            internal_index2 = index[2]
+
         # get all data slices and concatenate them
         slices = []
-
         for file_no in np.unique( valid_steps[:,0] ):
             file = ir.file_hub.open( self._files[file_no] )
-            slices.append( file[ self._selected_ext ].data[ valid_steps[ valid_steps[:,0] == file_no, 1 ], index[1], index[2] ] )
+            slices.append( file[ self._selected_ext ].data[ valid_steps[ valid_steps[:,0] == file_no, 1 ], internal_index1, internal_index2 ] )
         slices = np.vstack( slices )
 
         # remove first dimension if there is only one slice
@@ -264,8 +375,23 @@ class iris_data_cube:
     # Note: this method makes use of astropy's section method to directly access
     # the data on-disk without loading all of the data into memory
     # TODO: option to load everything into RAM?
-    # TODO: divide by exposure time needs to be in SJI / raster
+    # TODO: divide by exposure time needs to be in SJI / raster (put warning in docstr)
     def get_image_step( self, step ):
+        """
+        Returns the image at position step. This function uses the section 
+        routine of astropy to only return a slice of the image and avoid 
+        memory problems.
+        
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+
+        Returns
+        -------
+        numpy.ndarray
+            2D image at time step <step>. Format: [y,x] (SJI), [y,wavelength] (raster).
+        """
         
         # Check whether line and step exist
         if step < 0 or step >= self.n_steps:
@@ -283,10 +409,12 @@ class iris_data_cube:
         else:
             return file[self._selected_ext].section[file_step, :, :] 
 
-    
+    # crop data cube
+    def crop( self ):
+        raise NotImplementedError
     
     # some checks that should be run on every single file and not just the first
-    def check_integrity( self, hdu ):
+    def _check_integrity( self, hdu ):
     
         # raster: check whether the selected extension contains the right line
         if hdu[0].header['INSTRUME'] == 'SPEC' and not self._line in hdu[0].header['TDESC{}'.format( self._selected_ext )]:
@@ -327,12 +455,24 @@ class iris_data_cube:
     def __exit__( self ):
         self.close()
 
+            
         
 if __name__ == "__main__":
 
-    fits_data1 = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits" )
+    import os
+    
+    fits_data1 = iris_data_cube( '/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits' )
     fits_data2 = iris_data_cube( 
            [ "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits", 
             "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits" ],
             line="Mg"
     )
+
+    very_large_raster = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
+    very_large_sji = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
+
+    # open a raster with > 6000 files:
+    path = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
+    raster_files = sorted( [path + "/" + file for file in os.listdir( path ) if 'raster' in file] )
+    many_rasters = iris_data_cube( raster_files, line="Mg" )
+
