@@ -5,7 +5,9 @@ raster_cube class: abstraction that makes the data, the headers and a number
 of auxiliary variables available for IRIS spectrograph data
 """
 
-import irisreader as ir
+import numpy as np
+import matplotlib.pyplot as plt
+
 from irisreader import iris_data_cube
 
 DEBUG = True
@@ -88,12 +90,120 @@ class raster_cube( iris_data_cube ):
                     del time_specific_headers[i][ key_to_remove ]
                     
         self.time_specific_headers = time_specific_headers
+     
+    # prepare combined headers
+    def _prepare_combined_headers( self ):
+        """
+        Prepares the combination (primary header, time-specific header, 
+        line-specific header) lazily for each image.
+        """
+        if DEBUG: print( "DEBUG: [raster cube] Lazy loading combined headers" )
+        headers = [ dict( list(self.primary_headers.items()) + list(self.line_specific_headers.items()) + list(t_header.items()) ) for t_header in self.time_specific_headers ]
+
+        # Fix some headers manually
+        for i in range( 0, self.n_steps ):
+            headers[i]['XCEN'] = headers[i]['XCENIX'] # this is not modified in IDL!
+            headers[i]['YCEN'] = headers[i]['YCENIX'] # this is not modified in IDL!
+            headers[i]['CRVAL2'] = headers[i]['YCENIX'] # this is not modified in IDL!
+
+            # set EXPTIME = EXPTIMEF in FUV and EXPTIME = EXPTIMEN in NUV (this is not modified in IDL!)
+            waveband = headers[i]['TDET'+str(self._selected_ext)][0]
+            headers[i]['EXPTIME'] = headers[i]['EXPTIME'+waveband]
+            
+        # Set class instance variable
+        self.headers = headers
+
+    # overwrite get_image_step function to be able to divide by exposure time
+    def get_image_step( self, step, divide_by_exptime=True ):
+       
+        # get uv region
+        uv_region = self.line_specific_headers['WAVEWIN'][0]
         
+        # get exposure time stored in 'EXPTIMES'
+        exptime = self.time_specific_headers[ step ]['EXPTIME'+uv_region]
+        
+        # divide image by exposure time
+        return super().get_image_step( step ) / exptime
+            
+    # function to plot an image step
+    def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9 ):
+        """
+        Plots the slit-jaw image at time step <step>. 
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI.
+        y : int
+            A pixel position on the slit. If set, only values for this position will be plotted.
+        units : str
+            Tick units: 'pixels' for indices in the array or 'coordinates' for units in arcseconds on the sun.
+        gamma : float
+            Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
+            gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.
+        cutoff_percentile : float
+            Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce 
+            this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
+            in a range between 0 and 100.
+        """
+
+        # if gamma is not specified, use gamma=1 for SJI_2832 and gamma=0.4 for everything else
+        if gamma is None:
+            gamma = 0.4
+
+        # load image into memory and find a good value for vmax with gamma correction
+        image = self.get_image_step( step, divide_by_exptime=True ).clip( min=0 ) 
+        vmax = np.percentile( image**gamma, cutoff_percentile )
+    
+        # set image extent and labels according to choice of units
+        ax = plt.subplot(111)
+        
+        if units == 'coordinates':
+            units = self.get_axis_coordinates( step=step )
+            extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]
+            ax.set_xlabel( self._ico.xlabel )
+            ax.set_ylabel( self._ico.ylabel )
+
+        elif units == 'pixels':
+            extent = [ 0, image.shape[1], 0, image.shape[0] ]
+            ax.set_xlabel("camera x")
+            ax.set_ylabel("camera y")
+            
+        else:
+            raise ValueError( "Plot units '" + units + "' not defined!" )
+            
+        # create title (TODO)
+        ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
+
+        # show image
+        if y is None:
+            ax.imshow( image**gamma, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+        else:
+            ax.set_ylabel("photons / s (y=" + str(y) + ")")
+            ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )
+
+        
+        # set aspect ratio depending
+        ax.set_aspect('auto') 
+        
+        # show plot
+        plt.show()
+        
+        # delete image variable (otherwise memory mapping keeps file open)
+        del image
+
 
 if __name__ == "__main__":
 
     import os    
     raster_dir = "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/"
-    raster_files = os.listdir( raster_dir )
-    raster_files = [raster_dir + "/" + file for file in raster_files if 'raster' in file]
+    raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
     raster = raster_cube( sorted(raster_files), line="Mg" )
+
+    # open a raster with > 6000 files:
+    raster_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
+    raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
+    many_rasters = iris_data_cube( raster_files, line="Mg" )
+
+    # open a raster with 14 GB size    
+    very_large_raster = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )

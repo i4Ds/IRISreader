@@ -15,6 +15,7 @@ from datetime import timedelta
 import irisreader as ir
 from irisreader.utils.fits import line2extension, array2dict, CorruptFITSException
 from irisreader.utils.date import from_Tformat, to_Tformat
+from irisreader.utils.coordinates import iris_coordinates
 
 DEBUG = True
 
@@ -156,6 +157,9 @@ class iris_data_cube:
         self.time_specific_headers = None
         self.line_specific_headers = None
         self.headers = None
+        
+        # initialize coordinate converter
+        self._ico = iris_coordinates( header=first_file[self._selected_ext].header, mode=self.type )
 
 
     # close all files
@@ -298,6 +302,7 @@ class iris_data_cube:
         line_specific_headers['WAVENAME'] = first_file[0].header['TDESC'+str(self._selected_ext-self._first_data_ext+1)]
         line_specific_headers['WAVEMIN'] =  first_file[0].header['TWMIN'+str(self._selected_ext-self._first_data_ext+1)]
         line_specific_headers['WAVEMAX'] =  first_file[0].header['TWMAX'+str(self._selected_ext-self._first_data_ext+1)]
+        line_specific_headers['WAVEWIN'] =  first_file[0].header['TDET'+str(self._selected_ext-self._first_data_ext+1)]
 
         self.line_specific_headers = line_specific_headers
 
@@ -404,7 +409,7 @@ class iris_data_cube:
     # the data on-disk without loading all of the data into memory
     # TODO: option to load everything into RAM?
     # TODO: divide by exposure time needs to be in SJI / raster (put warning in docstr)
-    def get_image_step( self, step ):
+    def get_image_step( self, step, divide_by_exptime=True ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -430,6 +435,8 @@ class iris_data_cube:
         
         # open file
         file = ir.file_hub.open( self._files[file_no] )
+        
+        # get exposure time 
         
         # get image (cropped if desired)
         if self._cropped:
@@ -471,10 +478,12 @@ class iris_data_cube:
     def _set_bounds( self, bounds ):
         self._cropped = True
         self._xmin, self._xmax, self._ymin, self._ymax = bounds
+        self._ico.set_bounds( bounds )
 
     def _reset_bounds( self ):
         self._cropped = False
         self._xmin, self._xmax, self._ymin, self._ymax = None, None, None, None
+        self._ico.set_bounds( [None, None, None, None] )
 
     # functions to enter and exit a context
     def __enter__( self ):
@@ -482,13 +491,77 @@ class iris_data_cube:
 
     def __exit__( self ):
         self.close()
+        
+    # function to convert pixels to coordinates
+    def pix2coords( self, step, pixel_coordinates ):
+        """
+        Returns solar coordinates for the list of given pixel coordinates.
+        
+        **Caution**: This function takes pixel coordinates in the form [x,y] while
+        images come as [y,x]
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the solar coordinates for. 
+        pixel_coordinates : np.array
+            Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
+            in the format [x,y]
+            
+        Returns
+        -------
+        float
+            Numpy array with shape (pixel_pairs,2) containing solar coordinates
+        """
+
+        return self._ico.pix2coords( step, pixel_coordinates )
+
+    # function to convert coordinates to pixels (wrapper for wcs)
+    def coords2pix( self, step, wl_solar_coordinates, round_pixels=True ):
+        """
+        Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the pixel coordinates for. 
+        wl_solar_coordinates : np.array
+            Numpy array with shape (coordinate_pairs,2) that contains wavelength in 
+            angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds
+            
+        Returns
+        -------
+        float
+            Numpy array with shape (coordinate_pairs,2) containing pixel coordinates
+        """
+        
+        return self._ico.coords2pix( step, wl_solar_coordinates, round_pixels=round_pixels )
+
+    # function to get axis coordinates for a particular image
+    def get_axis_coordinates( self, step ):
+        """
+        Returns coordinates for the image at the given time step.
+        
+        Parameters
+        ----------
+        step : int
+            The time step in the SJI to get the coordinates for.
+
+        Returns
+        -------
+        float
+            List [coordinates along x axis, coordinates along y axis]
+        """
+
+        return self._ico.get_axis_coordinates( step, self.shape )
+        
+
 
             
         
 if __name__ == "__main__":
 
-    import os
-    
+
     fits_data1 = iris_data_cube( '/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits' )
     fits_data2 = iris_data_cube( 
            [ "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits", 
@@ -496,11 +569,5 @@ if __name__ == "__main__":
             line="Mg"
     )
 
-    very_large_raster = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
-    very_large_sji = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
-    # open a raster with > 6000 files:
-    path = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
-    raster_files = sorted( [path + "/" + file for file in os.listdir( path ) if 'raster' in file] )
-    many_rasters = iris_data_cube( raster_files, line="Mg" )
 
