@@ -155,6 +155,7 @@ class iris_data_cube:
         self.primary_headers = None
         self.time_specific_headers = None
         self.line_specific_headers = None
+        self.headers = None
 
 
     # close all files
@@ -183,6 +184,12 @@ class iris_data_cube:
         elif name=='time_specific_headers' and object.__getattribute__( self, "time_specific_headers" ) is None:
             self._prepare_time_specific_headers()
             return object.__getattribute__( self, "time_specific_headers" )
+        elif name=='line_specific_headers' and object.__getattribute__( self, "line_specific_headers" ) is None:
+            self._prepare_line_specific_headers()
+            return object.__getattribute__( self, "line_specific_headers" )
+        elif name=='headers' and object.__getattribute__( self, "headers" ) is None:
+            self._prepare_combined_headers()
+            return object.__getattribute__( self, "headers" )
         else:
             return object.__getattribute__( self, name )
 
@@ -273,10 +280,31 @@ class iris_data_cube:
 
         self.time_specific_headers = time_specific_headers
 
+    # prepare line specific headers
+    def _prepare_line_specific_headers( self ):
+        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading line specific headers")
+        
+        # request first file from file hub
+        first_file = ir.file_hub.open( self._files[0] )
+        
+        # get line-specific headers from data extension (if selected extension is not the first one)
+        if self._selected_ext > 0:
+            line_specific_headers = dict( first_file[ self._selected_ext ].header )
+        else:
+            line_specific_headers = {}
+        
+        # add wavelnth, wavename, wavemin and wavemax (without loading primary headers)
+        line_specific_headers['WAVELNTH'] = first_file[0].header['TWAVE'+str(self._selected_ext-self._first_data_ext+1)]
+        line_specific_headers['WAVENAME'] = first_file[0].header['TDESC'+str(self._selected_ext-self._first_data_ext+1)]
+        line_specific_headers['WAVEMIN'] =  first_file[0].header['TWMIN'+str(self._selected_ext-self._first_data_ext+1)]
+        line_specific_headers['WAVEMAX'] =  first_file[0].header['TWMAX'+str(self._selected_ext-self._first_data_ext+1)]
+
+        self.line_specific_headers = line_specific_headers
+
     
     # prepare line-specific headers: this function will be implemented in raster_cube / sji_cube individually
-    def _prepare_line_specific_headers( self ):
-        raise NotImplementedError()
+#    def _prepare_line_specific_headers( self ):
+#        raise NotImplementedError()
         
     def _prepare_combined_headers( self ):
         raise NotImplementedError()
