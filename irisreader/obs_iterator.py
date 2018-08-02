@@ -116,7 +116,7 @@ class obs_iterator:
                     f.write( "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." )
             
             # return next valid observation
-            return self.next()
+            return self.__next__()
 
 
 # Test code
