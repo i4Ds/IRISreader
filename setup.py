@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='irisreader',
-      version='0.2.0',
+      version='0.3.0',
       description='Reader for IRIS FITS files',
       url='https://www.github.com/i4Ds/IRISreader',
       download_url='https://www.github.com/i4Ds/IRISreader',
