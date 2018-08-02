@@ -84,7 +84,7 @@ class image_cropper( BaseEstimator, TransformerMixin ):
                     return i
                 previous_nonzero_pixels = nonzero_pixels
             return image.shape[0]
-
+        
         def get_right_bound( image ):
             previous_nonzero_pixels = 0
             for i in range( image.shape[0] ):

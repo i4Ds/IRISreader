@@ -113,7 +113,10 @@ class raster_cube( iris_data_cube ):
         self.headers = headers
 
     # overwrite get_image_step function to be able to divide by exposure time
-    def get_image_step( self, step, divide_by_exptime=True ):
+    # divide_by_exptime defaults to False because the exposure time has to be 
+    # searched for in the time-specific headers which slows file access down.
+    # Moreover, often the data are normalized anyway.
+    def get_image_step( self, step, divide_by_exptime=False ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -205,7 +208,7 @@ class raster_cube( iris_data_cube ):
             gamma = 0.4
 
         # load image into memory and find a good value for vmax with gamma correction
-        image = self.get_image_step( step, divide_by_exptime=True ).clip( min=0 ) 
+        image = self.get_image_step( step ).clip( min=0 ) 
         vmax = np.percentile( image**gamma, cutoff_percentile )
     
         # set image extent and labels according to choice of units

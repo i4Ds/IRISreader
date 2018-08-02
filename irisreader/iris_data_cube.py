@@ -309,15 +309,11 @@ class iris_data_cube:
         self.line_specific_headers = line_specific_headers
 
     
-    # prepare line-specific headers: this function will be implemented in raster_cube / sji_cube individually
-#    def _prepare_line_specific_headers( self ):
-#        raise NotImplementedError()
-        
+    # prepare combined headers: this function will be implemented in raster_cube / sji_cube individually
     def _prepare_combined_headers( self ):
         raise NotImplementedError()
         
     # function to remove image steps from valid steps (e.g. by cropper)
-    # TODO: update combined headers in raster/SJI implementation
     def _remove_steps( self, steps ):
     
         # if steps is a single integer, put it into a list    
@@ -334,6 +330,10 @@ class iris_data_cube:
         # update headers if already loaded
         if not object.__getattribute__( self, "time_specific_headers" ) is None:
             self._prepare_time_specific_headers()
+            
+        if not object.__getattribute__( self, "headers" ) is None:
+            self._prepare_combined_headers()
+        
         
     # function to find file number and file step of a given time step
     def _whereat( self, step ):
@@ -344,7 +344,6 @@ class iris_data_cube:
         return self._valid_steps[ self._valid_steps[:,0]==file_no, 1 ]
     
     # how to behave if called as a data array
-    # TODO: mention why we are not using the section interface
     def __getitem__( self, index ):
         """
         Abstracts access to the data cube. While in the get_image_step function
@@ -410,8 +409,7 @@ class iris_data_cube:
     # Note: this method makes use of astropy's section method to directly access
     # the data on-disk without loading all of the data into memory
     # TODO: option to load everything into RAM?
-    # TODO: divide by exposure time needs to be in SJI / raster (put warning in docstr)
-    def get_image_step( self, step, divide_by_exptime=True ):
+    def get_image_step( self, step ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
