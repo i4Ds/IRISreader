@@ -9,8 +9,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from irisreader import iris_data_cube
+from irisreader.preprocessing import spectrum_interpolator
 
-DEBUG = True
+# import configuration
+from irisreader.config import DEBUG
 
 class raster_cube( iris_data_cube ):
     """
@@ -64,11 +66,8 @@ class raster_cube( iris_data_cube ):
             raise ValueError("This is a SJI file. Please use sji_cube to open it.")
             
     # return description upon a print call
-    def __str__( self ):
-        return "SJI {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
-
     def __repr__( self ):
-        return self.__str__()
+        return "raster {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
         
     # make some additional preparations for time-specific headers            
     def _prepare_time_specific_headers( self ):
@@ -115,7 +114,25 @@ class raster_cube( iris_data_cube ):
 
     # overwrite get_image_step function to be able to divide by exposure time
     def get_image_step( self, step, divide_by_exptime=True ):
-       
+        """
+        Returns the image at position step. This function uses the section 
+        routine of astropy to only return a slice of the image and avoid 
+        memory problems.
+        
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+        divide_by_exptime : bool
+            Whether to divide image by its exposure time or not. Dividing by exposure
+            time will present a normalized image instead of the usual data numbers.
+
+        Returns
+        -------
+        numpy.ndarray
+            2D image at time step <step>. Format: [y,wavelength].
+        """
+        
         # get uv region
         uv_region = self.line_specific_headers['WAVEWIN'][0]
         
@@ -123,8 +140,44 @@ class raster_cube( iris_data_cube ):
         exptime = self.time_specific_headers[ step ]['EXPTIME'+uv_region]
         
         # divide image by exposure time
-        return super().get_image_step( step ) / exptime
-            
+        image = super().get_image_step( step ) 
+        image[image>0] /= exptime
+        return image
+    
+    # function to get interpolated image step
+    def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=True ):
+        """
+        Returns the image at position step. This function uses the section 
+        routine of astropy to only return a slice of the image and avoid 
+        memory problems.
+        
+        **Warning**: This function by default divides by exposure time, as this
+        is more suitable for automatic processing.
+        
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+        lambda_min : float
+            Minimum wavelength of the interpolation region
+        lambda_max : float
+            Maximum wavelength of the interpolation region
+        n_breaks : int
+            Number of uniform breaks in the interpolation region
+        divide_by_exptime : bool
+            Whether to divide image by its exposure time or not. Dividing by exposure
+            time will present a normalized image instead of the usual data numbers.
+
+        Returns
+        -------
+        numpy.ndarray
+            interpolated 2D image at time step <step>. Format: [y,x] (SJI), [y,wavelength] (raster).
+        """
+
+        interpolator = spectrum_interpolator( lambda_min, lambda_max, n_breaks )
+        lambda_units = self.get_axis_coordinates( step )[0]
+        return interpolator.fit_transform( self.get_image_step( step, divide_by_exptime ), lambda_units )
+
     # function to plot an image step
     def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9 ):
         """
@@ -181,7 +234,6 @@ class raster_cube( iris_data_cube ):
         else:
             ax.set_ylabel("photons / s (y=" + str(y) + ")")
             ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )
-
         
         # set aspect ratio depending
         ax.set_aspect('auto') 
@@ -192,7 +244,7 @@ class raster_cube( iris_data_cube ):
         # delete image variable (otherwise memory mapping keeps file open)
         del image
 
-
+# Test code
 if __name__ == "__main__":
 
     import os    
@@ -207,3 +259,7 @@ if __name__ == "__main__":
 
     # open a raster with 14 GB size    
     very_large_raster = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
+
+    raster.plot(0)
+    raster.crop()
+    raster.plot(0)

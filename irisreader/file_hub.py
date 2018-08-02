@@ -7,6 +7,9 @@ file_hub class: manages access to FITS files
 # import libraries
 import warnings
 
+# import configuration
+from irisreader.config import DEBUG
+
 # file method to open fits files
 from astropy.io import fits
 
@@ -46,7 +49,7 @@ class file_stack:
         
         # object is already on the stack: return it
         if path in self._paths:
-            print( "item is already on stack" )
+            if DEBUG: print( "[file hub] item is already on stack" )
             idx = self._paths.index( path )
             
             # mode might have changed, update it
@@ -63,10 +66,9 @@ class file_stack:
                 self.drop()
             
             # open file handle
-            print( "opening file" )
             handle = self._file_method( path )
             
-            print( "pushing file to stack" )           
+            if DEBUG: print( "[file hub] opening and pushing {} to stack".format( path ) )           
             self._paths.append( path )
             self._handles.append( handle )
             self._modes.append( mode )
@@ -77,7 +79,7 @@ class file_stack:
     # drop an item by index
     def drop_by_idx( self, idx ):
 
-        print( "dropping {} from stack".format( self._paths[idx] ) )
+        if DEBUG: print( "[file hub] dropping {} from stack".format( self._paths[idx] ) )
         
         # close file
         self._handles[idx].close()
@@ -171,19 +173,16 @@ class file_hub:
     def reset( self ):
         self._file_stack.reset()
         
-    # display stack
-    def __str__( self ):
-        return self._file_stack.peek()
-    
+    # display stack  
     def __repr__( self ):
-        return self.__str__()
+        return self._file_stack.peek()
     
     # get number of open files
     def __len__( self ):
         return self._file_stack.size()
         
         
-            
+# Test code            
 if __name__ == "__main__":
     
     # do tests with other files and the open function
@@ -199,7 +198,6 @@ if __name__ == "__main__":
               "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_2796_t000.fits",
               "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_raster_t000_r00000.fits" ]
     
-    from astropy.io import fits
     file_method = fits.open
     fhub = file_hub( file_method, max_files=5 )
 

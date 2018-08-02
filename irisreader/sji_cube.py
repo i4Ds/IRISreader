@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 
 from irisreader import iris_data_cube
 
-DEBUG = True
+# import configuration
+from irisreader.config import DEBUG
 
 class sji_cube( iris_data_cube ):
     """
@@ -66,11 +67,8 @@ class sji_cube( iris_data_cube ):
         del self.line_specific_headers
     
     # return description upon a print call
-    def __str__( self ):
-        return "SJI {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
-
     def __repr__( self ):
-        return self.__str__()
+        return "SJI {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
 
     # function to prepare combined headers
     def _prepare_combined_headers( self ):
@@ -95,12 +93,31 @@ class sji_cube( iris_data_cube ):
 
     # overwrite get_image_step function to be able to divide by exposure time
     def get_image_step( self, step, divide_by_exptime=True ):
+        """
+        Returns the image at position step. This function uses the section 
+        routine of astropy to only return a slice of the image and avoid 
+        memory problems.
         
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+        divide_by_exptime : bool
+            Whether to divide image by its exposure time or not. Dividing by exposure
+            time will present a normalized image instead of the usual data numbers.
+
+        Returns
+        -------
+        numpy.ndarray
+            2D image at time step <step>. Format: [y,x].
+        """ 
         # get exposure time stored in 'EXPTIMES'
         exptime = self.time_specific_headers[ step ]['EXPTIMES']
         
         # divide image by exposure time
-        return super().get_image_step( step ) / exptime
+        image = super().get_image_step( step ) 
+        image[image>0] /= exptime
+        return image
             
     # function to plot an image step
     def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9 ):
@@ -165,10 +182,33 @@ class sji_cube( iris_data_cube ):
         # delete image variable (otherwise memory mapping keeps file open)
         del image
 
-
+    # function to get slit position (taking into account cropping)
+    def get_slit_pos( self, step ):
+        """
+        Returns position of the slit in pixels (takes into account cropping).
         
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+
+        Returns
+        -------
+        slit_position : int
+            Slit position in pixels
+        """
+        pos = self.time_specific_headers[ step ]['SLTPX1IX']
+        if self._cropped:
+            return pos - self._xmin
+        else:
+            return pos
+
+# Test code
 if __name__ == "__main__":
     
-    sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits' )
+    sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
     very_large_sji = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
+    sji.plot(0)
+    sji.crop()
+    sji.plot(0)

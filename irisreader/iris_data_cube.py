@@ -16,8 +16,10 @@ import irisreader as ir
 from irisreader.utils.fits import line2extension, array2dict, CorruptFITSException
 from irisreader.utils.date import from_Tformat, to_Tformat
 from irisreader.utils.coordinates import iris_coordinates
+from irisreader.preprocessing import image_cube_cropper
 
-DEBUG = True
+# import configuration
+from irisreader.config import DEBUG
 
 # IRIS data cube class
 class iris_data_cube:
@@ -446,7 +448,34 @@ class iris_data_cube:
 
     # crop data cube
     def crop( self ):
-        raise NotImplementedError
+        """        
+        Crops the images in the data cube.
+        """
+        
+        if not self._cropped:
+            cropper = image_cube_cropper().fit( self )
+
+            self._set_bounds( cropper.get_bounds() )
+            self._remove_steps( cropper.get_null_images() )
+            self._remove_steps( cropper.get_corrupt_images() )
+        
+            self._cropped = True
+        else:
+            print("This data cube has already been cropped")
+ 
+    # uncrop data cube
+    def uncrop( self ):
+        """        
+        Removes the cropping of the images in the data cube (but keeps the
+        corrupt image steps removed).
+        """
+        
+        if self._cropped:
+            self._reset_bounds()
+            self._cropped = False
+        else:
+            print("This data cube was not cropped")
+     
     
     # some checks that should be run on every single file and not just the first
     def _check_integrity( self, hdu ):
@@ -555,10 +584,26 @@ class iris_data_cube:
 
         return self._ico.get_axis_coordinates( step, self.shape )
         
-
-
-            
+    # function to get number of saturated pixels for an image
+    def get_nsatpix( self, step ):
+        """
+        Returns the number of saturated pixels in an image. According to
+        iris_prep.pro, a pixel is saturated if it has a data number >= 1.6e4.
         
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+        
+        Returns
+        -------
+        int
+            Number of saturated pixels at time step <step>.
+        """
+    
+        return np.sum( self.get_image_step( step, divide_by_exptime=False ) >= 1.6e4 )
+
+# Test code  
 if __name__ == "__main__":
 
 

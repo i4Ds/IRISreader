@@ -1,1 +1,1 @@
-from irisreader.utils.fits import line2extension
+from irisreader.utils.download import download
