@@ -22,17 +22,26 @@ class iris_coordinates:
     def __init__( self, header, mode, bounds=[None,None,None,None] ):
                 
         # initialize astropy WCS object and suppress warnings
-        # set CDELT3 to a tiny value if zero (otherwise wcs produces singular PC matrix)
+        # set CDELTi to a tiny value if zero (otherwise wcs produces singular PC matrix)
         # see e.g. discussion at https://github.com/sunpy/irispy/issues/78
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
+            if header['CDELT1'] == 0:
+                header['CDELT1'] = 1e-10
+            if header['CDELT2'] == 0:
+                header['CDELT2'] = 1e-10
             if header['CDELT3'] == 0:
-                header['CDELT3'] = 1e-10
-                self.wcs = WCS( header )
-                header['CDELT3'] = 0
-            else:
-                self.wcs = WCS( header )
-        
+                header['CDELT3'] = 1e-10            
+                
+            self.wcs = WCS( header )
+            
+            if header['CDELT1'] == 1e-10:
+                header['CDELT1'] = 0
+            if header['CDELT2'] == 1e-10:
+                header['CDELT2'] = 0
+            if header['CDELT3'] == 1e-10:
+                header['CDELT3'] = 0 
+            
         # set mode (sji or raster) and appropriate conversions and labels
         if mode == 'sji':
             self.conversion_factor = [UNIT_DEC_ARCSEC, UNIT_DEC_ARCSEC]
