@@ -93,10 +93,11 @@ class iris_data_cube:
             self.type = 'raster'
 
         # Check if data part of first extension has only two dimensions. 
-        # If yes, this is a SJI with only one single image. Convert it to a
-        # three-dimensional array to get recognized as data
+        # If yes, this is a SJI with only one single image. Currently such files
+        # cannot be handled, throw an error
         if hasattr( first_file[0], 'shape' ) and len( first_file[0].shape ) == 2:
-            first_file[0].data = np.array([first_file[0].data])
+            #first_file[0].data = np.array([first_file[0].data])
+            raise CorruptFITSException( "SJI: first extension has only two dimensions (single image, not implemented)" )
             
         # get extensions with data cubes in them
         self._n_ext = len( first_file )
