@@ -232,7 +232,7 @@ class iris_data_cube:
             
         # raise a warning if the data cube contains no valid steps    
         if valid_steps == []:
-            warnings.warn("This data cube contains no valid images!")
+            raise CorruptFITSException("This data cube contains no valid images!")
 
         # update class instance variables
         self._valid_steps = np.array( valid_steps )
