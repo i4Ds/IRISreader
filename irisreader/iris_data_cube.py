@@ -95,7 +95,7 @@ class iris_data_cube:
         # Check if data part of first extension has only two dimensions. 
         # If yes, this is a SJI with only one single image. Convert it to a
         # three-dimensional array to get recognized as data
-        if hasattr( first_file[0], 'shape' ) and first_file[0].shape == 2:
+        if hasattr( first_file[0], 'shape' ) and len( first_file[0].shape ) == 2:
             first_file[0].data = np.array([first_file[0].data])
             
         # get extensions with data cubes in them
