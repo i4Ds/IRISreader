@@ -7,6 +7,7 @@ from datetime import timedelta
 
 T_FORMAT_MS = '%Y-%m-%dT%H:%M:%S.%f'
 T_FORMAT_S = '%Y-%m-%dT%H:%M:%S'
+OBS_FORMAT = '%Y%m%d_%H%M%S'
 
 
 def from_Tformat( date_str ):
@@ -30,13 +31,13 @@ def to_Tformat( date, milliseconds=True ):
         date_str = dt.strftime( date + timedelta( seconds=round(microseconds) ) , T_FORMAT_S )
     return date_str
 
-def full_obsid( start_date, obsid ):
+def from_obsformat( full_obsid_str ):
     """
     Docstring
     """
-    # round seconds accordint go microseconds
-    microseconds = start_date.microsecond / 1e6
-    return dt.strftime( start_date + timedelta( seconds=round(microseconds) ) , "%Y%m%d_%H%M%S_" + obsid )
+    date_str = '_'.join( full_obsid_str.split('_')[:-1] )
+    date = dt.strptime( date_str, OBS_FORMAT )
+    return date
 
 def to_epoch( date ):
     """

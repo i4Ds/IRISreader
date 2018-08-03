@@ -5,18 +5,17 @@ iris_data_cube class: abstraction that makes the data, the headers and a number
 of auxiliary variables available
 """
 
-# TODO:
-# file input has to be sorted!
-
+import os
 import numpy as np
 import warnings
 from datetime import timedelta
 
 import irisreader as ir
 from irisreader.utils.fits import line2extension, array2dict, CorruptFITSException
-from irisreader.utils.date import from_Tformat, to_Tformat
+from irisreader.utils.date import from_Tformat, to_Tformat, to_epoch
 from irisreader.utils.coordinates import iris_coordinates
 from irisreader.preprocessing import image_cube_cropper
+from irisreader.coalignment import goes_data
 
 # import configuration
 from irisreader.config import DEBUG
@@ -35,7 +34,7 @@ class iris_data_cube:
     Parameters
     ----------
     files : string
-        Path or list of paths to the IRIS FITS file(s).
+        Path or list of paths to the (sorted) IRIS FITS file(s).
     line : string
         Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
     keep_null : boolean
@@ -600,6 +599,40 @@ class iris_data_cube:
         """
     
         return np.sum( self.get_image_step( step, divide_by_exptime=False ) >= 1.6e4 )
+    
+    # function to get millisecond timestamps of images
+    def get_timestamps( self ):
+        """
+        Converts DATE_OBS to milliseconds since 1970 with the aim to make 
+        timestamp comparisons easier.
+        
+        Returns
+        -------
+        float
+            List of millisecond timestamps.
+        """
+        timestamps = []
+        for i in range( 0, self.n_steps ):
+            timestamps.append( to_epoch( from_Tformat( self.time_specific_headers[i]['DATE_OBS'] ) ) )
+        return timestamps
+
+    # function to get goes flux information
+    def get_goes_flux( self ):
+        """
+        Interpolates GOES X-ray flux to time steps of the data cube.
+        
+        Returns
+        -------
+        float
+            List of X-ray fluxes
+        """
+        
+        if self.n_steps > 0:
+            g = goes_data( from_Tformat( self.start_date ), from_Tformat( self.end_date ), os.path.dirname( self._files[0] ) + "/goes_data", lazy_eval=True )
+            return g.interpolate( self.get_timestamps() )
+        else:
+            return np.array([])
+
 
 # Test code  
 if __name__ == "__main__":

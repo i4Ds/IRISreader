@@ -20,8 +20,8 @@ class raster_cube( iris_data_cube ):
     
     Parameters
     ----------
-    filename : string
-        Path to the IRIS SJI FITS file.
+    files : string
+        Path or list of paths to the (sorted) IRIS FITS file(s).
     line : string
         Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
     keep_null : boolean

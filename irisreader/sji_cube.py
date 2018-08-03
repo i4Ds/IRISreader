@@ -19,7 +19,7 @@ class sji_cube( iris_data_cube ):
     
     Parameters
     ----------
-    filename : string
+    file : string
         Path to the IRIS SJI FITS file.
     keep_null : boolean
         Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.

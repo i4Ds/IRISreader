@@ -3,10 +3,10 @@
 # TODO: should also work when all SJI files are corrupt.
 
 # import libraries
-import os, sys
+import os, sys,re 
 import pandas as pd
 import warnings
-from irisreader.utils.date import to_Tformat, from_Tformat, full_obsid
+from irisreader.utils.date import to_Tformat, from_Tformat, from_obsformat
 from IPython.core.display import HTML
 from irisreader import sji_cube, raster_cube, get_lines
 from irisreader.has_line import find_line
@@ -285,7 +285,9 @@ class observation:
         self.desc = self.sji[0].desc
         self.start_date = self.sji[0].start_date
         self.end_date = self.sji[0].end_date
-        self.full_obsid = full_obsid( from_Tformat( self.start_date ), self.obsid )
+        self.full_obsid = self.path.strip('/').split("/")[-1]
+        if not re.match(r"[0-9]{8}_[0-9]{6}_[0-9]{10}", self.full_obsid ):
+            self.full_obsid = None
         
         # create the goes loader
         self.goes = goes_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), path + "/goes_data", lazy_eval=True )
@@ -326,10 +328,16 @@ class observation:
             return sorted( result )
 
     # function to get HEK URL
-    def get_hek_url( self ):
-        s = to_Tformat( self.start_date, milliseconds=False ).replace( ":", "%3A" )
+    def get_hek_url( self, html=True ):
+        
+        # check whether full obs id is defined
+        if self.full_obsid is None:
+            raise ValueError("Could not infer full obs id (you are not in an IRIS file structure)")
+            
+        s = to_Tformat( from_obsformat( self.full_obsid ), milliseconds=False ).replace( ":", "%3A" )
+        #s = to_Tformat( from_Tformat( self.start_date ), milliseconds=False).replace( ":", "%3A" )
         url = "http://www.lmsal.com/hek/hcr?cmd=view-event&event-id=ivo%3A%2F%2Fsot.lmsal.com%2FVOEvent%23VOEvent_IRIS_" + self.full_obsid + "_" + s + s + ".xml"
-        if 'ipykernel' in sys.modules:
+        if html and 'ipykernel' in sys.modules:
             return HTML( "<a href=\"" + url + "\" target=\"_blank\">" + url + "</a>" )
         else:
             return url
@@ -348,5 +356,5 @@ class observation:
 # Test code
 if __name__ == "__main__":
     obs = observation( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/" )
-    #many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165")
+    many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165")
     

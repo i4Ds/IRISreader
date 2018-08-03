@@ -113,7 +113,7 @@ class obs_iterator:
             # write error to log if error_log is set
             if self._error_log is not None:
                 with open( self._error_log, 'a+' ) as f:
-                    f.write( "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation." )
+                    f.write( "Error reading directory " + self.directories[self._i-1] + ": " + str(e) + " Returning the next valid observation.\n" )
             
             # return next valid observation
             return self.__next__()
