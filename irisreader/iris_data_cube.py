@@ -406,6 +406,8 @@ class iris_data_cube:
             internal_index1 = index[1]
             internal_index2 = index[2]
 
+        #return [valid_steps[ valid_steps[:,0] == 0, 1 ], internal_index1, internal_index2]
+
         # get all data slices and concatenate them
         slices = []
         for file_no in np.unique( valid_steps[:,0] ):
@@ -414,8 +416,8 @@ class iris_data_cube:
         slices = np.vstack( slices )
 
         # remove first dimension if there is only one slice
-        if slices.shape[0] == 1:
-            slices = slices[0,:,:]
+        if slices.shape[0] == 1 and slices.ndim == 3:
+           slices = slices[0,:,:]
             
         return slices
 
@@ -688,6 +690,3 @@ if __name__ == "__main__":
             "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits" ],
             line="Mg"
     )
-
-
-

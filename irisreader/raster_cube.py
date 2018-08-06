@@ -291,9 +291,6 @@ if __name__ == "__main__":
 
     # Can we somehow load this into RAM?
     
-    # BUG!
-    raster3[0,1:2,:]
-    
     from tqdm import tqdm
     dn = []
     for step in tqdm( range( raster3.n_spectra ) ):
