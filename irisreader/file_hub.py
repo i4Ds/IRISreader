@@ -14,7 +14,7 @@ from irisreader.config import DEBUG
 from astropy.io import fits
 
 def ASTROPY_FILE_METHOD( path ):
-    handle = fits.open( path )
+    handle = fits.open( path, mmap=False ) # change this back!!!!!!
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         handle.verify('fix')

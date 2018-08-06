@@ -69,6 +69,13 @@ class raster_cube( iris_data_cube ):
     def __repr__( self ):
         return "raster {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
         
+    # load some variables upon request
+    def __getattribute__( self, name ):
+        if name=='n_spectra':
+            return self.shape[0] * self.shape[1]
+        else:
+            return super().__getattribute__( name ) # call method of class where we inherited from
+    
     # make some additional preparations for time-specific headers            
     def _prepare_time_specific_headers( self ):
         
@@ -148,7 +155,7 @@ class raster_cube( iris_data_cube ):
         return image
     
     # function to get interpolated image step
-    def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=True ):
+    def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=False ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -180,7 +187,22 @@ class raster_cube( iris_data_cube ):
         interpolator = spectrum_interpolator( lambda_min, lambda_max, n_breaks )
         lambda_units = self.get_axis_coordinates( step )[0]
         return interpolator.fit_transform( self.get_image_step( step, divide_by_exptime ), lambda_units )
-
+    
+    # function to get a spectrum step
+    def get_spectrum( self, step, lambda_min=None, lambda_max=None, n_breaks=None, divide_by_exptime=False ):
+        
+        image_size = self.shape[1]
+        image_step = int(step/image_size)
+        y_value = step % image_size
+        
+        if lambda_min is not None and lambda_max is not None and n_breaks is not None:
+            spectrum = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )[y_value,:]
+        else:
+            #spectrum = self.get_image_step( image_step, divide_by_exptime )[y_value,:]
+            spectrum = self[ image_step, y_value:y_value+1, : ] # FIX THIS BUG
+        
+        return image_step, y_value, spectrum
+    
     # function to plot an image step
     def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9 ):
         """
@@ -253,16 +275,28 @@ if __name__ == "__main__":
     import os    
     raster_dir = "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/"
     raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
-    raster = raster_cube( sorted(raster_files), line="Mg" )
-
-    # open a raster with > 6000 files:
-    raster_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
-    raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
-    many_rasters = iris_data_cube( raster_files, line="Mg" )
+    raster1 = raster_cube( sorted(raster_files), line="C" )
+    raster1.crop()
 
     # open a raster with 14 GB size    
-    very_large_raster = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
+    raster2 = raster_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
+    raster2.crop()
 
-    raster.plot(0)
-    raster.crop()
-    raster.plot(0)
+    # open a raster with 7000 files
+    raster3_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
+    raster3_files = sorted( [raster3_dir + "/" + file for file in os.listdir( raster3_dir ) if 'raster' in file] )
+    raster3 = raster_cube( raster3_files, line="Mg" )
+    raster3.n_steps # takes 3 minutes - could this be parallelized?
+    raster3.crop() # takes XX minutes - could this be parallelized?
+
+    # Can we somehow load this into RAM?
+    
+    # BUG!
+    raster3[0,1:2,:]
+    
+    from tqdm import tqdm
+    dn = []
+    for step in tqdm( range( raster3.n_spectra ) ):
+        image_step, y_value, spectrum = raster3.get_spectrum( step )
+        dn.append( np.sum(spectrum) )
+    

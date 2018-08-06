@@ -207,6 +207,8 @@ class iris_data_cube:
 
     # prepare valid steps
     # TODO: data is read twice here.. should we add an option to do everything in RAM??
+    # TODO: this could be parallelized using a parallel map: 
+    # https://stackoverflow.com/questions/1704401/is-there-a-simple-process-based-parallel-map-for-python
     def _prepare_valid_steps( self ):
         if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading valid image steps")
         valid_steps = []
@@ -238,7 +240,7 @@ class iris_data_cube:
         self._valid_steps = np.array( valid_steps )
         self.n_steps = len( valid_steps )
         self.shape = tuple( [ self.n_steps ] + list( f[ self._selected_ext ].shape[1:] ) )
-               
+        
     # prepare primary headers
     def _prepare_primary_headers( self ):
         if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading primary headers")
@@ -327,7 +329,13 @@ class iris_data_cube:
             steps = [steps]
     
         # now remove the steps (make sure they are removed simultaneously)
-        self._valid_steps = np.delete( self._valid_steps, steps, axis=0 )
+        valid_steps = np.delete( self._valid_steps, steps, axis=0 )
+        
+        # raise a warning if the data cube contains no valid steps    
+        if len( valid_steps ) == 0:
+            raise CorruptFITSException("This data cube contains no valid images! You might want to set check_coverage=False or remove_bad=False when cropping (restored original state)")
+        else:
+            self._valid_steps = valid_steps
         
         # update n_steps and shape
         self.n_steps = len( self._valid_steps )
@@ -451,19 +459,41 @@ class iris_data_cube:
             return file[self._selected_ext].section[file_step, :, :] 
 
     # crop data cube
-    def crop( self ):
+    def crop( self, remove_bad=True, check_coverage=True ):
         """        
         Crops the images in the data cube.
+        
+        Parameters
+        ----------
+        remove_bad: boolean
+            Whether to remove corrupt images.
+        check_coverage : boolean
+            Whether to check the coverage of the cropped image. It can happen that
+            there are patches of negative values in images, either due to loss of
+            data during transmission (typically a band or a large rectangular patch 
+            of negative data) or due to overall low data counts (missing data is no
+            data). 
+            image_cropper labels an image as corrupt if >5% of its pixels are still
+            negative after cropping. This might be problematic for lines with low 
+            data counts (and therefore many missing pixels) and the user is advised 
+            to disable the coverage check for such lines. 
+            A method that is able to distinguish missing data arising from 
+            transmission errors from missing data due to low data counts could be 
+            helpful here.
         """
         
         if not self._cropped:
-            cropper = image_cube_cropper().fit( self )
+            cropper = image_cube_cropper( check_coverage=check_coverage ).fit( self )
 
+            # remove corrupt images if desired            
+            if remove_bad:
+                self._remove_steps( cropper.get_null_images() )
+                self._remove_steps( cropper.get_corrupt_images() )
+
+            # set new bounds and cropped cube indicator
             self._set_bounds( cropper.get_bounds() )
-            self._remove_steps( cropper.get_null_images() )
-            self._remove_steps( cropper.get_corrupt_images() )
-        
             self._cropped = True
+            
         else:
             print("This data cube has already been cropped")
  
@@ -509,8 +539,15 @@ class iris_data_cube:
         return [self._xmin, self._xmax, self._ymin, self._ymax]
     
     def _set_bounds( self, bounds ):
+        
+        # update internal variables
         self._cropped = True
         self._xmin, self._xmax, self._ymin, self._ymax = bounds
+        
+        # update shape and number of spectra
+        self.shape = tuple( [self.shape[0], self._ymax-self._ymin, self._xmax-self._xmin]  )
+        
+        # update coordinates
         self._ico.set_bounds( bounds )
 
     def _reset_bounds( self ):

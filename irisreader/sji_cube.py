@@ -213,5 +213,7 @@ if __name__ == "__main__":
     very_large_sji = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
     sji.plot(0)
+    print( sji.shape )
     sji.crop()
     sji.plot(0)
+    print( sji.shape )

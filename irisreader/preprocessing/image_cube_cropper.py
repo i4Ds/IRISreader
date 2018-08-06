@@ -26,20 +26,50 @@ class image_cube_cropper( BaseEstimator, TransformerMixin ):
     offset : integer
         Number of pixels that are removed as a safety border from all sides
         after the cropping.
-    remove_bad: boolean
-        Whether to remove corrupt images.
-    
+    check_coverage : boolean
+        Whether to check the coverage of the cropped image. It can happen that
+        there are patches of negative values in images, either due to loss of
+        data during transmission (typically a band or a large rectangular patch 
+        of negative data) or due to overall low data counts (missing data is no
+        data). 
+        image_cropper labels an image as corrupt if >5% of its pixels are still
+        negative after cropping. This might be problematic for lines with low 
+        data counts (and therefore many missing pixels) and the user is advised 
+        to disable the coverage check for such lines. 
+        A method that is able to distinguish missing data arising from 
+        transmission errors from missing data due to low data counts could be 
+        helpful here.
     """
 
     # constructor
-    def __init__( self, offset=0, remove_bad=True ):
+    def __init__( self, offset=0, check_coverage=True ):
         self._xmin = self._xmax = self._ymin = self._ymax = 0
         self._data_cube_object = None
         self._offset = offset
-        self._remove_bad = remove_bad
+        self._check_coverage = check_coverage
         self._corrupt_images = []
         self._null_images = []
 
+    # function to crop a single image (in order to parallelize it later)
+#    def _crop_image( self, step ):
+#        cropper = image_cropper( offset=self._offset )
+#        image_bounds = []
+#        corrupt_images = []
+#        null_images = []
+#
+#        try:
+#            cropper.fit( self._data_cube_object.get_image_step( step ) )
+#            image_bounds = cropper.get_bounds()
+#            
+#        except CorruptImageException:
+#            image_bounds = [0,0,0,0]
+#            corrupt_images.append( step )
+#            
+#        except NullImageException:
+#            image_bounds = [0,0,0,0]
+#            null_images.append( step )
+#            
+#        return image_bounds, corrupt_images, null_images
     
     # fit method: find boundaries
     def fit( self, X, y=None ):
@@ -68,11 +98,11 @@ class image_cube_cropper( BaseEstimator, TransformerMixin ):
             raise ValueError("Only sit-and-stare observation can be cropped as a cube!")
         
         # set up image cropper
-        cropper = image_cropper( offset=self._offset )
+        cropper = image_cropper( offset=self._offset, check_coverage=self._check_coverage )
         
         # get bounds on all images in the cube and store null and corrupt images
         image_bounds = []
-                
+        
         for step in range( self._data_cube_object.n_steps ):
             try:
                 cropper.fit( self._data_cube_object.get_image_step( step ) )
@@ -86,6 +116,12 @@ class image_cube_cropper( BaseEstimator, TransformerMixin ):
                 image_bounds.append( [0,0,0,0] )
                 self._null_images.append( step )
                 
+        
+#        pool = multiprocessing.Pool()
+#        res = pool.map( self._crop_image, range( self._data_cube_object.n_steps ) )
+#        
+#        return res
+        
         image_bounds = np.vstack( image_bounds )
         
         # define outliers as values that deviate more than 1.5% from the 
@@ -174,3 +210,12 @@ if __name__ == "__main__":
     sji.n_steps
 
     sji.plot(400)
+
+
+    raster3_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
+    raster3_files = sorted( [raster3_dir + "/" + file for file in os.listdir( raster3_dir ) if 'raster' in file] )
+    raster3 = raster_cube( raster3_files, line="Mg" )
+    raster3.plot(0)
+
+    cropper = image_cube_cropper()
+    cropper.fit( raster3 )

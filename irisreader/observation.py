@@ -252,8 +252,8 @@ class observation:
         self.n_raster = len( self._raster_files )
         self.n_sji = len( self._sji_files )
     
-        # raise a warning if > 200 raster files are present
-        if self.n_raster > 500:
+        # raise a warning if > 3000 raster files are present
+        if self.n_raster > 3000:
             warnings.warn( """This observation contains {} raster files - """
                            """irisreader will abstract them as one raster but """ 
                            """this will be very slow.""".format( self.n_raster) )

@@ -22,14 +22,27 @@ class image_cropper( BaseEstimator, TransformerMixin ):
     offset : integer
         Number of pixels that are removed as a safety border from all sides
         after the cropping.
-    
+    check_coverage : boolean
+        Whether to check the coverage of the cropped image. It can happen that
+        there are patches of negative values in images, either due to loss of
+        data during transmission (typically a band or a large rectangular patch 
+        of negative data) or due to overall low data counts (missing data is no
+        data). 
+        image_cropper labels an image as corrupt if >5% of its pixels are still
+        negative after cropping. This might be problematic for lines with low 
+        data counts (and therefore many missing pixels) and the user is advised 
+        to disable the coverage check for such lines. 
+        A method that is able to distinguish missing data arising from 
+        transmission errors from missing data due to low data counts could be 
+        helpful here.
     """
     
     # constructor
-    def __init__( self, offset=0 ):
+    def __init__( self, offset=0, check_coverage=True ):
         self._xmin = self._xmax = self._ymin = self._ymax = 0
         self._image_ref = None
         self._offset = offset
+        self._check_coverage = check_coverage
 
     # fit method: find boundaries
     def fit( self, X, y=None ):
@@ -102,12 +115,15 @@ class image_cropper( BaseEstimator, TransformerMixin ):
         self._ymax = get_right_bound( self._image_ref ) - self._offset
         
         # raise a corrupt image exception if more than 5% of the image or the
-        # image border are still NULL
-        if np.mean( self._image_ref[self._ymin:self._ymax,self._xmin:self._xmax] < 0 ) > 0.05:
-            raise CorruptImageException("Image might contain a corrupt patch, more than 5% have a negative pixel value!")
+        # image border are still negative
+        # This check can be disable with check_coverage = False
+        if self._check_coverage:
+            if np.mean( self._image_ref[self._ymin:self._ymax,self._xmin:self._xmax] < 0 ) > 0.05:
+                raise CorruptImageException("Image might contain a corrupt patch, more than 5% have a negative pixel value!")
         
-        if np.mean( self._image_ref[self._ymin,self._xmin:self._xmax] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymax,self._xmin:self._xmax] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymin:self._ymax,self._xmin] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymin:self._ymax,self._xmax] < 0 ) > 0.05:
-            raise CorruptImageException("Image border contains more than 5% negative pixels!")
+            if np.mean( self._image_ref[self._ymin,self._xmin:self._xmax] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymax,self._xmin:self._xmax] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymin:self._ymax,self._xmin] < 0 ) > 0.05 or np.mean( self._image_ref[self._ymin:self._ymax,self._xmax] < 0 ) > 0.05:
+                raise CorruptImageException("Image border contains more than 5% negative pixels!")
+        
         return self
     
     
