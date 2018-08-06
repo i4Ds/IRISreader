@@ -143,16 +143,20 @@ class raster_cube( iris_data_cube ):
             2D image at time step <step>. Format: [y,wavelength].
         """
         
-        # get uv region
-        uv_region = self.line_specific_headers['WAVEWIN'][0]
+        if divide_by_exptime:
+            # get uv region
+            uv_region = self.line_specific_headers['WAVEWIN'][0]
+            
+            # get exposure time stored in 'EXPTIMES'
+            exptime = self.time_specific_headers[ step ]['EXPTIME'+uv_region]
+            
+            # divide image by exposure time
+            image = super().get_image_step( step ) 
+            image[image>0] /= exptime
+            return image
         
-        # get exposure time stored in 'EXPTIMES'
-        exptime = self.time_specific_headers[ step ]['EXPTIME'+uv_region]
-        
-        # divide image by exposure time
-        image = super().get_image_step( step ) 
-        image[image>0] /= exptime
-        return image
+        else: 
+            return super().get_image_step( step )
     
     # function to get interpolated image step
     def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=False ):

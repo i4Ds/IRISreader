@@ -114,13 +114,19 @@ class sji_cube( iris_data_cube ):
         numpy.ndarray
             2D image at time step <step>. Format: [y,x].
         """ 
-        # get exposure time stored in 'EXPTIMES'
-        exptime = self.time_specific_headers[ step ]['EXPTIMES']
         
-        # divide image by exposure time
-        image = super().get_image_step( step ) 
-        image[image>0] /= exptime
-        return image
+        if divide_by_exptime:
+            # get exposure time stored in 'EXPTIMES'
+            exptime = self.time_specific_headers[ step ]['EXPTIMES']
+        
+            # divide image by exposure time
+            image = super().get_image_step( step ) 
+            image[image>0] /= exptime
+            return image
+        
+        else:
+            return super().get_image_step( step ) 
+        
             
     # function to plot an image step
     def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9 ):
