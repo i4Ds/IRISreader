@@ -74,27 +74,25 @@ class raster_cube( iris_data_cube ):
         else:
             return super().__getattribute__( name ) # call method of class where we inherited from
     
-    # prepare combined headers
-    def _prepare_combined_headers( self ):
-        """
-        Prepares the combination (primary header, time-specific header, 
-        line-specific header) lazily for each image.
-        """
-        if ir.verbosity_level >= 2: print( "[raster cube] Lazy loading combined headers" )
-        headers = [ dict( list(self.primary_headers.items()) + list(self.line_specific_headers.items()) + list(t_header.items()) ) for t_header in self.time_specific_headers ]
-
-        # Fix some headers manually
-        for i in range( 0, self.n_steps ):
-            headers[i]['XCEN'] = headers[i]['XCENIX'] # this is not modified in IDL!
-            headers[i]['YCEN'] = headers[i]['YCENIX'] # this is not modified in IDL!
-            headers[i]['CRVAL2'] = headers[i]['YCENIX'] # this is not modified in IDL!
+    # function to convert time-specific headers from a file to combined headers
+    def _load_combined_header_file( self, file_no ):
+        if ir.verbosity_level >= 2: print("[raster_cube] Lazy loading combined headers for file {}".format(file_no))
+        
+        # get time-specific headers for file and add primary headers and line-specific headers
+        file_time_specific_headers = self._load_time_specific_header_file( file_no )
+        combined_headers = [ dict( list(self.primary_headers.items()) + list(self.line_specific_headers.items()) + list(t_header.items()) ) for t_header in file_time_specific_headers ]
+        
+        # change some headers 'manually'
+        for i in range( len(combined_headers) ):
+            combined_headers[i]['XCEN'] = combined_headers[i]['XCENIX'] # this is not modified in IDL!
+            combined_headers[i]['YCEN'] = combined_headers[i]['YCENIX'] # this is not modified in IDL!
+            combined_headers[i]['CRVAL2'] = combined_headers[i]['YCENIX'] # this is not modified in IDL!
 
             # set EXPTIME = EXPTIMEF in FUV and EXPTIME = EXPTIMEN in NUV (this is not modified in IDL!)
-            waveband = headers[i]['TDET'+str(self._selected_ext)][0]
-            headers[i]['EXPTIME'] = headers[i]['EXPTIME'+waveband]
-            
-        # Set class instance variable
-        self.headers = headers
+            waveband = combined_headers[i]['TDET'+str(self._selected_ext)][0]
+            combined_headers[i]['EXPTIME'] = combined_headers[i]['EXPTIME'+waveband]
+        
+        return combined_headers
 
     # overwrite get_image_step function to be able to divide by exposure time
     # divide_by_exptime defaults to False because the exposure time has to be 
@@ -256,7 +254,6 @@ if __name__ == "__main__":
     from irisreader.data.sample import sample_raster
     raster0 = sample_raster( line="Mg", keep_null=False )
     raster0.n_steps
-    th = raster0.time_specific_headers # 13.4 ms
     raster0.plot(0)
     raster0.crop( check_coverage=False )
     raster0.plot(0)

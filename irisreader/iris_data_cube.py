@@ -286,43 +286,20 @@ class iris_data_cube:
             raise ValueError( "No STARTOBS in primary header!" )
         else:
             self.primary_headers['DATE_OBS'] = self.primary_headers['STARTOBS']
-        
-    # prepare time-specific headers out of second last extension
-    def _prepare_time_specific_headers2( self ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific headers")
-        
-        time_specific_headers = []
-        file_no = 0
-        
-        # go through all the files and read headers (avoid files that have no data or are corrupt)
-        file_numbers = np.unique( self._valid_steps[:,0] ) # files with valid images
-        for file_no in file_numbers:
-            
-            # request file from file hub
-            f = ir.file_hub.open( self._files[file_no] )
-            
-            # read headers from data array
-            file_time_specific_headers = array2dict( f[self._n_ext-2].header, f[self._n_ext-2].data )
-            
-            # make sure only headers for valid images are included
-            file_time_specific_headers = [file_time_specific_headers[i] for i in self._get_valid_steps( file_no )]
-            
-            # append headers to global time_specific_headers list
-            time_specific_headers += file_time_specific_headers
 
-        # set a DATE_OBS header in each frame as DATE_OBS = STARTOBS + TIME
-        startobs = from_Tformat( self.primary_headers['STARTOBS'] )
-        for i in range( len( time_specific_headers ) ):
-            time_specific_headers[i]['DATE_OBS'] = to_Tformat( startobs + timedelta( seconds=time_specific_headers[i]['TIME'] ) )
-
-        self.time_specific_headers = time_specific_headers
-        
+    # assign lazy_file_header_list to time_specific_headers        
     def _prepare_time_specific_headers( self ): 
         if ir.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers")
         self.time_specific_headers = lazy_file_header_list( self._valid_steps, self._load_time_specific_header_file )
         
+    # assign lazy_file_header_list to headers
+    def _prepare_combined_headers( self ):
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to headers")
+        self.headers = lazy_file_header_list( self._valid_steps, self._load_combined_header_file )    
+    
+    # function to load time-specific headers from a file    
     def _load_time_specific_header_file( self, file_no ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific header for file {}".format(file_no))
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific headers for file {}".format(file_no))
 
         # request file from file hub
         f = ir.file_hub.open( self._files[file_no] )
@@ -348,6 +325,10 @@ class iris_data_cube:
             
         # return headers
         return file_time_specific_headers
+
+    # function to convert time-specific headers from a file to combined headers
+    def _load_combined_header_file( self, file_no ):
+        raise NotImplementedError( "This feature is not implemented in iris_data_cube, please use sji_cube or raster_cube" )
          
     # prepare line specific headers
     def _prepare_line_specific_headers( self ):
@@ -370,11 +351,6 @@ class iris_data_cube:
         line_specific_headers['WAVEWIN'] =  first_file[0].header['TDET'+str(self._selected_ext-self._first_data_ext+1)]
 
         self.line_specific_headers = line_specific_headers
-
-    
-    # prepare combined headers: this function will be implemented in raster_cube / sji_cube individually
-    def _prepare_combined_headers( self ):
-        raise NotImplementedError()
         
     # function to remove image steps from valid steps (e.g. by cropper)
     def _remove_steps( self, steps ):

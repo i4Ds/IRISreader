@@ -68,26 +68,27 @@ class sji_cube( iris_data_cube ):
     def __repr__( self ):
         return "SJI {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
 
-    # function to prepare combined headers
-    def _prepare_combined_headers( self ):
-        """
-        Prepares the combination (primary header, time-specific header) lazily
-        for each image.
-        """
-        if ir.verbosity_level >= 2: print( "[sji_cube] Lazy loading combined headers" )
-        self.headers = [dict(list(self.primary_headers.items())+list(t_header.items())) for t_header in self.time_specific_headers]
+    # function to convert time-specific headers from a file to combined headers
+    def _load_combined_header_file( self, file_no ):
+        if ir.verbosity_level >= 2: print("[si_cube] Lazy loading combined headers for file {}".format(file_no))
         
-        # manual adjustments
-        for i in range(0, self.n_steps):
-            self.headers[i]['XCEN'] = self.headers[i]['XCENIX']
-            self.headers[i]['YCEN'] = self.headers[i]['YCENIX']
-            self.headers[i]['PC1_1'] = self.headers[i]['PC1_1IX']
-            self.headers[i]['PC1_2'] = self.headers[i]['PC1_2IX']
-            self.headers[i]['PC2_1'] = self.headers[i]['PC2_1IX']
-            self.headers[i]['PC2_2'] = self.headers[i]['PC2_2IX']
-            self.headers[i]['CRVAL1'] = self.headers[i]['XCENIX']
-            self.headers[i]['CRVAL2'] = self.headers[i]['YCENIX']
-            self.headers[i]['EXPTIME'] = self.headers[i]['EXPTIMES']
+        # get time-specific headers for file and add primary headers and line-specific headers
+        file_time_specific_headers = self._load_time_specific_header_file( file_no )
+        combined_headers = [ dict( list(self.primary_headers.items()) + list(t_header.items()) ) for t_header in file_time_specific_headers ]
+        
+        # change some headers 'manually'
+        for i in range( len(combined_headers) ):
+            combined_headers[i]['XCEN'] = combined_headers[i]['XCENIX']
+            combined_headers[i]['YCEN'] = combined_headers[i]['YCENIX']
+            combined_headers[i]['PC1_1'] = combined_headers[i]['PC1_1IX']
+            combined_headers[i]['PC1_2'] = combined_headers[i]['PC1_2IX']
+            combined_headers[i]['PC2_1'] = combined_headers[i]['PC2_1IX']
+            combined_headers[i]['PC2_2'] = combined_headers[i]['PC2_2IX']
+            combined_headers[i]['CRVAL1'] = combined_headers[i]['XCENIX']
+            combined_headers[i]['CRVAL2'] = combined_headers[i]['YCENIX']
+            combined_headers[i]['EXPTIME'] = combined_headers[i]['EXPTIMES']
+        
+        return combined_headers
 
     # overwrite get_image_step function to be able to divide by exposure time
     # divide_by_exptime defaults to False because the exposure time has to be 
@@ -216,7 +217,7 @@ if __name__ == "__main__":
     sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
     very_large_sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
-    sji.plot(0)
+    sji.plot(1000)
     print( sji.shape )
     sji.crop()
     sji.plot(0)
