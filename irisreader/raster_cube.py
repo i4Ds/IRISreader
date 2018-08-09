@@ -63,6 +63,9 @@ class raster_cube( iris_data_cube ):
             self.close()
             raise ValueError("This is a SJI file. Please use sji_cube to open it.")
             
+        # set up an image cache for the get_spectrum function
+        self._image_cache = [-1,None]
+            
     # return description upon a print call
     def __repr__( self ):
         return "raster {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
@@ -174,12 +177,21 @@ class raster_cube( iris_data_cube ):
         image_step = int(step/image_size)
         y_value = step % image_size
         
-        if lambda_min is not None and lambda_max is not None and n_breaks is not None:
-            spectrum = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )[y_value,:]
-        else:
-            spectrum = self.get_image_step( image_step, divide_by_exptime )[y_value,:]
+        # image is already in cache
+        if image_step == self._image_cache[0]:
+            image = self._image_cache[1]
         
-        return image_step, y_value, spectrum
+        # image is not in cache, get it
+        else:
+            # if interpolation is desired
+            if lambda_min is not None and lambda_max is not None and n_breaks is not None:
+                image = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )
+            else:
+                image = self.get_image_step( image_step, divide_by_exptime )
+        
+            self._image_cache = [ image_step, image ]
+            
+        return image_step, y_value, image[y_value,:]
     
     # function to plot an image step
     def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9 ):
@@ -284,10 +296,13 @@ if __name__ == "__main__":
     raster3.crop( check_coverage=False )
     raster3.plot(1000)
     
+    # try this on the 16 core machine
+    # why is raster3 so much slower? jumps to the next file should be marginal
+    import numpy as np
     from tqdm import tqdm
     dn = []
-    for step in tqdm( range( raster2.n_spectra ) ):
-        image_step, y_value, spectrum = raster2.get_spectrum( step )
+    for step in tqdm( range( raster3.n_spectra ) ):
+        image_step, y_value, spectrum = raster3.get_spectrum( step )
         dn.append( np.sum(spectrum) )
         
     import matplotlib.pyplot as plt
