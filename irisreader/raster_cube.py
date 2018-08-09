@@ -177,8 +177,7 @@ class raster_cube( iris_data_cube ):
         if lambda_min is not None and lambda_max is not None and n_breaks is not None:
             spectrum = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )[y_value,:]
         else:
-            #spectrum = self.get_image_step( image_step, divide_by_exptime )[y_value,:]
-            spectrum = self[ image_step, y_value, : ]
+            spectrum = self.get_image_step( image_step, divide_by_exptime )[y_value,:]
         
         return image_step, y_value, spectrum
     
@@ -287,7 +286,10 @@ if __name__ == "__main__":
     
     from tqdm import tqdm
     dn = []
-    for step in tqdm( range( raster3.n_spectra ) ):
-        image_step, y_value, spectrum = raster3.get_spectrum( step )
+    for step in tqdm( range( raster2.n_spectra ) ):
+        image_step, y_value, spectrum = raster2.get_spectrum( step )
         dn.append( np.sum(spectrum) )
+        
+    import matplotlib.pyplot as plt
+    plt.plot( dn )
     

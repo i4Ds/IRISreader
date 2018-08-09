@@ -243,8 +243,14 @@ class iris_data_cube:
                     # check whether some images are -200 everywhere and if desired
                     # (keep_null=False), do not label these images as valid
                     for file_step in range( f[self._selected_ext].shape[0] ):
-                        #if self._keep_null or not np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 ):
-                        if self._keep_null or not np.all( f[ self._selected_ext ].data[file_step,:,:] == -200 ): # does this work everywhere?
+                        
+                        # use the section or the data interface, depending on whether files are opened with memory mapping or not
+                        if ir.use_memmap:
+                            image_is_null = np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 )
+                        else:
+                            image_is_null = np.all( f[ self._selected_ext ].data[file_step,:,:] == -200 )
+
+                        if self._keep_null or not image_is_null:
                             valid_steps.append( [file_no, file_step] )
                         
                 except CorruptFITSException as e:
@@ -433,9 +439,7 @@ class iris_data_cube:
             internal_index1 = index[1]
             internal_index2 = index[2]
 
-        #return [valid_steps[ valid_steps[:,0] == 0, 1 ], internal_index1, internal_index2]
-
-        # get all data slices and concatenate them
+        # get all data slices and concatenate them (always use data interface here, regardless of whether memory mapping is used or not)
         slices = []
         for file_no in np.unique( valid_steps[:,0] ):
             file = ir.file_hub.open( self._files[file_no] )
@@ -451,7 +455,6 @@ class iris_data_cube:
     # function to get an image step
     # Note: this method makes use of astropy's section method to directly access
     # the data on-disk without loading all of the data into memory
-    # TODO: option to load everything into RAM?
     def get_image_step( self, step ):
         """
         Returns the image at position step. This function uses the section 
@@ -483,9 +486,16 @@ class iris_data_cube:
         
         # get image (cropped if desired)
         if self._cropped:
-            return file[self._selected_ext].section[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
+            if ir.use_memmap: # use section interface if memory mapping is used
+                return file[self._selected_ext].section[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
+            else: # otherwise use data interface
+                return file[self._selected_ext].data[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
         else:
-            return file[self._selected_ext].section[file_step, :, :] 
+        
+            if ir.use_memmap: # use section interface if memory mapping is used
+                return file[self._selected_ext].section[file_step, :, :]
+            else: # otherwise use data interface
+                return file[self._selected_ext].data[file_step, :, :]
 
     # crop data cube
     def crop( self, remove_bad=True, check_coverage=True ):

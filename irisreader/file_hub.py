@@ -10,16 +10,16 @@ import warnings
 # file method to open fits files
 from astropy.io import fits
 
+# access to verbosity_level and use_mmmap
+import irisreader as ir
+
 def ASTROPY_FILE_METHOD( path ):
-    handle = fits.open( path, mmap=False ) # change this back!!!!!!
+    handle = fits.open( path, mmap=ir.use_memmap )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         handle.verify('fix')
         
     return handle
-
-# access to verbosity level
-import irisreader as ir
 
 # class for a simple stack
 class file_stack:
