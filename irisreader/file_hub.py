@@ -7,9 +7,6 @@ file_hub class: manages access to FITS files
 # import libraries
 import warnings
 
-# import configuration
-from irisreader.config import DEBUG
-
 # file method to open fits files
 from astropy.io import fits
 
@@ -20,6 +17,9 @@ def ASTROPY_FILE_METHOD( path ):
         handle.verify('fix')
         
     return handle
+
+# access to verbosity level
+import irisreader as ir
 
 # class for a simple stack
 class file_stack:
@@ -49,7 +49,7 @@ class file_stack:
         
         # object is already on the stack: return it
         if path in self._paths:
-            if DEBUG: print( "[file hub] item is already on stack" )
+            if ir.verbosity_level >= 3: print( "[file hub] item is already on stack" )
             idx = self._paths.index( path )
             
             # mode might have changed, update it
@@ -68,7 +68,7 @@ class file_stack:
             # open file handle
             handle = self._file_method( path )
             
-            if DEBUG: print( "[file hub] opening and pushing {} to stack".format( path ) )           
+            if ir.verbosity_level >= 3: print( "[file hub] opening and pushing {} to stack".format( path ) )           
             self._paths.append( path )
             self._handles.append( handle )
             self._modes.append( mode )
@@ -79,7 +79,7 @@ class file_stack:
     # drop an item by index
     def drop_by_idx( self, idx ):
 
-        if DEBUG: print( "[file hub] dropping {} from stack".format( self._paths[idx] ) )
+        if ir.verbosity_level >= 3: print( "[file hub] dropping {} from stack".format( self._paths[idx] ) )
         
         # close file
         self._handles[idx].close()

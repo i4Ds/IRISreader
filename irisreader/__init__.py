@@ -14,5 +14,11 @@ file_hub = file_hub( ASTROPY_FILE_METHOD )
 import warnings
 def warning_format(message, category, filename, lineno, file=None, line=None):
     return 'Warning: {} \n'.format( message )
-warnings.formatwarning = warning_format
+    warnings.formatwarning = warning_format
 
+# set verbosity level
+# 0: batch mode (no printed output)
+# 1: interactive mode (printed output that informs the interactive user)
+# 2: developer mode (printed output that gives more diagnostics that are only useful for the developer)
+# 3: unfiltered mode (print all possible outputs, should only be used for specific debugging)
+verbosity_level = 1

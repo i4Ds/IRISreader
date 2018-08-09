@@ -2,9 +2,6 @@
 # instructed otherwise. Make sure you rebuild the package after you made changes
 # to this file.
 
-# print debug messages
-DEBUG = False
-
 # Available mirrors
 MIRRORS = {
         'lmsal': 'http://www.lmsal.com/solarsoft/irisa/data/level2_compressed/', 

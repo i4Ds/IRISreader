@@ -8,10 +8,8 @@ of auxiliary variables available for IRIS slit-jaw image data
 import numpy as np
 import matplotlib.pyplot as plt
 
+import irisreader as ir
 from irisreader import iris_data_cube
-
-# import configuration
-from irisreader.config import DEBUG
 
 class sji_cube( iris_data_cube ):
     """
@@ -53,10 +51,10 @@ class sji_cube( iris_data_cube ):
 
 
     # constructor
-    def __init__( self, file, keep_null=False ):
+    def __init__( self, file, keep_null=False, force_valid_steps=False ):
         
         # call constructor of parent iris_data_cube
-        super().__init__( file, line='', keep_null=keep_null )        
+        super().__init__( file, line='', keep_null=keep_null, force_valid_steps=force_valid_steps )        
         
         # raise error if the data_cube is a raster
         if self.type=='raster':
@@ -76,7 +74,7 @@ class sji_cube( iris_data_cube ):
         Prepares the combination (primary header, time-specific header) lazily
         for each image.
         """
-        if DEBUG: print( "Lazy loading combined headers" )
+        if ir.verbosity_level >= 2: print( "[sji_cube] Lazy loading combined headers" )
         self.headers = [dict(list(self.primary_headers.items())+list(t_header.items())) for t_header in self.time_specific_headers]
         
         # manual adjustments
@@ -176,7 +174,7 @@ class sji_cube( iris_data_cube ):
         else:
             raise ValueError( "Plot units '" + units + "' not defined!" )
             
-        # create title (TODO)
+        # create title
         ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
 
         # show image
@@ -216,10 +214,13 @@ class sji_cube( iris_data_cube ):
 if __name__ == "__main__":
     
     sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
-    very_large_sji = iris_data_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
+    very_large_sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
     sji.plot(0)
     print( sji.shape )
     sji.crop()
     sji.plot(0)
     print( sji.shape )
+
+    very_large_sji.crop()
+    very_large_sji.plot(0)

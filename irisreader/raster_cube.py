@@ -8,11 +8,9 @@ of auxiliary variables available for IRIS spectrograph data
 import numpy as np
 import matplotlib.pyplot as plt
 
+import irisreader as ir
 from irisreader import iris_data_cube
 from irisreader.preprocessing import spectrum_interpolator
-
-# import configuration
-from irisreader.config import DEBUG
 
 class raster_cube( iris_data_cube ):
     """
@@ -55,10 +53,10 @@ class raster_cube( iris_data_cube ):
     """
     
     # constructor
-    def __init__( self, files, line='', keep_null=False ):
+    def __init__( self, files, line='', keep_null=False, force_valid_steps=False ):
         
         # call constructor of parent iris_data_cube
-        super().__init__( files, line=line, keep_null=keep_null )        
+        super().__init__( files, line=line, keep_null=keep_null, force_valid_steps=force_valid_steps )        
         
         # raise error if the data_cube is a raster
         if self.type=='sji':
@@ -76,34 +74,13 @@ class raster_cube( iris_data_cube ):
         else:
             return super().__getattribute__( name ) # call method of class where we inherited from
     
-    # make some additional preparations for time-specific headers            
-    def _prepare_time_specific_headers( self ):
-        
-        if DEBUG: print("DEBUG: [raster cube] Lazy loading time specific headers")
-
-        # prepare iris_data_cube time specific headers
-        super()._prepare_time_specific_headers()
-    
-        # make headers local to avoid recursion problems
-        time_specific_headers = self.__getattribute__( "time_specific_headers" ) 
-        
-        # remove some headers that are not needed and fix some headers manually
-        for i in range(0, self.n_steps):
-            time_specific_headers[i]['DSRCRCNIX'] = time_specific_headers[i].pop('DSRCNIX') # just rename this header
-            
-            for key_to_remove in ['PC1_1IX', 'PC1_2IX', 'PC2_1IX', 'PC2_2IX', 'PC2_3IX', 'PC3_1IX', 'PC3_2IX', 'PC3_3IX', 'OPHASEIX', 'OBS_VRIX']:
-                if key_to_remove in time_specific_headers[i].keys():
-                    del time_specific_headers[i][ key_to_remove ]
-                    
-        self.time_specific_headers = time_specific_headers
-     
     # prepare combined headers
     def _prepare_combined_headers( self ):
         """
         Prepares the combination (primary header, time-specific header, 
         line-specific header) lazily for each image.
         """
-        if DEBUG: print( "DEBUG: [raster cube] Lazy loading combined headers" )
+        if ir.verbosity_level >= 2: print( "[raster cube] Lazy loading combined headers" )
         headers = [ dict( list(self.primary_headers.items()) + list(self.line_specific_headers.items()) + list(t_header.items()) ) for t_header in self.time_specific_headers ]
 
         # Fix some headers manually
@@ -203,7 +180,7 @@ class raster_cube( iris_data_cube ):
             spectrum = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )[y_value,:]
         else:
             #spectrum = self.get_image_step( image_step, divide_by_exptime )[y_value,:]
-            spectrum = self[ image_step, y_value:y_value+1, : ] # FIX THIS BUG
+            spectrum = self[ image_step, y_value, : ]
         
         return image_step, y_value, spectrum
     
@@ -254,7 +231,7 @@ class raster_cube( iris_data_cube ):
         else:
             raise ValueError( "Plot units '" + units + "' not defined!" )
             
-        # create title (TODO)
+        # create title
         ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
 
         # show image
@@ -276,24 +253,40 @@ class raster_cube( iris_data_cube ):
 # Test code
 if __name__ == "__main__":
 
+    from irisreader.data.sample import sample_raster
+    raster0 = sample_raster( line="Mg", keep_null=False )
+    raster0.n_steps
+    th = raster0.time_specific_headers # 13.4 ms
+    raster0.plot(0)
+    raster0.crop( check_coverage=False )
+    raster0.plot(0)
+    raster0.n_steps
+    
     import os    
     raster_dir = "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/"
     raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
     raster1 = raster_cube( sorted(raster_files), line="C" )
-    raster1.crop()
+    raster1.n_steps
+    th = raster1.time_specific_headers.tolist()
+    raster1.plot(1300)
+    raster1.crop( check_coverage=False )
+    raster1.plot(0)
 
     # open a raster with 14 GB size    
     raster2 = raster_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
+    raster2.n_steps
+    raster2.plot(0)
     raster2.crop()
+    raster2.plot(0)
 
     # open a raster with 7000 files
     raster3_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
     raster3_files = sorted( [raster3_dir + "/" + file for file in os.listdir( raster3_dir ) if 'raster' in file] )
     raster3 = raster_cube( raster3_files, line="Mg" )
-    raster3.n_steps # takes 3 minutes - could this be parallelized?
-    raster3.crop() # takes XX minutes - could this be parallelized?
-
-    # Can we somehow load this into RAM?
+    raster3.n_steps 
+    raster3.plot(1000)
+    raster3.crop( check_coverage=False )
+    raster3.plot(1000)
     
     from tqdm import tqdm
     dn = []

@@ -14,11 +14,9 @@ import irisreader as ir
 from irisreader.utils.fits import line2extension, array2dict, CorruptFITSException
 from irisreader.utils.date import from_Tformat, to_Tformat, to_epoch
 from irisreader.utils.coordinates import iris_coordinates
+from irisreader.utils import lazy_file_header_list
 from irisreader.preprocessing import image_cube_cropper
 from irisreader.coalignment import goes_data
-
-# import configuration
-from irisreader.config import DEBUG
 
 # IRIS data cube class
 class iris_data_cube:
@@ -39,7 +37,12 @@ class iris_data_cube:
         Line to select: this can be any unique abbreviation of the line name (e.g. "Mg"). For non-unique abbreviations, an error is thrown.
     keep_null : boolean
         Controls whether images that are NULL (-200) everywhere are removed from the data cube (keep_null=False) or not (keep_null=True).
-        
+    force_valid_steps : boolean
+        iris_data_cube intially creates a list of valid images that are in the
+        data cube. This list is stored to the directory where the file resides
+        and can then be loaded in the future instead of creating the list again.
+        `force_valid_steps` forces iris_data_cube to create the list again even
+        if it's already stored.
         
     Attributes
     ----------
@@ -68,7 +71,7 @@ class iris_data_cube:
     """
 
     # constructor
-    def __init__( self, files, line='', keep_null=False ):
+    def __init__( self, files, line='', keep_null=False, force_valid_steps=False ):
                 
         # if filename is not a list, create a list with one element:
         if not isinstance( files, list ):
@@ -78,6 +81,7 @@ class iris_data_cube:
         self._files = files
         self._line = line
         self._keep_null = keep_null
+        self._force_valid_steps = force_valid_steps
         
         # request first file from filehub and get general info
         first_file = ir.file_hub.open( files[0] )
@@ -206,44 +210,64 @@ class iris_data_cube:
             return object.__getattribute__( self, name )
 
     # prepare valid steps
-    # TODO: data is read twice here.. should we add an option to do everything in RAM??
-    # TODO: this could be parallelized using a parallel map: 
-    # https://stackoverflow.com/questions/1704401/is-there-a-simple-process-based-parallel-map-for-python
     def _prepare_valid_steps( self ):
-        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading valid image steps")
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading valid image steps")
+
         valid_steps = []
         
-        # go through all the files: make sure they are not corrupt with _check_integrity
-        for file_no in range( len( self._files ) ):
-            
-            # request file from file hub
-            f = ir.file_hub.open( self._files[ file_no ] )
-            
+        # generate the path to the file with the precomputed valid steps
+        keep_null_str = "keep_null" if self._keep_null else "discard_null"
+        valid_steps_file = "{}/.valid_steps_{}_{}.npy".format( os.path.dirname( self._files[0] ), self.line_info.replace(' ','_'), keep_null_str )
+    
+        # valid steps have already been precomputed: try to load the file
+        if not self._force_valid_steps and os.path.exists( valid_steps_file ):
+            if ir.verbosity_level >= 2: print("[iris_data_cube] using precomputed steps")
             try:
-                # make sure that file is not corrupt
-                self._check_integrity( f )
+                valid_steps = np.load( valid_steps_file )
+        
+            except Exception as e:
+                print( e )
                 
-                # check whether some images are -200 everywhere and if desired
-                # (keep_null=False), do not label these images as valid
-                for file_step in range( f[self._selected_ext].shape[0] ):
-                    if self._keep_null or not np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 ):
-                        valid_steps.append( [file_no, file_step] )
-                        
-            except CorruptFITSException as e:
-                warnings.warn("File #{} is corrupt, discarding it ({})".format( file_no, e ) )
+        # no precomputed valid image steps: assess them now
+        else:
+            # go through all the files: make sure they are not corrupt with _check_integrity
+            for file_no in range( len( self._files ) ):
             
-        # raise a warning if the data cube contains no valid steps    
-        if valid_steps == []:
+                # request file from file hub
+                f = ir.file_hub.open( self._files[ file_no ] )
+            
+                try:
+                    # make sure that file is not corrupt
+                    self._check_integrity( f )
+                
+                    # check whether some images are -200 everywhere and if desired
+                    # (keep_null=False), do not label these images as valid
+                    for file_step in range( f[self._selected_ext].shape[0] ):
+                        #if self._keep_null or not np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 ):
+                        if self._keep_null or not np.all( f[ self._selected_ext ].data[file_step,:,:] == -200 ): # does this work everywhere?
+                            valid_steps.append( [file_no, file_step] )
+                        
+                except CorruptFITSException as e:
+                    warnings.warn("File #{} is corrupt, discarding it ({})".format( file_no, e ) )
+            
+            # store valid steps
+            np.save( valid_steps_file, np.array( valid_steps ) )
+        
+        
+        
+        # return an error if the data cube contains no valid steps    
+        if len( valid_steps ) == 0:
             raise CorruptFITSException("This data cube contains no valid images!")
-
+            
         # update class instance variables
         self._valid_steps = np.array( valid_steps )
         self.n_steps = len( valid_steps )
+        f = ir.file_hub.open( self._files[ -1 ] )
         self.shape = tuple( [ self.n_steps ] + list( f[ self._selected_ext ].shape[1:] ) )
         
     # prepare primary headers
     def _prepare_primary_headers( self ):
-        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading primary headers")
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading primary headers")
         
         # request first file from file hub
         first_file = ir.file_hub.open( self._files[0] )
@@ -262,11 +286,10 @@ class iris_data_cube:
             raise ValueError( "No STARTOBS in primary header!" )
         else:
             self.primary_headers['DATE_OBS'] = self.primary_headers['STARTOBS']
-
         
     # prepare time-specific headers out of second last extension
-    def _prepare_time_specific_headers( self ):
-        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading time specific headers")
+    def _prepare_time_specific_headers2( self ):
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific headers")
         
         time_specific_headers = []
         file_no = 0
@@ -293,10 +316,42 @@ class iris_data_cube:
             time_specific_headers[i]['DATE_OBS'] = to_Tformat( startobs + timedelta( seconds=time_specific_headers[i]['TIME'] ) )
 
         self.time_specific_headers = time_specific_headers
+        
+    def _prepare_time_specific_headers( self ): 
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers")
+        self.time_specific_headers = lazy_file_header_list( self._valid_steps, self._load_time_specific_header_file )
+        
+    def _load_time_specific_header_file( self, file_no ):
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific header for file {}".format(file_no))
 
+        # request file from file hub
+        f = ir.file_hub.open( self._files[file_no] )
+         
+        # read headers from data array
+        file_time_specific_headers = array2dict( f[self._n_ext-2].header, f[self._n_ext-2].data )
+        
+        # apply some corrections to the individual headers
+        startobs = from_Tformat( self.primary_headers['STARTOBS'] )
+        for i in range( len( file_time_specific_headers ) ):
+        
+            # set a DATE_OBS header in each frame as DATE_OBS = STARTOBS + TIME
+            file_time_specific_headers[i]['DATE_OBS'] = to_Tformat( startobs + timedelta( seconds=file_time_specific_headers[i]['TIME'] ) )
+        
+            # if key 'DSRCNIX' exists: rename it to 'DSRCRCNIX'
+            if 'DSRCNIX' in file_time_specific_headers[i].keys():
+                file_time_specific_headers[i]['DSRCRCNIX'] = file_time_specific_headers[i].pop('DSRCNIX')
+                
+            # remove some keys (as IDL does it, currently disabled)
+            # for key_to_remove in ['PC1_1IX', 'PC1_2IX', 'PC2_1IX', 'PC2_2IX', 'PC2_3IX', 'PC3_1IX', 'PC3_2IX', 'PC3_3IX', 'OPHASEIX', 'OBS_VRIX']:
+            #     if key_to_remove in file_time_specific_headers[i].keys():
+            #        del file_time_specific_headers[i][ key_to_remove ]
+            
+        # return headers
+        return file_time_specific_headers
+         
     # prepare line specific headers
     def _prepare_line_specific_headers( self ):
-        if DEBUG: print("DEBUG: [iris_data_cube] Lazy loading line specific headers")
+        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading line specific headers")
         
         # request first file from file hub
         first_file = ir.file_hub.open( self._files[0] )
@@ -336,19 +391,15 @@ class iris_data_cube:
             raise CorruptFITSException("This data cube contains no valid images! You might want to set check_coverage=False or remove_bad=False when cropping (restored original state)")
         else:
             self._valid_steps = valid_steps
+
+        # remove steps from headers if already loaded
+        if not object.__getattribute__( self, "headers" ) is None:
+            self.headers = [ self.headers[i] for i in range( self.n_steps ) if i not in steps ]
         
         # update n_steps and shape
         self.n_steps = len( self._valid_steps )
         self.shape = tuple( [ self.n_steps ] + list( self.shape[1:] ) )
-        
-        # update headers if already loaded
-        if not object.__getattribute__( self, "time_specific_headers" ) is None:
-            self._prepare_time_specific_headers()
-            
-        if not object.__getattribute__( self, "headers" ) is None:
-            self._prepare_combined_headers()
-        
-        
+
     # function to find file number and file step of a given time step
     def _whereat( self, step ):
         return self._valid_steps[ step, : ]
