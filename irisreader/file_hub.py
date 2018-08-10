@@ -172,6 +172,7 @@ class file_hub:
     # reset file stack
     def reset( self ):
         self._file_stack.reset()
+        self._file_stack.max_size = ir.config.max_open_files
         
     # display stack  
     def __repr__( self ):

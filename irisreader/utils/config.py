@@ -25,6 +25,9 @@ class config:
     # False: load data into memory
     use_memmap = False
 
+    # number of open files in file hub
+    max_open_files = 512
+
     # Available mirrors - move this to somewhere else?
     MIRRORS = {
         'lmsal': 'http://www.lmsal.com/solarsoft/irisa/data/level2_compressed/', 
