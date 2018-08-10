@@ -79,7 +79,7 @@ class raster_cube( iris_data_cube ):
     
     # function to convert time-specific headers from a file to combined headers
     def _load_combined_header_file( self, file_no ):
-        if ir.verbosity_level >= 2: print("[raster_cube] Lazy loading combined headers for file {}".format(file_no))
+        if ir.config.verbosity_level >= 2: print("[raster_cube] Lazy loading combined headers for file {}".format(file_no))
         
         # get time-specific headers for file and add primary headers and line-specific headers
         file_time_specific_headers = self._load_time_specific_header_file( file_no )
@@ -275,10 +275,9 @@ if __name__ == "__main__":
     raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
     raster1 = raster_cube( sorted(raster_files), line="C" )
     raster1.n_steps
-    th = raster1.time_specific_headers.tolist()
     raster1.plot(1300)
     raster1.crop( check_coverage=False )
-    raster1.plot(0)
+    raster1.plot(1300)
 
     # open a raster with 14 GB size    
     raster2 = raster_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
@@ -298,6 +297,7 @@ if __name__ == "__main__":
     
     # try this on the 16 core machine
     # why is raster3 so much slower? jumps to the next file should be marginal
+    # probably because new data has to be loaded into memory all the time
     import numpy as np
     from tqdm import tqdm
     dn = []

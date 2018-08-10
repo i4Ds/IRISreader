@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 from datetime import timedelta
+import irisreader as ir
 from irisreader.utils.date import to_Tformat
-from irisreader.config import HEK_URL
 
 class hek_data:
     """
@@ -76,7 +76,7 @@ def load_hek_data( start_date, end_date ):
     hek_events = []
     page = 1
     while True:
-        r = requests.get( HEK_URL, params={
+        r = requests.get( ir.config.HEK_URL, params={
             "cosec": "2",  # JSON format
             "cmd": "search",
             "type": "column",

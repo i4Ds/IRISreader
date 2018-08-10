@@ -7,8 +7,7 @@ import os
 from scipy.interpolate import interp1d
 import numpy as np
 
-from irisreader.config import GOES_BASE_URL
-
+import irisreader as ir
 # TODO: create a downloader utility function?
 
 
@@ -89,7 +88,7 @@ class goes_data:
             current_date = start_date + dt.timedelta(days=day)
             date_str = current_date.strftime("%Y%m%d")
             target_file_name = "g15_xrs_2s_" + date_str + "_" + date_str + ".csv"
-            target_url = GOES_BASE_URL + "/" + str(current_date.year) + "/" + str(current_date.month).zfill(2) + "/goes15/csv/" + target_file_name
+            target_url = ir.config.GOES_BASE_URL + "/" + str(current_date.year) + "/" + str(current_date.month).zfill(2) + "/goes15/csv/" + target_file_name
             self._download_file( target_url, target_file_name )
             self._files.append( target_file_name )
 

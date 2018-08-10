@@ -70,7 +70,7 @@ class sji_cube( iris_data_cube ):
 
     # function to convert time-specific headers from a file to combined headers
     def _load_combined_header_file( self, file_no ):
-        if ir.verbosity_level >= 2: print("[si_cube] Lazy loading combined headers for file {}".format(file_no))
+        if ir.config.verbosity_level >= 2: print("[si_cube] Lazy loading combined headers for file {}".format(file_no))
         
         # get time-specific headers for file and add primary headers and line-specific headers
         file_time_specific_headers = self._load_time_specific_header_file( file_no )

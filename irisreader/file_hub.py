@@ -14,7 +14,7 @@ from astropy.io import fits
 import irisreader as ir
 
 def ASTROPY_FILE_METHOD( path ):
-    handle = fits.open( path, mmap=ir.use_memmap )
+    handle = fits.open( path, mmap=ir.config.use_memmap )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         handle.verify('fix')
@@ -49,7 +49,7 @@ class file_stack:
         
         # object is already on the stack: return it
         if path in self._paths:
-            if ir.verbosity_level >= 3: print( "[file hub] item is already on stack" )
+            if ir.config.verbosity_level >= 3: print( "[file hub] item is already on stack" )
             idx = self._paths.index( path )
             
             # mode might have changed, update it
@@ -68,7 +68,7 @@ class file_stack:
             # open file handle
             handle = self._file_method( path )
             
-            if ir.verbosity_level >= 3: print( "[file hub] opening and pushing {} to stack".format( path ) )           
+            if ir.config.verbosity_level >= 3: print( "[file hub] opening and pushing {} to stack".format( path ) )           
             self._paths.append( path )
             self._handles.append( handle )
             self._modes.append( mode )
@@ -79,7 +79,7 @@ class file_stack:
     # drop an item by index
     def drop_by_idx( self, idx ):
 
-        if ir.verbosity_level >= 3: print( "[file hub] dropping {} from stack".format( self._paths[idx] ) )
+        if ir.config.verbosity_level >= 3: print( "[file hub] dropping {} from stack".format( self._paths[idx] ) )
         
         # close file
         self._handles[idx].close()

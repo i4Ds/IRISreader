@@ -8,9 +8,7 @@ from tqdm import tqdm
 import gzip, shutil, tarfile
 import math
 import pandas as pd
-
-# import configuration
-from irisreader.config import MIRRORS, DEFAULT_MIRROR
+import irisreader as ir
 
 # Function to parse directory listing
 def parse_url_content( url ):
@@ -116,12 +114,12 @@ def download( obs_identifier, target_directory, type='all', uncompress=True, ope
         if open_obs: uncompress = True
         
         # set mirror url
-        if mirror is None: mirror = DEFAULT_MIRROR
+        if mirror is None: mirror = ir.config.DEFAULT_MIRROR
         
-        if not mirror in MIRRORS.keys():
-            raise ValueError("The mirror you specified does not exist! Available mirrors: ", MIRRORS.keys() )
+        if not mirror in ir.config.MIRRORS.keys():
+            raise ValueError("The mirror you specified does not exist! Available mirrors: ", ir.config.MIRRORS.keys() )
         else:
-            download_url = MIRRORS[ mirror ]
+            download_url = ir.config.MIRRORS[ mirror ]
         
         # extract year, month and day from obs identifier
         m = re.search('([\d]{4})([\d]{2})([\d]{2})_([\d]{6})_([\d]{10})', obs_identifier )

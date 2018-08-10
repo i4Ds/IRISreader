@@ -211,7 +211,7 @@ class iris_data_cube:
 
     # prepare valid steps
     def _prepare_valid_steps( self ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading valid image steps")
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Lazy loading valid image steps")
 
         valid_steps = []
         
@@ -221,7 +221,7 @@ class iris_data_cube:
     
         # valid steps have already been precomputed: try to load the file
         if not self._force_valid_steps and os.path.exists( valid_steps_file ):
-            if ir.verbosity_level >= 2: print("[iris_data_cube] using precomputed steps")
+            if ir.config.verbosity_level >= 2: print("[iris_data_cube] using precomputed steps")
             try:
                 valid_steps = np.load( valid_steps_file )
         
@@ -245,7 +245,7 @@ class iris_data_cube:
                     for file_step in range( f[self._selected_ext].shape[0] ):
                         
                         # use the section or the data interface, depending on whether files are opened with memory mapping or not
-                        if ir.use_memmap:
+                        if ir.config.use_memmap:
                             image_is_null = np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 )
                         else:
                             image_is_null = np.all( f[ self._selected_ext ].data[file_step,:,:] == -200 )
@@ -273,7 +273,7 @@ class iris_data_cube:
         
     # prepare primary headers
     def _prepare_primary_headers( self ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading primary headers")
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Lazy loading primary headers")
         
         # request first file from file hub
         first_file = ir.file_hub.open( self._files[0] )
@@ -295,17 +295,17 @@ class iris_data_cube:
 
     # assign lazy_file_header_list to time_specific_headers        
     def _prepare_time_specific_headers( self ): 
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers")
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers")
         self.time_specific_headers = lazy_file_header_list( self._valid_steps, self._load_time_specific_header_file )
         
     # assign lazy_file_header_list to headers
     def _prepare_combined_headers( self ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to headers")
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to headers")
         self.headers = lazy_file_header_list( self._valid_steps, self._load_combined_header_file )    
     
     # function to load time-specific headers from a file    
     def _load_time_specific_header_file( self, file_no ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific headers for file {}".format(file_no))
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Lazy loading time specific headers for file {}".format(file_no))
 
         # request file from file hub
         f = ir.file_hub.open( self._files[file_no] )
@@ -338,7 +338,7 @@ class iris_data_cube:
          
     # prepare line specific headers
     def _prepare_line_specific_headers( self ):
-        if ir.verbosity_level >= 2: print("[iris_data_cube] Lazy loading line specific headers")
+        if ir.config.verbosity_level >= 2: print("[iris_data_cube] Lazy loading line specific headers")
         
         # request first file from file hub
         first_file = ir.file_hub.open( self._files[0] )
@@ -486,13 +486,13 @@ class iris_data_cube:
         
         # get image (cropped if desired)
         if self._cropped:
-            if ir.use_memmap: # use section interface if memory mapping is used
+            if ir.config.use_memmap: # use section interface if memory mapping is used
                 return file[self._selected_ext].section[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
             else: # otherwise use data interface
                 return file[self._selected_ext].data[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
         else:
         
-            if ir.use_memmap: # use section interface if memory mapping is used
+            if ir.config.use_memmap: # use section interface if memory mapping is used
                 return file[self._selected_ext].section[file_step, :, :]
             else: # otherwise use data interface
                 return file[self._selected_ext].data[file_step, :, :]
