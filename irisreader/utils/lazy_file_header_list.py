@@ -78,9 +78,7 @@ class lazy_file_header_list:
 
     # convert representation into a regular python list (will load everything)
     def tolist( self ):
-        # make sure all headers are loaded
-        # this is done via map to allow for automatic parallelisation
-        return list( map( lambda i: self[i], range( self._valid_steps.shape[0] ) ) )
+        return self[:]
 
     # upon print call return a list representation (will load everything)
     def __repr__( self ):
