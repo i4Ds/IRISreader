@@ -139,7 +139,7 @@ class raster_loader:
         
     def _load( self, i ):
         """Function to lazy load the combined raster for the selected line"""
-        if ir.verbosity_level >= 2: print("[observation] Lazy loading raster")
+        if ir.config.verbosity_level >= 2: print("[observation] Lazy loading raster")
         self._raster_data[i] = raster_cube( self._raster_files, line=self._line_info['description'][i], keep_null=self._keep_null )
         
     def _close( self ):
