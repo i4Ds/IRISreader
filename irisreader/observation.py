@@ -8,6 +8,7 @@ import pandas as pd
 import warnings
 from irisreader.utils.date import to_Tformat, from_Tformat, from_obsformat
 from IPython.core.display import HTML
+import irisreader as ir
 from irisreader import sji_cube, raster_cube, get_lines
 from irisreader.has_line import find_line
 from irisreader.coalignment import goes_data, hek_data

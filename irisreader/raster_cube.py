@@ -301,8 +301,8 @@ if __name__ == "__main__":
     import numpy as np
     from tqdm import tqdm
     dn = []
-    for step in tqdm( range( raster2.n_spectra ) ):
-        image_step, y_value, spectrum = raster2.get_spectrum( step )
+    for step in tqdm( range( raster3.n_spectra ) ):
+        image_step, y_value, spectrum = raster3.get_spectrum( step )
         dn.append( np.sum(spectrum) )
         
     import matplotlib.pyplot as plt

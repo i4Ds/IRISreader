@@ -26,7 +26,7 @@ class config:
     use_memmap = False
 
     # number of open files in file hub
-    max_open_files = 512
+    max_open_files = 256
 
     # Available mirrors - move this to somewhere else?
     MIRRORS = {
