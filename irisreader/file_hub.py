@@ -150,15 +150,6 @@ class file_hub:
         
         # stack of open files
         self._file_stack = file_stack( file_method, max_files )
-        
-        # start preloading thread
-        self._preload_queue = queue.Queue()
-        self._preloader = preload_thread( preload_queue=self._preload_queue )
-        self._preloader.start()
-
-    # destructor
-    def __del__( self ):
-        self._preloader.join()
 
     # open a file and push it to the stack
     def open( self, path, mode="volatile" ):
@@ -185,10 +176,6 @@ class file_hub:
         self._file_stack.reset()
         self._file_stack.max_size = ir.config.max_open_files
         
-    # preload the data part of an extension
-    def preload( self, ext ):
-        self._preload_queue.put( ext )
-        
     # display stack  
     def __repr__( self ):
         return self._file_stack.peek()
@@ -198,37 +185,9 @@ class file_hub:
         return self._file_stack.size()
         
 
-# preloader class
-class preload_thread( threading.Thread ):
-    def __init__( self, preload_queue ):
-        if ir.config.verbosity_level >= 1: print( "[file hub] Starting preloader as a separate thread" )
-        super( preload_thread, self ).__init__()
-        self.preload_queue = preload_queue
-        self.stoprequest = threading.Event()
-         
-    def run( self ):
-        while not self.stoprequest.isSet():
-            try:
-                if ir.config.verbosity_level >= 2: 
-                    print( "[file hub] Preloading element from the queue" )
-                ext = self.preload_queue.get()
-                ext.data
-            except IndexError:
-                continue
-            
-    def join( self, timeout=None ):
-        self.stoprequest.set()
-        super( preload_thread, self ).join( timeout )
-
-        
 # Test code            
 if __name__ == "__main__":
-    
-    ir.file_hub.reset()
-    fh = ir.file_hub.open( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits" )
-    ir.file_hub.preload( fh[9] )
-#    %time d = fh[9].data
-    
+
     # do tests with other files and the open function
     
     PATHS = [ "/home/chuwyler/Desktop/FITS/20140202_210830_3880012095/iris_l2_20140202_210830_3880012095_SJI_1330_t000.fits",

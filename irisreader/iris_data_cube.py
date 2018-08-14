@@ -481,11 +481,6 @@ class iris_data_cube:
         
         # request file from file hub
         file = ir.file_hub.open( self._files[file_no] )
-        
-        # preload next file
-        if file_no + 1 < len( self._files ):
-            next_file = ir.file_hub.open( self._files[file_no+1] )
-            ir.file_hub.preload( next_file[self._selected_ext] )
                 
         # get image (cropped if desired)
         if self._cropped:
