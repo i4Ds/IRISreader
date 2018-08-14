@@ -146,10 +146,10 @@ class file_stack:
 class file_hub:
     
     # constructor
-    def __init__( self, file_method, max_files=512 ):
+    def __init__( self, file_method ):
         
         # stack of open files
-        self._file_stack = file_stack( file_method, max_files )
+        self._file_stack = file_stack( file_method, max_files=ir.config.max_open_files )
 
     # open a file and push it to the stack
     def open( self, path, mode="volatile" ):
