@@ -2,6 +2,7 @@
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
+from tqdm import tqdm
 import irisreader as ir
 from irisreader.preprocessing import image_cropper, CorruptImageException, NullImageException
 
@@ -103,7 +104,12 @@ class image_cube_cropper( BaseEstimator, TransformerMixin ):
         # get bounds on all images in the cube and store null and corrupt images
         image_bounds = []
         
-        for step in range( self._data_cube_object.n_steps ):
+        # create progress bar for crop if verbosity_level is >= 1
+        step_range = range( self._data_cube_object.n_steps )
+        if ir.config.verbosity_level >= 1:
+            step_range = tqdm( step_range )
+        
+        for step in step_range:
             try:
                 cropper.fit( self._data_cube_object.get_image_step( step ) )
                 image_bounds.append( cropper.get_bounds() )

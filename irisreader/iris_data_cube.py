@@ -479,11 +479,14 @@ class iris_data_cube:
         # get file number and file step            
         file_no, file_step = self._whereat( step )
         
-        # open file
+        # request file from file hub
         file = ir.file_hub.open( self._files[file_no] )
         
-        # get exposure time 
-        
+        # preload next file
+        if file_no + 1 < len( self._files ):
+            next_file = ir.file_hub.open( self._files[file_no+1] )
+            ir.file_hub.preload( next_file[self._selected_ext] )
+                
         # get image (cropped if desired)
         if self._cropped:
             if ir.config.use_memmap: # use section interface if memory mapping is used

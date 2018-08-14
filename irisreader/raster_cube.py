@@ -262,6 +262,22 @@ class raster_cube( iris_data_cube ):
 # Test code
 if __name__ == "__main__":
 
+    # try this on the 16 core machine
+    # why is raster3 so much slower? jumps to the next file should be marginal
+    # probably because new data has to be loaded into memory all the time
+    import numpy as np
+    from tqdm import tqdm
+    import matplotlib.pyplot as plt
+    
+    def compute_dn( raster ):
+        dn = []
+        for step in tqdm( range( raster.n_spectra ) ):
+            image_step, y_value, spectrum = raster.get_spectrum( step )
+            dn.append( np.sum(spectrum) )
+       
+        return dn
+    
+    
     from irisreader.data.sample import sample_raster
     raster0 = sample_raster( line="Mg", keep_null=False )
     raster0.n_steps
@@ -271,6 +287,9 @@ if __name__ == "__main__":
     raster0.n_steps
     
     import os    
+    from irisreader import raster_cube
+    import irisreader as ir
+    ir.config.verbosity_level = 2
     raster_dir = "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/"
     raster_files = sorted( [raster_dir + "/" + file for file in os.listdir( raster_dir ) if 'raster' in file] )
     raster1 = raster_cube( sorted(raster_files), line="C" )
@@ -278,6 +297,9 @@ if __name__ == "__main__":
     raster1.plot(1300)
     raster1.crop( check_coverage=False )
     raster1.plot(1300)
+    
+    dn = compute_dn( raster1 )
+    plt.plot(dn)
 
     # open a raster with 14 GB size    
     raster2 = raster_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits", line="Mg" )
@@ -285,6 +307,9 @@ if __name__ == "__main__":
     raster2.plot(0)
     raster2.crop()
     raster2.plot(0)
+
+    dn = compute_dn( raster2 )
+    plt.plot(dn)
 
     # open a raster with 7000 files
     raster3_dir = "/home/chuwyler/Desktop/FITS/20150404_155958_3820104165"
@@ -295,16 +320,5 @@ if __name__ == "__main__":
     raster3.crop( check_coverage=False )
     raster3.plot(1000)
     
-    # try this on the 16 core machine
-    # why is raster3 so much slower? jumps to the next file should be marginal
-    # probably because new data has to be loaded into memory all the time
-    import numpy as np
-    from tqdm import tqdm
-    dn = []
-    for step in tqdm( range( raster3.n_spectra ) ):
-        image_step, y_value, spectrum = raster3.get_spectrum( step )
-        dn.append( np.sum(spectrum) )
-        
-    import matplotlib.pyplot as plt
-    plt.plot( dn )
-    
+    dn = compute_dn( raster3 )
+    plt.plot(dn)
