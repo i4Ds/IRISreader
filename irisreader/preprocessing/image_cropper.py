@@ -114,6 +114,11 @@ class image_cropper( BaseEstimator, TransformerMixin ):
         self._ymin = get_left_bound( self._image_ref ) + self._offset
         self._ymax = get_right_bound( self._image_ref ) - self._offset
         
+        # check whether image has some extent at all
+        min_extent = 10 # TODO: this needs to be on better theoretical foundation
+        if self._xmax - self._xmin < min_extent or self._ymax - self._ymin < min_extent:
+            raise CorruptImageException("This image contains almost no data after cropping! (less than 10 pixels on at least one axis)")
+        
         # raise a corrupt image exception if more than 5% of the image or the
         # image border are still negative
         # This check can be disable with check_coverage = False
