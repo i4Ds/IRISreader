@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import irisreader as ir
 from irisreader import iris_data_cube
 from irisreader.preprocessing import spectrum_interpolator
+from irisreader.utils.notebooks import in_notebook
 
 class raster_cube( iris_data_cube ):
     """
@@ -224,7 +225,7 @@ class raster_cube( iris_data_cube ):
         vmax = np.percentile( image**gamma, cutoff_percentile )
     
         # set image extent and labels according to choice of units
-        ax = plt.subplot(111)
+        ax = plt.gca()
         
         if units == 'coordinates':
             units = self.get_axis_coordinates( step=step )
@@ -253,8 +254,9 @@ class raster_cube( iris_data_cube ):
         # set aspect ratio depending
         ax.set_aspect('auto') 
         
-        # show plot
-        plt.show()
+        # show plot if in terminal
+        if not in_notebook():
+            plt.show()
         
         # delete image variable (otherwise memory mapping keeps file open)
         del image

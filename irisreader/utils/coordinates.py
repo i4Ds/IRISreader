@@ -19,7 +19,7 @@ class iris_coordinates:
     """
     
     # constructor
-    def __init__( self, header, mode, bounds=[None,None,None,None] ):
+    def __init__( self, header, mode ):
                 
         # initialize astropy WCS object and suppress warnings
         # set CDELTi to a tiny value if zero (otherwise wcs produces singular PC matrix)
@@ -56,16 +56,19 @@ class iris_coordinates:
         
         self.mode = mode
         
-        # set bounds
-        self.xmin, self.xmax, self.ymin, self.ymax = bounds
-        if self.xmin is None or self.xmax is None or self.ymin is None or self.ymax is None:
-            self.cropped = False
-        else:
-            self.cropped = True
-    
+        # initialize bounds
+        self.xmin, self.xmax, self.ymin, self.ymax = None, None, None, None
+        self.cropped = False
+        
     # function to set bounds
     def set_bounds( self, bounds ):
-        self.bounds = bounds
+        self.cropped = True
+        self.xmin, self.xmax, self.ymin, self.ymax = bounds
+        
+    # function to reset bounds
+    def reset_bounds( self ):
+        self.cropped = False
+        self.xmin, self.xmax, self.ymin, self.ymax = None, None, None, None
     
     # function to convert from camera (pixel) coordinates to solar/physical coordinates
     # wraps astropy.wcs

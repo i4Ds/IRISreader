@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 import irisreader as ir
 from irisreader import iris_data_cube
+from irisreader.utils.notebooks import in_notebook
 
 class sji_cube( iris_data_cube ):
     """
@@ -159,7 +160,7 @@ class sji_cube( iris_data_cube ):
         vmax = np.percentile( image, cutoff_percentile )
     
         # set image extent and labels according to choice of units
-        ax = plt.subplot(111)
+        ax = plt.gca()
         
         if units == 'coordinates':
             units = self.get_axis_coordinates( step=step )
@@ -184,8 +185,9 @@ class sji_cube( iris_data_cube ):
         # set aspect ratio depending
         ax.set_aspect('equal') 
         
-        # show plot
-        plt.show()
+        # show plot if in terminal
+        if not in_notebook():
+            plt.show()
         
         # delete image variable (otherwise memory mapping keeps file open)
         del image

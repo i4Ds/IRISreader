@@ -163,6 +163,7 @@ class iris_data_cube:
         
         # set some variables that will be lazy loaded
         self.shape = None
+        self._original_shape = None
         self.n_steps = None
         self._valid_steps = None
         self.primary_headers = None
@@ -197,6 +198,9 @@ class iris_data_cube:
         elif name=='shape' and object.__getattribute__( self, "shape" ) is None:
             self._prepare_valid_steps()
             return object.__getattribute__( self, "shape" )
+        elif name=='_original_shape' and object.__getattribute__( self, "_original_shape" ) is None:
+            self._prepare_valid_steps()
+            return object.__getattribute__( self, "_original_shape" )
         elif name=='time_specific_headers' and object.__getattribute__( self, "time_specific_headers" ) is None:
             self._prepare_time_specific_headers()
             return object.__getattribute__( self, "time_specific_headers" )
@@ -217,7 +221,7 @@ class iris_data_cube:
         
         # generate the path to the file with the precomputed valid steps
         keep_null_str = "keep_null" if self._keep_null else "discard_null"
-        valid_steps_file = "{}/.valid_steps_{}_{}.npy".format( os.path.dirname( self._files[0] ), self.line_info.replace(' ','_'), keep_null_str )
+        valid_steps_file = "{}/.valid_steps_{}_{}.npy".format( os.path.dirname( self._files[0] ), self.line_info.replace(' ','_').replace('/','_'), keep_null_str )
     
         # valid steps have already been precomputed: try to load the file
         if not self._force_valid_steps and os.path.exists( valid_steps_file ):
@@ -257,7 +261,10 @@ class iris_data_cube:
                     warnings.warn("File #{} is corrupt, discarding it ({})".format( file_no, e ) )
             
             # store valid steps
-            np.save( valid_steps_file, np.array( valid_steps ) )
+            try:
+                np.save( valid_steps_file, np.array( valid_steps ) )
+            except Exception as e:
+                print( e )
         
         
         
@@ -270,6 +277,7 @@ class iris_data_cube:
         self.n_steps = len( valid_steps )
         f = ir.file_hub.open( self._files[ -1 ] )
         self.shape = tuple( [ self.n_steps ] + list( f[ self._selected_ext ].shape[1:] ) )
+        self._original_shape = self.shape
         
     # prepare primary headers
     def _prepare_primary_headers( self ):
@@ -532,7 +540,8 @@ class iris_data_cube:
             self._cropped = True
             
         else:
-            print("This data cube has already been cropped")
+            if ir.config.verbosity_level >= 1:
+                print("This data cube has already been cropped")
  
     # uncrop data cube
     def uncrop( self ):
@@ -590,7 +599,8 @@ class iris_data_cube:
     def _reset_bounds( self ):
         self._cropped = False
         self._xmin, self._xmax, self._ymin, self._ymax = None, None, None, None
-        self._ico.set_bounds( [None, None, None, None] )
+        self.shape = self._original_shape
+        self._ico.reset_bounds()
 
     # functions to enter and exit a context
     def __enter__( self ):
@@ -660,7 +670,7 @@ class iris_data_cube:
             List [coordinates along x axis, coordinates along y axis]
         """
 
-        return self._ico.get_axis_coordinates( step, self.shape )
+        return self._ico.get_axis_coordinates( step, self._original_shape )
         
     # function to get number of saturated pixels for an image
     def get_nsatpix( self, step ):
