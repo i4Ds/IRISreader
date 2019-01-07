@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestCentroid
 from scipy.interpolate import interp1d
 
-from irisreader import observation
 from irisreader.utils import date
 
 DATA_PATH = pkg_resources.resource_filename( 'irisreader', 'data/' )
@@ -243,7 +242,7 @@ def compute_distances( raster, step, i ):
     distances = np.sqrt( np.sum( (centroids - x)**2, axis=1 ) )
     return distances
 
-def get_mg2k_centroid_table( obs_path ):
+def get_mg2k_centroid_table( obs ):
     """
     Returns a data frame with centroid counts for each raster image of a given
     observation.
@@ -260,9 +259,6 @@ def get_mg2k_centroid_table( obs_path ):
     assigned_centroids : list
         List with array of assigned centroids for every raster image
     """   
-    
-    # open observation
-    obs = observation( obs_path )
     
     # open and crop raster
     if not obs.raster.has_line("Mg II k"):
