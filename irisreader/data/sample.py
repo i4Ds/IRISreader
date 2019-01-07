@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pkg_resources
 from irisreader import sji_cube, raster_cube, observation
 

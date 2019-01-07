@@ -195,10 +195,11 @@ class image_cube_cropper( BaseEstimator, TransformerMixin ):
             raise ValueError("Please pass a data cube first using the fit method.")
         else:
             return self._null_images
-        
+
+
 # Test code
 if __name__ == "__main__":
-    
+    import os
     from irisreader import observation
     obs = observation( "/home/chuwyler/Desktop/FITS/20140906_112339_3820259253/" )
     sji = obs.sji[0]

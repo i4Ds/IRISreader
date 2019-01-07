@@ -6,8 +6,6 @@ file_hub class: manages access to FITS files
 
 # import libraries
 import warnings
-import threading
-import queue
 
 # file method to open fits files
 from astropy.io import fits
@@ -16,7 +14,7 @@ from astropy.io import fits
 import irisreader as ir
 
 def ASTROPY_FILE_METHOD( path ):
-    handle = fits.open( path, mmap=ir.config.use_memmap )
+    handle = fits.open( path, memmap=ir.config.use_memmap )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         handle.verify('fix')
