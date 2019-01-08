@@ -23,13 +23,18 @@ def find_closest_sji( sji, raster, raster_step ):
     -------
     sji_step : int
         SJI step
+    diff : float
+        Difference in seconds
     """
     
     # check if data cubes come from the same observation and raise exception if not
     if raster.primary_headers['STARTOBS'] != sji.primary_headers['STARTOBS']:
         raise Exception("data cubes are not from the same observation!")
     
-    return np.argmin( np.abs( np.array( sji.get_timestamps() )-raster.get_timestamps()[raster_step] ) )
+    diff = np.array( sji.get_timestamps() )-raster.get_timestamps()[raster_step]
+    sji_step = np.argmin( np.abs( diff ) )
+    
+    return [sji_step, diff[sji_step]]
     
     
 def find_closest_raster( raster, sji, sji_step ):
@@ -49,11 +54,16 @@ def find_closest_raster( raster, sji, sji_step ):
     -------
     raster_step : int
         SJI step
+    diff : float
+        Difference in seconds
     """
     
     # check if data cubes come from the same observation and raise exception if not
     if raster.primary_headers['STARTOBS'] != sji.primary_headers['STARTOBS']:
         raise Exception("data cubes are not from the same observation!")
     
-    return np.argmin( np.abs( np.array( raster.get_timestamps() )-sji.get_timestamps()[sji_step] ) )
+    diff = np.array( raster.get_timestamps() )-sji.get_timestamps()[sji_step]
+    raster_step = np.argmin( np.abs(diff) )
+    
+    return [raster_step, diff[raster_step]]
     
