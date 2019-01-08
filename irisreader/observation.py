@@ -13,6 +13,40 @@ from irisreader import sji_cube, raster_cube, get_lines
 from irisreader.has_line import find_line
 from irisreader.coalignment import goes_data, hek_data
 
+
+def find_obs_path( full_obsid, basedir ):
+    """
+    Finds the full path for a given full OBSID (in the style of '20140910_003955_3860358888').
+    
+    Parameters
+    ----------
+    full_obsid : str
+        full OBSID of the observation as a string
+    basedir : str
+        base directory for search
+        
+    Returns
+    -------
+    obs_path : str
+        full path to observation
+    """
+    
+    # find matches
+    matches = []
+    for root, dirnames, filenames in os.walk( basedir ):
+        for dirname in dirnames:
+            if full_obsid in dirname:
+                matches.append( os.path.join(root, dirname) )
+    
+    # raise exception if there are no or multiple matches
+    if len( matches ) == 0:
+        raise Exception( "No match for {} was found".format(full_obsid) )
+    elif len( matches ) > 1:
+        raise Exception( "Multiple matches found!\n{}".format(matches) )
+        
+    return matches[0]
+                
+
 class sji_loader:
     """
     Loads all supplied SJI FITS files and presents two different interfaces to the available lines (that are only loaded lazily):
