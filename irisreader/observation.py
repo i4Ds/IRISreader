@@ -35,7 +35,7 @@ def get_obs_path( full_obsid, basedir ):
     month = full_obsid[4:6]
     day = full_obsid[6:8]
     
-    obs_path = "/".join( [basedir, year, month, day, full_obsid] )
+    obs_path = "/".join( [basedir, year, month, day, full_obsid] ).replace("//","/")
     
     if not os.path.exists( obs_path ):
         raise Exception("{}: This path does not exist - please check your full OBSID".format(obs_path))
