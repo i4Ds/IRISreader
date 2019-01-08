@@ -39,7 +39,8 @@ def get_obs_path( full_obsid, basedir ):
     
     if not os.path.exists( obs_path ):
         raise Exception("{}: This path does not exist - please check your full OBSID".format(obs_path))
-                
+
+    return obs_path                
 
 class sji_loader:
     """
