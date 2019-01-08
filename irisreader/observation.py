@@ -14,7 +14,7 @@ from irisreader.has_line import find_line
 from irisreader.coalignment import goes_data, hek_data
 
 
-def find_obs_path( full_obsid, basedir ):
+def get_obs_path( full_obsid, basedir ):
     """
     Finds the full path for a given full OBSID (in the style of '20140910_003955_3860358888').
     
@@ -23,7 +23,7 @@ def find_obs_path( full_obsid, basedir ):
     full_obsid : str
         full OBSID of the observation as a string
     basedir : str
-        base directory for search
+        base directory for search (where iris data lies in the structure year/month/day/observation)
         
     Returns
     -------
@@ -31,20 +31,14 @@ def find_obs_path( full_obsid, basedir ):
         full path to observation
     """
     
-    # find matches
-    matches = []
-    for root, dirnames, filenames in os.walk( basedir ):
-        for dirname in dirnames:
-            if full_obsid in dirname:
-                matches.append( os.path.join(root, dirname) )
+    year = full_obsid[0:4]
+    month = full_obsid[4:6]
+    day = full_obsid[6:8]
     
-    # raise exception if there are no or multiple matches
-    if len( matches ) == 0:
-        raise Exception( "No match for {} was found".format(full_obsid) )
-    elif len( matches ) > 1:
-        raise Exception( "Multiple matches found!\n{}".format(matches) )
-        
-    return matches[0]
+    obs_path = "/".join( [basedir, year, month, day, full_obsid] )
+    
+    if not os.path.exists( obs_path ):
+        raise Exception("{}: This path does not exist - please check your full OBSID".format(obs_path))
                 
 
 class sji_loader:
