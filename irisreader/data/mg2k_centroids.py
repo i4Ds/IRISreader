@@ -274,11 +274,14 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
     if crop_raster:
         raster.crop()
     
+    # get goes flux
+    goes_flux = raster.get_goes_flux()
+    
     # empty list for assigned centroids
     assigned_centroids = []
     
     # empty data frame for centroid counts
-    df = pd.DataFrame( columns=["full_obsid", "date", "image_no", "centroid", "count"] )
+    df = pd.DataFrame( columns=["full_obsid", "date", "image_no", "goes_flux", "centroid", "count"] )
     
     # assign centroids for each image and create aggregated data frame
     for step in range( raster.n_steps ):
@@ -297,6 +300,7 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
                         {'full_obsid': obs.full_obsid, 
                          'date': date.from_Tformat( raster.headers[step]['DATE_OBS'] ), 
                          'image_no': step, 
+                         'goes_flux': goes_flux[step],
                          'centroid': centroids, 
                          'count': counts }
                         ),
@@ -304,7 +308,7 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
             )
     
     # create pivot table
-    df = df.pivot_table(index=['full_obsid', 'date', 'image_no'], columns='centroid', values='count', aggfunc='first', fill_value=0 )
+    df = df.pivot_table(index=['full_obsid', 'date', 'image_no', 'goes_flux'], columns='centroid', values='count', aggfunc='first', fill_value=0 )
     df.reset_index( inplace=True )
     
     # make sure all centroids are represented
@@ -313,12 +317,12 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
             df[i] = 0
     
     # make sure columns are sorted
-    df = df.reindex( ["full_obsid", "date", "image_no"] + [i for i in range(N_CENTROIDS)], axis=1 )
+    df = df.reindex( ["full_obsid", "date", "image_no", "goes_flux"] + [i for i in range(N_CENTROIDS)], axis=1 )
     df.columns.name = ''
     
     # rename number columns into string columns
     cols = df.columns.values
-    cols[3:] = ["c" + str(col) for col in df.columns[3:]]
+    cols[4:] = ["c" + str(col) for col in df.columns[4:]]
     df.columns = cols
     
     # close observation
