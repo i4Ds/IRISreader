@@ -316,6 +316,11 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
     df = df.reindex( ["full_obsid", "date", "image_no"] + [i for i in range(N_CENTROIDS)], axis=1 )
     df.columns.name = ''
     
+    # rename number columns into string columns
+    cols = df.columns.values
+    cols[3:] = ["c" + str(col) for col in df.columns[3:]]
+    df.columns = cols
+    
     # close observation
     obs.close()
     
@@ -323,9 +328,10 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
     return df, assigned_centroids
 
 if __name__ == "__main__":
-    from irisreader.data import sample_raster
-    raster = sample_raster()
-    compare_plot( raster, 2, 10 )
+    #from irisreader.data import sample_raster
+    #raster = sample_raster()
+    #compare_plot( raster, 2, 10 )
     
+    from irisreader import observation
     obs_path = '/home/chuwyler/Desktop/FITS/20140128_073021_3860259280/'
-    d, c = get_mg2k_centroid_table( obs_path )
+    d, c = get_mg2k_centroid_table( observation( obs_path ) )
