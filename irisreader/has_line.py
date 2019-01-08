@@ -16,7 +16,6 @@ def find_line( line_info, description ):
     
     Parameters
     ----------
-    
     line_info : string
         line info data frame from get_lines() function.
     description : string
@@ -25,8 +24,7 @@ def find_line( line_info, description ):
         
     Returns
     -------
-    
-    integer :
+    int :
         If -1 is returned, no matching line has been found. Otherwise a positive
         integer indicating the position in the line_info data frame is returned.
     """
@@ -59,19 +57,16 @@ def has_line( file_object, description ):
     
     Parameters
     ----------
-    
     file_object : string or iris_data_cube
         The function accepts either an open iris_data_cube or the path to the
         FITS file to assess the lines in the observation.
-    
     description : string
          Any abbreviation of the line description to look for.
          
     
     Returns
     -------
-    
-    boolean :
+    bool :
         True / False
         
     """
@@ -80,6 +75,7 @@ def has_line( file_object, description ):
     # True otherwise    
     return find_line( get_lines( file_object ), description ) != -1
 
+# MOVE TO TEST
 if __name__ == "__main__":
     has_line( '/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits', 'Si' )
     has_line( "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits", 'Mg' )

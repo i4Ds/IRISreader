@@ -331,6 +331,7 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
     # return data frame
     return df, assigned_centroids
 
+# MOVE TO TEST
 if __name__ == "__main__":
     #from irisreader.data import sample_raster
     #raster = sample_raster()

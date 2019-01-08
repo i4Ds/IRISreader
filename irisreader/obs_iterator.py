@@ -119,7 +119,7 @@ class obs_iterator:
             return self.__next__()
 
 
-# Test code
+# MOVE TO TEST
 if __name__ == "__main__":
     obsit = obs_iterator( "/home/chuwyler/Desktop/FITS/", error_log="/home/chuwyler/error.log" )
     for obs in obsit:

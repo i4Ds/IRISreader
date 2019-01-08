@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# This file contains coordinate conversion functions
-
 import numpy as np
 import warnings
 from astropy.wcs import WCS
@@ -15,10 +13,13 @@ XLABEL_ANGSTROM = r'$\lambda$ [$\AA$]'
 
 class iris_coordinates:
     """
-    header: header of the selected extension
+    A class that allows to convert pixels into coordinates and vice versa.
+    Works both for spectra and rasters and makes heavy use of astropy.wcs.
+    
+    Warning: the functions in this file underwent basic tests, but more rigorous
+    tests have to performed before this class can be fully trusted.
     """
     
-    # constructor
     def __init__( self, header, mode ):
                 
         # initialize astropy WCS object and suppress warnings
@@ -62,101 +63,154 @@ class iris_coordinates:
         
     # function to set bounds
     def set_bounds( self, bounds ):
+        """
+        Set bounds on the image found e.g. by cropping procedure.
+        This is important for pixel to coordinates conversion.
+        
+        Parameters
+        ----------
+        bounds : list
+            List with Bounds [xmin, xmax, ymin, ymax]
+        """
+        
         self.cropped = True
         self.xmin, self.xmax, self.ymin, self.ymax = bounds
         
     # function to reset bounds
     def reset_bounds( self ):
+        """
+        Resets all the bounds that have previously been set.
+        """
         self.cropped = False
         self.xmin, self.xmax, self.ymin, self.ymax = None, None, None, None
     
-    # function to convert from camera (pixel) coordinates to solar/physical coordinates
-    # wraps astropy.wcs
+
     def pix2coords( self, timestep, pixel_coordinates ):
+        """
+        Function to convert from camera (pixel) coordinates to solar/physical coordinates.
+        Makes heavy use of astropy.wcs.
         
-            # make sure pixel_coordinates is a numpy array
-            pixel_coordinates = np.array( pixel_coordinates )
+        Parameters
+        ----------
+        timestep : int
+            time step in the image cube
+        pixel_coordinates : np.array
+            numpy array with x and y coordinates
+            
+        Returns
+        -------
+        np.array :
+            Tuple of solar x and y coordinates in Arcsec (SJI) or wavelength and solar y coordinates (raster) in Arcsec / Angstrom.
+        """
         
-            # check dimensions
-            ndim = pixel_coordinates.ndim
-            shape = pixel_coordinates.shape
-            if not ( (ndim == 1 and shape[0] == 2) or (ndim == 2 and shape[1] == 2) ):
-                raise ValueError( "pixel_coordinates should be a numpy array with shape (:,2)." ) 
+        # make sure pixel_coordinates is a numpy array
+        pixel_coordinates = np.array( pixel_coordinates )
+    
+        # check dimensions
+        ndim = pixel_coordinates.ndim
+        shape = pixel_coordinates.shape
+        if not ( (ndim == 1 and shape[0] == 2) or (ndim == 2 and shape[1] == 2) ):
+            raise ValueError( "pixel_coordinates should be a numpy array with shape (:,2)." ) 
+        
+        # create a copy of the input coordinates
+        pixel_coordinates = pixel_coordinates.copy()
+        
+        # generalize for single pixel pairs
+        if ndim == 1:
+            pixel_coordinates = np.array([pixel_coordinates])
             
-            # create a copy of the input coordinates
-            pixel_coordinates = pixel_coordinates.copy()
+        # add offset if image is cropped
+        if self.cropped:
+            pixel_coordinates += np.array([self.xmin, self.ymin])            
+        
+        # stack timestep to pixels
+        pixel_coordinates = np.hstack( [ pixel_coordinates, pixel_coordinates.shape[0]*[[timestep]] ] )
+         
+        # transform pixels to solar coordinates
+        solar_coordinates = self.wcs.all_pix2world( pixel_coordinates, 1 )[:,:2]  
+        
+        # convert units
+        solar_coordinates *= self.conversion_factor
+        
+        # return tuple if input was only one tuple
+        if ndim == 1:
+            return solar_coordinates[0]
+        else:
+            return solar_coordinates
             
-            # generalize for single pixel pairs
-            if ndim == 1:
-                pixel_coordinates = np.array([pixel_coordinates])
-                
-            # add offset if image is cropped
-            if self.cropped:
-                pixel_coordinates += np.array([self.xmin, self.ymin])            
-            
-            # stack timestep to pixels
-            pixel_coordinates = np.hstack( [ pixel_coordinates, pixel_coordinates.shape[0]*[[timestep]] ] )
-             
-            # transform pixels to solar coordinates
-            solar_coordinates = self.wcs.all_pix2world( pixel_coordinates, 1 )[:,:2]  
-            
-            # convert units
-            solar_coordinates *= self.conversion_factor
-            
-            # return tuple if input was only one tuple
-            if ndim == 1:
-                return solar_coordinates[0]
-            else:
-                return solar_coordinates
-            
-    # function to convert from solar/physical coordinates to camera (pixel) coordinates
-    # wraps astropy.wcs
     def coords2pix( self, timestep, solar_coordinates, round_pixels=True ):
+        """
+        Function to convert from solar/physical coordinates to camera (pixel) coordinates.
+        Makes heavy use of astropy.wcs.
+            
+        Parameters
+        ----------
+        timestep : int
+            time step in the image cube
+        solar_coordinates : np.array
+            numpy array with solar coordinates (x,y) (SJI) or solar/wavelength coordinates (lambda,y) (raster) 
+            
+        Returns
+        -------
+        np.array :
+            Tuple (x,y) of camera coordinates in pixels
+        """
         
-            # make sure solar_coordinates is a numpy array
-            solar_coordinates = np.array( solar_coordinates )
+        # make sure solar_coordinates is a numpy array
+        solar_coordinates = np.array( solar_coordinates )
+    
+        # check dimensions
+        ndim = solar_coordinates.ndim
+        shape = solar_coordinates.shape
+        if not ( (ndim == 1 and shape[0] == 2) or (ndim == 2 and shape[1] == 2) ):
+            raise ValueError( "pixel_coordinates should be a numpy array with shape (:,2)." ) 
         
-            # check dimensions
-            ndim = solar_coordinates.ndim
-            shape = solar_coordinates.shape
-            if not ( (ndim == 1 and shape[0] == 2) or (ndim == 2 and shape[1] == 2) ):
-                raise ValueError( "pixel_coordinates should be a numpy array with shape (:,2)." ) 
-            
-            # create a copy of the input coordinates
-            solar_coordinates = solar_coordinates.copy()
-            
-            # generalize for single pixel pairs
-            if ndim == 1:
-                solar_coordinates = np.array([solar_coordinates])
-    
-            # convert units
-            solar_coordinates = solar_coordinates / self.conversion_factor
-                    
-            # convert timestep to time coordinate (want always to reference time with timestep)
-            time_coordinate = self.wcs.all_pix2world( [[0,0,timestep]], 1  )[0, 2]
-    
-            # stack timestep to pixels
-            solar_coordinates = np.hstack( [ solar_coordinates, solar_coordinates.shape[0]*[[time_coordinate]] ] )
-             
-            # transform solar coordinates to pixels
-            pixel_coordinates = self.wcs.all_world2pix( solar_coordinates, 1 )[:,:2]  
-            
-            # subtract offset if image is cropped
-            if self.cropped:
-                pixel_coordinates -= np.array([self.xmin, self.ymin])
+        # create a copy of the input coordinates
+        solar_coordinates = solar_coordinates.copy()
+        
+        # generalize for single pixel pairs
+        if ndim == 1:
+            solar_coordinates = np.array([solar_coordinates])
+
+        # convert units
+        solar_coordinates = solar_coordinates / self.conversion_factor
                 
-            # round to nearest pixels            
-            if round_pixels:
-                pixel_coordinates = np.round( pixel_coordinates ).astype( np.int )
+        # convert timestep to time coordinate (want always to reference time with timestep)
+        time_coordinate = self.wcs.all_pix2world( [[0,0,timestep]], 1  )[0, 2]
+
+        # stack timestep to pixels
+        solar_coordinates = np.hstack( [ solar_coordinates, solar_coordinates.shape[0]*[[time_coordinate]] ] )
+         
+        # transform solar coordinates to pixels
+        pixel_coordinates = self.wcs.all_world2pix( solar_coordinates, 1 )[:,:2]  
+        
+        # subtract offset if image is cropped
+        if self.cropped:
+            pixel_coordinates -= np.array([self.xmin, self.ymin])
             
-            # return tuple if input was only one tuple
-            if ndim == 1:
-                return pixel_coordinates[0]
-            else:
-                return pixel_coordinates
+        # round to nearest pixels            
+        if round_pixels:
+            pixel_coordinates = np.round( pixel_coordinates ).astype( np.int )
+        
+        # return tuple if input was only one tuple
+        if ndim == 1:
+            return pixel_coordinates[0]
+        else:
+            return pixel_coordinates
                     
-    # function to get axis coordinates for a particular image
     def get_axis_coordinates( self, step, shape ):
+        """
+        Get axis coordinates for a particular image.
+        
+        Parameters
+        ----------
+        step : int
+            Time step in the data cube.
+        shape : 
+        
+        Returns
+        -------
+        """
         
         # create input for wcs.all_pix2world: list of triples (x,y,t)
         # evaluated only at coordinate axes (to be fast)

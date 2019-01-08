@@ -213,7 +213,7 @@ class sji_cube( iris_data_cube ):
         else:
             return pos
 
-# Test code
+# MOVE TO TEST
 if __name__ == "__main__":
     
     sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )

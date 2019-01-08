@@ -261,7 +261,7 @@ class raster_cube( iris_data_cube ):
         # delete image variable (otherwise memory mapping keeps file open)
         del image
 
-# Test code
+# MOVE TO TEST
 if __name__ == "__main__":
 
     # try this on the 16 core machine

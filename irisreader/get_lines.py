@@ -11,14 +11,12 @@ def get_lines( file_object ):
     
     Parameters
     ----------
-    
     file_object : string or iris_data_cube
         The function accepts either an open iris_data_cube or the path to the
         FITS file to assess the lines in the observation.
         
     Returns
     -------
-    
     pandas.DataFrame :
         Data frame with info about available lines.
     """
@@ -68,6 +66,7 @@ def get_lines( file_object ):
     
     return line_info
 
+# MOVE TO TEST
 if __name__ == "__main__":
 
     get_lines( '/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits' )
