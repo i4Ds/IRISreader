@@ -242,7 +242,7 @@ def compute_distances( raster, step, i ):
     distances = np.sqrt( np.sum( (centroids - x)**2, axis=1 ) )
     return distances
 
-def get_mg2k_centroid_table( obs ):
+def get_mg2k_centroid_table( obs, crop_raster=False ):
     """
     Returns a data frame with centroid counts for each raster image of a given
     observation.
@@ -251,6 +251,11 @@ def get_mg2k_centroid_table( obs ):
     ----------
     obs_path : str
         Path to observation
+    crop_raster : bool
+        Whether to crop raster before assigning centroids. If set to False,
+        spectra which are -200 everywhere will be assigned to centroid 51 and
+        spectra that are for some part -200 will be assigned to the nearest
+        centroid.
     
     Returns
     -------
@@ -260,12 +265,14 @@ def get_mg2k_centroid_table( obs ):
         List with array of assigned centroids for every raster image
     """   
     
-    # open and crop raster
+    # open raster and crop it if desired
     if not obs.raster.has_line("Mg II k"):
         raise Exception("This observation contains no Mg II k line")
     
     raster = obs.raster("Mg II k")
-    raster.crop()
+    
+    if crop_raster:
+        raster.crop()
     
     # empty list for assigned centroids
     assigned_centroids = []
@@ -307,6 +314,7 @@ def get_mg2k_centroid_table( obs ):
     
     # make sure columns are sorted
     df = df.reindex( ["full_obsid", "date", "image_no"] + [i for i in range(N_CENTROIDS)], axis=1 )
+    df.columns.name = ''
     
     # close observation
     obs.close()
