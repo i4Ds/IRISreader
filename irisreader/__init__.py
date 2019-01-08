@@ -5,6 +5,7 @@ from irisreader.sji_cube import sji_cube
 from irisreader.get_lines import get_lines
 from irisreader.has_line import has_line
 from irisreader.observation import observation
+from irisreader.observation import find_obs_path
 from irisreader.obs_iterator import obs_iterator
 
 from irisreader.utils import config
