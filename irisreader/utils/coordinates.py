@@ -18,6 +18,13 @@ class iris_coordinates:
     
     Warning: the functions in this file underwent basic tests, but more rigorous
     tests have to performed before this class can be fully trusted.
+    
+    Parameters
+    ----------
+    header : 
+        astropy HDUList header directly from FITS extension
+    mode:
+        whether to work in SJI ('sji') or raster ('raster') mode
     """
     
     def __init__( self, header, mode ):
@@ -206,10 +213,13 @@ class iris_coordinates:
         ----------
         step : int
             Time step in the data cube.
-        shape : 
+        shape : tuple
+            Shape of 3D data cube
         
         Returns
         -------
+        list :
+            List containing the coordinates along the x and y axis.
         """
         
         # create input for wcs.all_pix2world: list of triples (x,y,t)
@@ -226,56 +236,5 @@ class iris_coordinates:
         if self.cropped:
             return [ coords_x[self.xmin:self.xmax], coords_y[self.ymin:self.ymax] ]
         else:
-            return [ coords_x, coords_y ]    
-
-# Tests: should be sent to unit testing
-if __name__ == "__main__":
-    from irisreader import observation
-    obs = observation("/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/")
-    obs.sji[0].plot( 0, units="coordinates" )
-    obs.raster["Mg"].plot( 0 )
-    obs.raster["Mg"].plot( 0, units="coordinates" )   
-    
-    # SJI tests:
-    conversion = [UNIT_DEC_ARCSEC,UNIT_DEC_ARCSEC]
-    shape = obs.sji[0].shape
-    xcen = obs.sji[0].primary_headers['XCEN']
-    ycen = obs.sji[0].primary_headers['YCEN']
-
-    # back and forth / forth and back
-    coords2pix( obs.sji[0]._wcs, 0, pix2coords( obs.sji[0]._wcs, 0, np.array([0,0]), conversion ), conversion ) == np.array([0,0])        
-    coords2pix( obs.sji[0]._wcs, 0, pix2coords( obs.sji[0]._wcs, 0, np.array([shape[2],shape[1]]), conversion ), conversion ) == np.array([shape[2],shape[1]])        
-    np.linalg.norm( pix2coords( obs.sji[0]._wcs, 0, coords2pix( obs.sji[0]._wcs, 0, np.array([xcen,ycen]), conversion, round_pixels=False ), conversion ) - np.array([xcen,ycen]) ) < 1e10       
-    
-    # crop
-    obs.sji[0].crop()
-    coords2pix( obs.sji[0]._wcs, 0, pix2coords( obs.sji[0]._wcs, 0, np.array([0,0]), conversion, xmin=obs.sji[0]._xmin, ymin=obs.sji[0]._ymin ), conversion, xmin=obs.sji[0]._xmin, ymin=obs.sji[0]._ymin )  == np.array([0,0])
-    
-    # raster tests:
-    conversion = [UNIT_M_NM, UNIT_DEC_ARCSEC]
-    shape = obs.raster("Mg").shape
-    xcen = obs.raster("Mg").primary_headers['XCEN']
-    ycen = obs.raster("Mg").primary_headers['YCEN']
-
-    # back and forth / forth and back
-    coords2pix( obs.raster["Mg"]._wcs, 0, pix2coords( obs.raster["Mg"]._wcs, 0, np.array([0,0]), conversion ), conversion ) == np.array([0,0])
-    coords2pix( obs.raster["Mg"]._wcs, 0, pix2coords( obs.raster["Mg"]._wcs, 0, np.array([shape[2],shape[1]]), conversion ), conversion ) == np.array([shape[2],shape[1]])
-    np.linalg.norm( pix2coords( obs.raster("Mg")._wcs, 0, coords2pix( obs.raster("Mg")._wcs, 0, np.array([xcen,ycen]), conversion, round_pixels=False ), conversion ) - np.array([xcen,ycen]) ) < 1e10       
-
-    # crop
-    obs.raster("Mg").crop()
-    coords2pix( obs.raster("Mg")._wcs, 0, pix2coords( obs.raster("Mg")._wcs, 0, np.array([0,0]), conversion, xmin=obs.raster("Mg")._xmin, ymin=obs.raster("Mg")._ymin ), conversion, xmin=obs.raster("Mg")._xmin, ymin=obs.raster("Mg")._ymin )  == np.array([0,0])
-    
-    
-    
-    # get axis
-    obs.sji[0].plot(0, units="coordinates")
-    axes_coords = get_axis_coordinates( obs.sji[0]._wcs, 0, obs.sji[0].shape, [UNIT_DEC_ARCSEC, UNIT_DEC_ARCSEC] )    
-    [ np.min(axes_coords[0]), np.max(axes_coords[0]) ]
-    [ np.min(axes_coords[1]), np.max(axes_coords[1]) ]
-
-    obs.raster["Mg"].plot(0, units="coordinates")
-    axes_coords = get_axis_coordinates( obs.raster["Mg"]._wcs, 0, obs.raster["Mg"].shape, [UNIT_M_NM, UNIT_DEC_ARCSEC] )    
-    [ np.min(axes_coords[0]), np.max(axes_coords[0]) ]
-    [ np.min(axes_coords[1]), np.max(axes_coords[1]) ]
+            return [ coords_x, coords_y ]
 
