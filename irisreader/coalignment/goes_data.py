@@ -112,7 +112,7 @@ class goes_data:
             # Skip lines until data: label is read
             for line in f:
                 if "<html" in line:
-                    #os.remove( file_path )
+                    os.remove( file_path )
                     raise Exception("GOES: Could not parse: {} is a html file (removed it)".format(file_path))
                 if line.startswith("data:"):
                     break
