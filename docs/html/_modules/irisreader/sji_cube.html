@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>irisreader.sji_cube &mdash; irisreader 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="irisreader 0.2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> irisreader
+          
+
+          
+            
+            <img src="../../_static/irisreader.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reading.html">Reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coalignment.html">Co-alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../centroids.html">Centroid Study Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">irisreader</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>irisreader.sji_cube</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for irisreader.sji_cube</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">sji_cube class: abstraction that makes the data, the headers and a number</span>
+<span class="sd">of auxiliary variables available for IRIS slit-jaw image data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
+<span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">iris_data_cube</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.notebooks</span> <span class="k">import</span> <span class="n">in_notebook</span>
+
+<div class="viewcode-block" id="sji_cube"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube">[docs]</a><span class="k">class</span> <span class="nc">sji_cube</span><span class="p">(</span> <span class="n">iris_data_cube</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class implements an abstraction of an IRIS SJI FITS file.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : string</span>
+<span class="sd">        Path to the IRIS SJI FITS file.</span>
+<span class="sd">    keep_null : boolean</span>
+<span class="sd">        Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type : str</span>
+<span class="sd">        Observation type: &#39;sji&#39; or &#39;raster&#39;.</span>
+<span class="sd">    obsid : str</span>
+<span class="sd">        Observation ID of the selected observation.</span>
+<span class="sd">    desc : str</span>
+<span class="sd">        Description of the selected observation.</span>
+<span class="sd">    start_date : str</span>
+<span class="sd">        Start date of the selected observation.</span>
+<span class="sd">    end_date : str</span>
+<span class="sd">        Endt date of the selected observation.</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        Observation mode of the selected observation (&#39;sit-and-stare&#39; or &#39;raster&#39;).</span>
+<span class="sd">    line_info : str</span>
+<span class="sd">        Description of the selected line.</span>
+<span class="sd">    n_steps : int</span>
+<span class="sd">        Number of time steps in the data cube.</span>
+<span class="sd">    primary_headers : dict</span>
+<span class="sd">        Dictionary with primary headers of the FITS file (lazy loaded).</span>
+<span class="sd">    time_specific_headers : dict</span>
+<span class="sd">        List of dictionaries with time-specific headers of the selected line (lazy loaded).</span>
+<span class="sd">    headers : dict</span>
+<span class="sd">       List of combined primary and time-specific headers (lazy loaded).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># constructor</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+        
+        <span class="c1"># call constructor of parent iris_data_cube</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="n">file</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="n">force_valid_steps</span> <span class="p">)</span>        
+        
+        <span class="c1"># raise error if the data_cube is a raster</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;raster&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is a raster file. Please use raster_cube to open it.&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># line specific headers are not required - delete instance variable</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_specific_headers</span>
+    
+    <span class="c1"># return description upon a print call</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;SJI </span><span class="si">{}</span><span class="s2"> line window:</span><span class="se">\n</span><span class="s2">(n_steps, n_y, n_x) = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
+
+    <span class="c1"># function to convert time-specific headers from a file to combined headers</span>
+    <span class="k">def</span> <span class="nf">_load_combined_header_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[si_cube] Lazy loading combined headers for file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_no</span><span class="p">))</span>
+        
+        <span class="c1"># get time-specific headers for file and add primary headers and line-specific headers</span>
+        <span class="n">file_time_specific_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_time_specific_header_file</span><span class="p">(</span> <span class="n">file_no</span> <span class="p">)</span>
+        <span class="n">combined_headers</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">(</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">t_header</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="p">)</span> <span class="k">for</span> <span class="n">t_header</span> <span class="ow">in</span> <span class="n">file_time_specific_headers</span> <span class="p">]</span>
+        
+        <span class="c1"># change some headers &#39;manually&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">combined_headers</span><span class="p">)</span> <span class="p">):</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;XCEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;XCENIX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;YCEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;YCENIX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC1_1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC1_1IX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC1_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC1_2IX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC2_1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC2_1IX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC2_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;PC2_2IX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;CRVAL1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;XCENIX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;CRVAL2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;YCENIX&#39;</span><span class="p">]</span>
+            <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;EXPTIME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;EXPTIMES&#39;</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">combined_headers</span>
+
+    <span class="c1"># overwrite get_image_step function to be able to divide by exposure time</span>
+    <span class="c1"># divide_by_exptime defaults to False because the exposure time has to be </span>
+    <span class="c1"># searched for in the time-specific headers which slows file access down.</span>
+    <span class="c1"># Moreover, often the data are normalized anyway.</span>
+<div class="viewcode-block" id="sji_cube.get_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.get_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the image at position step. This function uses the section </span>
+<span class="sd">        routine of astropy to only return a slice of the image and avoid </span>
+<span class="sd">        memory problems.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Time step in the data cube.</span>
+<span class="sd">        divide_by_exptime : bool</span>
+<span class="sd">            Whether to divide image by its exposure time or not. Dividing by exposure</span>
+<span class="sd">            time will present a normalized image instead of the usual data numbers.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            2D image at time step &lt;step&gt;. Format: [y,x].</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        
+        <span class="k">if</span> <span class="n">divide_by_exptime</span><span class="p">:</span>
+            <span class="c1"># get exposure time stored in &#39;EXPTIMES&#39;</span>
+            <span class="n">exptime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">step</span> <span class="p">][</span><span class="s1">&#39;EXPTIMES&#39;</span><span class="p">]</span>
+        
+            <span class="c1"># divide image by exposure time</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span> 
+            <span class="n">image</span><span class="p">[</span><span class="n">image</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">exptime</span>
+            <span class="k">return</span> <span class="n">image</span>
+        
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span> 
+        
+            
+    <span class="c1"># function to plot an image step</span>
+<div class="viewcode-block" id="sji_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the slit-jaw image at time step &lt;step&gt;. </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            The time step in the SJI.</span>
+<span class="sd">        units : str</span>
+<span class="sd">            Tick units: &#39;pixels&#39; for indices in the array or &#39;coordinates&#39; for units in arcseconds on the sun.</span>
+<span class="sd">        gamma : float</span>
+<span class="sd">            Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),</span>
+<span class="sd">            gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</span>
+<span class="sd">        cutoff_percentile : float</span>
+<span class="sd">            Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce </span>
+<span class="sd">            this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile</span>
+<span class="sd">            in a range between 0 and 100.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if gamma is not specified, use gamma=1 for SJI_2832 and gamma=0.4 for everything else</span>
+        <span class="k">if</span> <span class="n">gamma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;Mg II wing 2832&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="p">:</span> <span class="c1"># photospheric line</span>
+                <span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+        <span class="c1"># load image into memory and exponentiate it with power</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">image</span><span class="p">,</span> <span class="n">cutoff_percentile</span> <span class="p">)</span>
+    
+        <span class="c1"># set image extent and labels according to choice of units</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span> <span class="p">)</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">xlabel</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">ylabel</span> <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;pixels&#39;</span><span class="p">:</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;camera x&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;camera y&quot;</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="s2">&quot;Plot units &#39;&quot;</span> <span class="o">+</span> <span class="n">units</span> <span class="o">+</span> <span class="s2">&quot;&#39; not defined!&quot;</span> <span class="p">)</span>
+            
+        <span class="c1"># create title</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="c1"># show image</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gist_heat&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span> <span class="p">)</span>
+        
+        <span class="c1"># set aspect ratio depending</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span> 
+        
+        <span class="c1"># show plot if in terminal</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_notebook</span><span class="p">():</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+        <span class="c1"># delete image variable (otherwise memory mapping keeps file open)</span></div>
+        <span class="k">del</span> <span class="n">image</span>
+
+    <span class="c1"># function to get slit position (taking into account cropping)</span>
+<div class="viewcode-block" id="sji_cube.get_slit_pos"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.get_slit_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_slit_pos</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns position of the slit in pixels (takes into account cropping).</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Time step in the data cube.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        slit_position : int</span>
+<span class="sd">            Slit position in pixels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">step</span> <span class="p">][</span><span class="s1">&#39;SLTPX1IX&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span>
+        <span class="k">else</span><span class="p">:</span></div></div>
+            <span class="k">return</span> <span class="n">pos</span>
+
+<span class="c1"># Test code</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    
+    <span class="n">sji</span> <span class="o">=</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="s1">&#39;/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits&#39;</span> <span class="p">)</span>
+    <span class="n">very_large_sji</span> <span class="o">=</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits&quot;</span> <span class="p">)</span>
+
+    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">sji</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
+    <span class="n">sji</span><span class="o">.</span><span class="n">crop</span><span class="p">()</span>
+    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">sji</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
+
+    <span class="n">very_large_sji</span><span class="o">.</span><span class="n">crop</span><span class="p">()</span>
+    <span class="n">very_large_sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Cédric Huwyler.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

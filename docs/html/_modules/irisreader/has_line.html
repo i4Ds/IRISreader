@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>irisreader.has_line &mdash; irisreader 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="irisreader 0.2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> irisreader
+          
+
+          
+            
+            <img src="../../_static/irisreader.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reading.html">Reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coalignment.html">Co-alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../centroids.html">Centroid Study Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">irisreader</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>irisreader.has_line</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for irisreader.has_line</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># import libraries</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">get_lines</span>
+
+<span class="c1"># import iris line list</span>
+<span class="kn">from</span> <span class="nn">irisreader.instrument</span> <span class="k">import</span> <span class="n">sji_linelist</span><span class="p">,</span> <span class="n">raster_linelist</span>
+
+<span class="c1"># function to return the extension of a line description</span>
+<span class="k">def</span> <span class="nf">find_line</span><span class="p">(</span> <span class="n">line_info</span><span class="p">,</span> <span class="n">description</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the position of the line matching the supplied description using</span>
+<span class="sd">    the given line_info data frame. If no line is found, -1 is returned, if</span>
+<span class="sd">    multiple lines match the description, an error is thrown.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    line_info : string</span>
+<span class="sd">        line info data frame from get_lines() function.</span>
+<span class="sd">    description : string</span>
+<span class="sd">        Any abbreviation of the line description to look for.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    integer :</span>
+<span class="sd">        If -1 is returned, no matching line has been found. Otherwise a positive</span>
+<span class="sd">        integer indicating the position in the line_info data frame is returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
+    <span class="n">descriptions</span> <span class="o">=</span> <span class="n">line_info</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">descriptions</span> <span class="k">if</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span> 
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">res</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># no matching line found</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span> <span class="n">res</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># multiple matching lines found</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multiple lines match this description!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># check whether this line is ambiguous in the whole IRIS linelist</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">sji_linelist</span><span class="p">:</span>
+            <span class="n">linelist_res</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sji_linelist</span> <span class="k">if</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">linelist_res</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">raster_linelist</span> <span class="k">if</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span> 
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">linelist_res</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This line description has multiple matches in the IRIS line list, you might run into problems when using it blindly. Matches: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">linelist_res</span><span class="p">)</span> <span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">descriptions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="has_line"><a class="viewcode-back" href="../../reading.html#irisreader.has_line">[docs]</a><span class="k">def</span> <span class="nf">has_line</span><span class="p">(</span> <span class="n">file_object</span><span class="p">,</span> <span class="n">description</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if the supplied raster or SJI contains the line in question </span>
+<span class="sd">    and False if not. If the line is ambiguously specified, an error will be</span>
+<span class="sd">    raised. Both filenames and open iris_data_cube objects are accepted.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    file_object : string or iris_data_cube</span>
+<span class="sd">        The function accepts either an open iris_data_cube or the path to the</span>
+<span class="sd">        FITS file to assess the lines in the observation.</span>
+<span class="sd">    </span>
+<span class="sd">    description : string</span>
+<span class="sd">         Any abbreviation of the line description to look for.</span>
+<span class="sd">         </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    boolean :</span>
+<span class="sd">        True / False</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get line position using find_line and return False if result is -1 and</span>
+    <span class="c1"># True otherwise    </span></div>
+    <span class="k">return</span> <span class="n">find_line</span><span class="p">(</span> <span class="n">get_lines</span><span class="p">(</span> <span class="n">file_object</span> <span class="p">),</span> <span class="n">description</span> <span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">has_line</span><span class="p">(</span> <span class="s1">&#39;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;Si&#39;</span> <span class="p">)</span>
+    <span class="n">has_line</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits&quot;</span><span class="p">,</span> <span class="s1">&#39;Mg&#39;</span> <span class="p">)</span>
+    
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Cédric Huwyler.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

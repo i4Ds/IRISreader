@@ -1,0 +1,973 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>irisreader.iris_data_cube &mdash; irisreader 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="irisreader 0.2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> irisreader
+          
+
+          
+            
+            <img src="../../_static/irisreader.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reading.html">Reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coalignment.html">Co-alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../centroids.html">Centroid Study Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">irisreader</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>irisreader.iris_data_cube</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for irisreader.iris_data_cube</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">iris_data_cube class: abstraction that makes the data, the headers and a number</span>
+<span class="sd">of auxiliary variables available</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.fits</span> <span class="k">import</span> <span class="n">line2extension</span><span class="p">,</span> <span class="n">array2dict</span><span class="p">,</span> <span class="n">CorruptFITSException</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.date</span> <span class="k">import</span> <span class="n">from_Tformat</span><span class="p">,</span> <span class="n">to_Tformat</span><span class="p">,</span> <span class="n">to_epoch</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.coordinates</span> <span class="k">import</span> <span class="n">iris_coordinates</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils</span> <span class="k">import</span> <span class="n">lazy_file_header_list</span>
+<span class="kn">from</span> <span class="nn">irisreader.preprocessing</span> <span class="k">import</span> <span class="n">image_cube_cropper</span>
+<span class="kn">from</span> <span class="nn">irisreader.coalignment</span> <span class="k">import</span> <span class="n">goes_data</span>
+
+<span class="c1"># IRIS data cube class</span>
+<span class="k">class</span> <span class="nc">iris_data_cube</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class implements an abstraction of an IRIS FITS file collection, </span>
+<span class="sd">    specifically it appears as one single data cube, automatically discarding</span>
+<span class="sd">    images that are entirely null and concatenating multiple files. Moreover,</span>
+<span class="sd">    it provides basic access to image headers. It provides the basic </span>
+<span class="sd">    functionalities needed for the classes sji_cube and raster_cube that then</span>
+<span class="sd">    implement more sji and raster-specific details. Hence, this class should </span>
+<span class="sd">    only be used internally.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files : string</span>
+<span class="sd">        Path or list of paths to the (sorted) IRIS FITS file(s).</span>
+<span class="sd">    line : string</span>
+<span class="sd">        Line to select: this can be any unique abbreviation of the line name (e.g. &quot;Mg&quot;). For non-unique abbreviations, an error is thrown.</span>
+<span class="sd">    keep_null : boolean</span>
+<span class="sd">        Controls whether images that are NULL (-200) everywhere are removed from the data cube (keep_null=False) or not (keep_null=True).</span>
+<span class="sd">    force_valid_steps : boolean</span>
+<span class="sd">        iris_data_cube intially creates a list of valid images that are in the</span>
+<span class="sd">        data cube. This list is stored to the directory where the file resides</span>
+<span class="sd">        and can then be loaded in the future instead of creating the list again.</span>
+<span class="sd">        `force_valid_steps` forces iris_data_cube to create the list again even</span>
+<span class="sd">        if it&#39;s already stored.</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type : str</span>
+<span class="sd">        Observation type: &#39;sji&#39; or &#39;raster&#39;.</span>
+<span class="sd">    obsid : str</span>
+<span class="sd">        Observation ID of the selected observation.</span>
+<span class="sd">    desc : str</span>
+<span class="sd">        Description of the selected observation.</span>
+<span class="sd">    start_date : str</span>
+<span class="sd">        Start date of the selected observation.</span>
+<span class="sd">    end_date : str</span>
+<span class="sd">        End date of the selected observation.</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        Observation mode of the selected observation (&#39;sit-and-stare&#39; or &#39;raster&#39;).</span>
+<span class="sd">    line_info : str</span>
+<span class="sd">        Description of the selected line.</span>
+<span class="sd">    n_steps : int</span>
+<span class="sd">        Number of time steps in the data cube (this is affected by the keep_null argument).</span>
+<span class="sd">    primary_headers: dict</span>
+<span class="sd">        Dictionary with primary headers of the FITS file (lazy loaded).</span>
+<span class="sd">    time_specific_headers: dict</span>
+<span class="sd">        List of dictionaries with time-specific headers of the selected line (lazy loaded).  </span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        Shape of the data cube (this is affected by the keep_null argument)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># constructor</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+                
+        <span class="c1"># if filename is not a list, create a list with one element:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">files</span><span class="p">,</span> <span class="nb">list</span> <span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span> <span class="n">files</span> <span class="p">]</span>
+
+        <span class="c1"># store arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="n">files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keep_null</span> <span class="o">=</span> <span class="n">keep_null</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_valid_steps</span> <span class="o">=</span> <span class="n">force_valid_steps</span>
+        
+        <span class="c1"># request first file from filehub and get general info</span>
+        <span class="n">first_file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+        
+        <span class="c1"># check whether the INSTRUMENT header is either set to SJI or raster:</span>
+        <span class="k">if</span> <span class="s1">&#39;INSTRUME&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SJI&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEC&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;This is neither IRIS SJI nor raster! (according to the INSTRUME header)&quot;</span> <span class="p">)</span>
+        
+        <span class="c1"># set FITS type</span>
+        <span class="k">if</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SJI&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;sji&#39;</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;raster&#39;</span>
+
+        <span class="c1"># Check if data part of first extension has only two dimensions. </span>
+        <span class="c1"># If yes, this is a SJI with only one single image. Currently such files</span>
+        <span class="c1"># cannot be handled, throw an error</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;shape&#39;</span> <span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1">#first_file[0].data = np.array([first_file[0].data])</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;SJI: first extension has only two dimensions (single image, not implemented)&quot;</span> <span class="p">)</span>
+            
+        <span class="c1"># get extensions with data cubes in them</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">first_file</span> <span class="p">)</span>
+        <span class="n">data_cube_extensions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span> <span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;shape&#39;</span> <span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">data_cube_extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">i</span> <span class="p">)</span>
+       
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">data_cube_extensions</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;No data cubes found.&quot;</span> <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="n">data_cube_extensions</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_data_ext</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="n">data_cube_extensions</span> <span class="p">)</span>
+        
+        <span class="c1"># find extension that contains selected line</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span> <span class="c1"># choose first line by default</span>
+        <span class="k">elif</span> <span class="n">line2extension</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">line</span> <span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="o">=</span> <span class="n">line2extension</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">line</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">((</span><span class="s1">&#39;Change the line parameter: The desired spectral window is either not found or specified ambiguously.&#39;</span><span class="p">))</span>
+        
+        <span class="c1"># check the integrity of this first file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_integrity</span><span class="p">(</span> <span class="n">first_file</span> <span class="p">)</span>
+        
+        <span class="c1"># set obsid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obsid</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;OBSID&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># set date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;ENDOBS&#39;</span><span class="p">]</span>
+
+        <span class="c1"># set description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;OBS_DESC&#39;</span><span class="p">]</span>
+
+        <span class="c1"># get observation mode</span>
+        <span class="k">if</span> <span class="s1">&#39;sit-and-stare&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;sit-and-stare&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;n-step raster&#39;</span>
+
+        <span class="c1"># number of files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="p">)</span>
+            
+        <span class="c1"># line information (SJI info is replaced by actual line information)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TDESC&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="s1">&#39;SJI_1330&#39;</span><span class="p">,</span> <span class="s1">&#39;C II 1330&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="s1">&#39;SJI_1400&#39;</span><span class="p">,</span> <span class="s1">&#39;Si IV 1400&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="s1">&#39;SJI_2796&#39;</span><span class="p">,</span> <span class="s1">&#39;Mg II h/k 2796&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span> <span class="s1">&#39;SJI_2832&#39;</span><span class="p">,</span> <span class="s1">&#39;Mg II wing 2832&#39;</span> <span class="p">)</span>
+        
+        <span class="c1"># no cropping: set variables to none</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="c1"># set some variables that will be lazy loaded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_specific_headers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="c1"># initialize coordinate converter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span> <span class="o">=</span> <span class="n">iris_coordinates</span><span class="p">(</span> <span class="n">header</span><span class="o">=</span><span class="n">first_file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="p">)</span>
+
+
+    <span class="c1"># close all files</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the FITS file(s)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+            <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">close</span><span class="p">(</span> <span class="n">file</span> <span class="p">)</span>
+    
+    <span class="c1"># some components are loaded only upon first access</span>
+    <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;primary_headers&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;primary_headers&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_primary_headers</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;primary_headers&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;_valid_steps&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_valid_steps&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_valid_steps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_valid_steps&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;n_steps&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;n_steps&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_valid_steps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;n_steps&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;shape&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_valid_steps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;_original_shape&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_original_shape&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_valid_steps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_original_shape&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;time_specific_headers&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;time_specific_headers&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_time_specific_headers</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;time_specific_headers&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;line_specific_headers&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;line_specific_headers&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_line_specific_headers</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;line_specific_headers&quot;</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;headers&#39;</span> <span class="ow">and</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_combined_headers</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">)</span>
+
+    <span class="c1"># prepare valid steps</span>
+    <span class="k">def</span> <span class="nf">_prepare_valid_steps</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Lazy loading valid image steps&quot;</span><span class="p">)</span>
+
+        <span class="n">valid_steps</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># generate the path to the file with the precomputed valid steps</span>
+        <span class="n">keep_null_str</span> <span class="o">=</span> <span class="s2">&quot;keep_null&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_null</span> <span class="k">else</span> <span class="s2">&quot;discard_null&quot;</span>
+        <span class="n">valid_steps_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/.valid_steps_</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">),</span> <span class="n">keep_null_str</span> <span class="p">)</span>
+    
+        <span class="c1"># valid steps have already been precomputed: try to load the file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_valid_steps</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span> <span class="n">valid_steps_file</span> <span class="p">):</span>
+            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] using precomputed steps&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">valid_steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="n">valid_steps_file</span> <span class="p">)</span>
+        
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span> <span class="n">e</span> <span class="p">)</span>
+                
+        <span class="c1"># no precomputed valid image steps: assess them now</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># go through all the files: make sure they are not corrupt with _check_integrity</span>
+            <span class="k">for</span> <span class="n">file_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="p">)</span> <span class="p">):</span>
+            
+                <span class="c1"># request file from file hub</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span> <span class="n">file_no</span> <span class="p">]</span> <span class="p">)</span>
+            
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># make sure that file is not corrupt</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_integrity</span><span class="p">(</span> <span class="n">f</span> <span class="p">)</span>
+                
+                    <span class="c1"># check whether some images are -200 everywhere and if desired</span>
+                    <span class="c1"># (keep_null=False), do not label these images as valid</span>
+                    <span class="k">for</span> <span class="n">file_step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">):</span>
+                        
+                        <span class="c1"># use the section or the data interface, depending on whether files are opened with memory mapping or not</span>
+                        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span>
+                            <span class="n">image_is_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,:,:]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">200</span> <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">image_is_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,:,:]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">200</span> <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_null</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image_is_null</span><span class="p">:</span>
+                            <span class="n">valid_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span><span class="p">]</span> <span class="p">)</span>
+                        
+                <span class="k">except</span> <span class="n">CorruptFITSException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;File #</span><span class="si">{}</span><span class="s2"> is corrupt, discarding it (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">file_no</span><span class="p">,</span> <span class="n">e</span> <span class="p">)</span> <span class="p">)</span>
+            
+            <span class="c1"># store valid steps</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span> <span class="n">valid_steps_file</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">valid_steps</span> <span class="p">)</span> <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span> <span class="n">e</span> <span class="p">)</span>
+        
+        
+        
+        <span class="c1"># return an error if the data cube contains no valid steps    </span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">valid_steps</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span><span class="s2">&quot;This data cube contains no valid images!&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># update class instance variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">valid_steps</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">valid_steps</span> <span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span> <span class="o">-</span><span class="mi">1</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+        
+    <span class="c1"># prepare primary headers</span>
+    <span class="k">def</span> <span class="nf">_prepare_primary_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Lazy loading primary headers&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># request first file from file hub</span>
+        <span class="n">first_file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+        
+        <span class="c1"># convert headers to dictionary and clean up some values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;SAA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;SAA&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;NAXIS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        
+        <span class="c1"># remove empty headers</span>
+        <span class="k">if</span> <span class="s1">&#39;&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># DATE_OBS may not always be there: set it to STARTOBS</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;STARTOBS&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="s2">&quot;No STARTOBS in primary header!&quot;</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span>
+
+    <span class="c1"># assign lazy_file_header_list to time_specific_headers        </span>
+    <span class="k">def</span> <span class="nf">_prepare_time_specific_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span> 
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_time_specific_header_file</span> <span class="p">)</span>
+        
+    <span class="c1"># assign lazy_file_header_list to headers</span>
+    <span class="k">def</span> <span class="nf">_prepare_combined_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Assigning lazy_file_header_list object to headers&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_combined_header_file</span> <span class="p">)</span>    
+    
+    <span class="c1"># function to load time-specific headers from a file    </span>
+    <span class="k">def</span> <span class="nf">_load_time_specific_header_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Lazy loading time specific headers for file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_no</span><span class="p">))</span>
+
+        <span class="c1"># request file from file hub</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">file_no</span><span class="p">]</span> <span class="p">)</span>
+         
+        <span class="c1"># read headers from data array</span>
+        <span class="n">file_time_specific_headers</span> <span class="o">=</span> <span class="n">array2dict</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="p">)</span>
+        
+        <span class="c1"># apply some corrections to the individual headers</span>
+        <span class="n">startobs</span> <span class="o">=</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">file_time_specific_headers</span> <span class="p">)</span> <span class="p">):</span>
+        
+            <span class="c1"># set a DATE_OBS header in each frame as DATE_OBS = STARTOBS + TIME</span>
+            <span class="n">file_time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_Tformat</span><span class="p">(</span> <span class="n">startobs</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span> <span class="n">seconds</span><span class="o">=</span><span class="n">file_time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;TIME&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
+        
+            <span class="c1"># if key &#39;DSRCNIX&#39; exists: rename it to &#39;DSRCRCNIX&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;DSRCNIX&#39;</span> <span class="ow">in</span> <span class="n">file_time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">file_time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;DSRCRCNIX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;DSRCNIX&#39;</span><span class="p">)</span>
+                
+            <span class="c1"># remove some keys (as IDL does it, currently disabled)</span>
+            <span class="c1"># for key_to_remove in [&#39;PC1_1IX&#39;, &#39;PC1_2IX&#39;, &#39;PC2_1IX&#39;, &#39;PC2_2IX&#39;, &#39;PC2_3IX&#39;, &#39;PC3_1IX&#39;, &#39;PC3_2IX&#39;, &#39;PC3_3IX&#39;, &#39;OPHASEIX&#39;, &#39;OBS_VRIX&#39;]:</span>
+            <span class="c1">#     if key_to_remove in file_time_specific_headers[i].keys():</span>
+            <span class="c1">#        del file_time_specific_headers[i][ key_to_remove ]</span>
+            
+        <span class="c1"># return headers</span>
+        <span class="k">return</span> <span class="n">file_time_specific_headers</span>
+
+    <span class="c1"># function to convert time-specific headers from a file to combined headers</span>
+    <span class="k">def</span> <span class="nf">_load_combined_header_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> <span class="s2">&quot;This feature is not implemented in iris_data_cube, please use sji_cube or raster_cube&quot;</span> <span class="p">)</span>
+         
+    <span class="c1"># prepare line specific headers</span>
+    <span class="k">def</span> <span class="nf">_prepare_line_specific_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Lazy loading line specific headers&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># request first file from file hub</span>
+        <span class="n">first_file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+        
+        <span class="c1"># get line-specific headers from data extension (if selected extension is not the first one)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">line_specific_headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">first_file</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">header</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_specific_headers</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># add wavelnth, wavename, wavemin and wavemax (without loading primary headers)</span>
+        <span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVELNTH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TWAVE&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVENAME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TDESC&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVEMIN&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TWMIN&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVEMAX&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TWMAX&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVEWIN&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TDET&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_data_ext</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_specific_headers</span> <span class="o">=</span> <span class="n">line_specific_headers</span>
+        
+    <span class="c1"># function to remove image steps from valid steps (e.g. by cropper)</span>
+    <span class="k">def</span> <span class="nf">_remove_steps</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">steps</span> <span class="p">):</span>
+    
+        <span class="c1"># if steps is a single integer, put it into a list    </span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">steps</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="p">):</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="p">[</span><span class="n">steps</span><span class="p">]</span>
+    
+        <span class="c1"># now remove the steps (make sure they are removed simultaneously)</span>
+        <span class="n">valid_steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span>
+        
+        <span class="c1"># raise a warning if the data cube contains no valid steps    </span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">valid_steps</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span><span class="s2">&quot;This data cube contains no valid images! You might want to set check_coverage=False or remove_bad=False when cropping (restored original state)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span> <span class="o">=</span> <span class="n">valid_steps</span>
+
+        <span class="c1"># remove steps from headers if already loaded</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span> <span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">steps</span> <span class="p">]</span>
+        
+        <span class="c1"># update n_steps and shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">)</span> <span class="p">)</span>
+
+    <span class="c1"># function to find file number and file step of a given time step</span>
+    <span class="k">def</span> <span class="nf">_whereat</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">step</span><span class="p">,</span> <span class="p">:</span> <span class="p">]</span>
+    
+    <span class="c1"># function to return valid steps in a file</span>
+    <span class="k">def</span> <span class="nf">_get_valid_steps</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">file_no</span><span class="p">,</span> <span class="mi">1</span> <span class="p">]</span>
+    
+    <span class="c1"># how to behave if called as a data array</span>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">index</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstracts access to the data cube. While in the get_image_step function</span>
+<span class="sd">        data is loaded through the the section method to make sure that only</span>
+<span class="sd">        the image requested by the user is loaded into memory, this method</span>
+<span class="sd">        directly accesses the data object of the hdulist, allowing faster slicing</span>
+<span class="sd">        of data. Whenever only time slices are required (i.e. single images), </span>
+<span class="sd">        the get_image_step function should be used instead, since access </span>
+<span class="sd">        through the data object can lead to memory problems.</span>
+<span class="sd">        </span>
+<span class="sd">        If the data cube happens to be cropped, this method will automatically</span>
+<span class="sd">        abstract access to the cropped data. If keep_null=False, null images</span>
+<span class="sd">        will automatically be removed from the representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># check dimensions - this rules out the ellisis (...) for the moment</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">index</span> <span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is a three-dimensional object, please index accordingly.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># get involved file numbers and steps</span>
+        <span class="c1"># if index[0] is a single number (not iterable, not a slice), make a list of it</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">slice</span> <span class="p">):</span>
+            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">:</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span> <span class="p">]</span>
+        
+        <span class="c1"># if image should be cropped make sure that slices stay slices (is about 30% faster)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>  
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">slice</span> <span class="p">):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span> <span class="k">if</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span> <span class="k">if</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span>  
+                <span class="n">internal_index1</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">step</span> <span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">internal_index1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span> <span class="p">)[</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">]</span>
+                
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">slice</span> <span class="p">):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span> <span class="k">if</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span> <span class="k">if</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span>  
+                <span class="n">internal_index2</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">step</span> <span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">internal_index2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span> <span class="p">)[</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">internal_index1</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">internal_index2</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># get all data slices and concatenate them (always use data interface here, regardless of whether memory mapping is used or not)</span>
+        <span class="n">slices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">file_no</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span> <span class="n">valid_steps</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="p">):</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">file_no</span><span class="p">]</span> <span class="p">)</span>
+            <span class="n">slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">file</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span> <span class="n">valid_steps</span><span class="p">[</span> <span class="n">valid_steps</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">file_no</span><span class="p">,</span> <span class="mi">1</span> <span class="p">],</span> <span class="n">internal_index1</span><span class="p">,</span> <span class="n">internal_index2</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="n">slices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span> <span class="n">slices</span> <span class="p">)</span>
+
+        <span class="c1"># remove first dimension if there is only one slice</span>
+        <span class="k">if</span> <span class="n">slices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">slices</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+           <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span>
+            
+        <span class="k">return</span> <span class="n">slices</span>
+
+    <span class="c1"># function to get an image step</span>
+    <span class="c1"># Note: this method makes use of astropy&#39;s section method to directly access</span>
+    <span class="c1"># the data on-disk without loading all of the data into memory</span>
+    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the image at position step. This function uses the section </span>
+<span class="sd">        routine of astropy to only return a slice of the image and avoid </span>
+<span class="sd">        memory problems.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Time step in the data cube.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            2D image at time step &lt;step&gt;. Format: [y,x] (SJI), [y,wavelength] (raster).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Check whether line and step exist</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="s2">&quot;This image step does not exist!&quot;</span> <span class="p">)</span>
+
+        <span class="c1"># get file number and file step            </span>
+        <span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whereat</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span>
+        
+        <span class="c1"># request file from file hub</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">file_no</span><span class="p">]</span> <span class="p">)</span>
+                
+        <span class="c1"># get image (cropped if desired)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
+                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
+                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+        
+            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
+                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
+                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+    <span class="c1"># crop data cube</span>
+    <span class="k">def</span> <span class="nf">crop</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">remove_bad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_coverage</span><span class="o">=</span><span class="kc">True</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;        </span>
+<span class="sd">        Crops the images in the data cube.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        remove_bad: boolean</span>
+<span class="sd">            Whether to remove corrupt images.</span>
+<span class="sd">        check_coverage : boolean</span>
+<span class="sd">            Whether to check the coverage of the cropped image. It can happen that</span>
+<span class="sd">            there are patches of negative values in images, either due to loss of</span>
+<span class="sd">            data during transmission (typically a band or a large rectangular patch </span>
+<span class="sd">            of negative data) or due to overall low data counts (missing data is no</span>
+<span class="sd">            data). </span>
+<span class="sd">            image_cropper labels an image as corrupt if &gt;5% of its pixels are still</span>
+<span class="sd">            negative after cropping. This might be problematic for lines with low </span>
+<span class="sd">            data counts (and therefore many missing pixels) and the user is advised </span>
+<span class="sd">            to disable the coverage check for such lines. </span>
+<span class="sd">            A method that is able to distinguish missing data arising from </span>
+<span class="sd">            transmission errors from missing data due to low data counts could be </span>
+<span class="sd">            helpful here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
+            <span class="n">cropper</span> <span class="o">=</span> <span class="n">image_cube_cropper</span><span class="p">(</span> <span class="n">check_coverage</span><span class="o">=</span><span class="n">check_coverage</span> <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span> <span class="bp">self</span> <span class="p">)</span>
+
+            <span class="c1"># remove corrupt images if desired            </span>
+            <span class="k">if</span> <span class="n">remove_bad</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_remove_steps</span><span class="p">(</span> <span class="n">cropper</span><span class="o">.</span><span class="n">get_null_images</span><span class="p">()</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_remove_steps</span><span class="p">(</span> <span class="n">cropper</span><span class="o">.</span><span class="n">get_corrupt_images</span><span class="p">()</span> <span class="p">)</span>
+
+            <span class="c1"># set new bounds and cropped cube indicator</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span> <span class="n">cropper</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">()</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span> <span class="o">=</span> <span class="kc">True</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This data cube has already been cropped&quot;</span><span class="p">)</span>
+ 
+    <span class="c1"># uncrop data cube</span>
+    <span class="k">def</span> <span class="nf">uncrop</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;        </span>
+<span class="sd">        Removes the cropping of the images in the data cube (but keeps the</span>
+<span class="sd">        corrupt image steps removed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_bounds</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This data cube was not cropped&quot;</span><span class="p">)</span>
+     
+    
+    <span class="c1"># some checks that should be run on every single file and not just the first</span>
+    <span class="k">def</span> <span class="nf">_check_integrity</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">hdu</span> <span class="p">):</span>
+    
+        <span class="c1"># raster: check whether the selected extension contains the right line</span>
+        <span class="k">if</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;INSTRUME&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SPEC&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">in</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TDESC</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">)]:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: This is not the right line&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">hdu</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">name</span>  <span class="p">)</span> <span class="p">)</span>
+            
+        <span class="c1"># check whether the data part of the selected extension comes with the right dimensions</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">hdu</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: The data extension does not contain a three-dimensional data cube!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">hdu</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">name</span> <span class="p">)</span> <span class="p">)</span>
+                
+        <span class="c1"># check whether the array with time-specific headers is valid</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">hdu</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span><span class="o">-</span><span class="mi">2</span> <span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: The time-specific header extension does not contain a two-dimensional data cube!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">hdu</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">name</span> <span class="p">)</span> <span class="p">)</span>
+        
+        <span class="c1"># check whether the array with time-specific headers has the right amount of columns, as specified in the header</span>
+        <span class="n">keys_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;XTENSION&#39;</span><span class="p">,</span> <span class="s1">&#39;BITPIX&#39;</span><span class="p">,</span> <span class="s1">&#39;NAXIS&#39;</span><span class="p">,</span> <span class="s1">&#39;NAXIS1&#39;</span><span class="p">,</span> <span class="s1">&#39;NAXIS2&#39;</span><span class="p">,</span> <span class="s1">&#39;PCOUNT&#39;</span><span class="p">,</span> <span class="s1">&#39;GCOUNT&#39;</span><span class="p">]</span>
+        <span class="n">header_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">hdu</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span><span class="o">-</span><span class="mi">2</span> <span class="p">]</span><span class="o">.</span><span class="n">header</span> <span class="p">)</span>
+        <span class="n">header_keys</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">header_keys</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_to_remove</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">hdu</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_ext</span><span class="o">-</span><span class="mi">2</span> <span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span> <span class="n">header_keys</span> <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">CorruptFITSException</span><span class="p">(</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Second extension has not the same amount of columns as number of headery keys.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">hdu</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">name</span> <span class="p">)</span> <span class="p">)</span>    
+
+    <span class="c1"># functions to get, set and reset image bounds</span>
+    <span class="k">def</span> <span class="nf">_get_bounds</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">_set_bounds</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span> <span class="p">):</span>
+        
+        <span class="c1"># update internal variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span> <span class="o">=</span> <span class="n">bounds</span>
+        
+        <span class="c1"># update shape and number of spectra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">]</span>  <span class="p">)</span>
+        
+        <span class="c1"># update coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span> <span class="n">bounds</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reset_bounds</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">reset_bounds</span><span class="p">()</span>
+
+    <span class="c1"># functions to enter and exit a context</span>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+    <span class="c1"># function to convert pixels to coordinates</span>
+    <span class="k">def</span> <span class="nf">pix2coords</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">pixel_coordinates</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns solar coordinates for the list of given pixel coordinates.</span>
+<span class="sd">        </span>
+<span class="sd">        **Caution**: This function takes pixel coordinates in the form [x,y] while</span>
+<span class="sd">        images come as [y,x]</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            The time step in the SJI to get the solar coordinates for. </span>
+<span class="sd">        pixel_coordinates : np.array</span>
+<span class="sd">            Numpy array with shape (pixel_pairs,2) that contains pixel coordinates</span>
+<span class="sd">            in the format [x,y]</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Numpy array with shape (pixel_pairs,2) containing solar coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">pix2coords</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">pixel_coordinates</span> <span class="p">)</span>
+
+    <span class="c1"># function to convert coordinates to pixels (wrapper for wcs)</span>
+    <span class="k">def</span> <span class="nf">coords2pix</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">wl_solar_coordinates</span><span class="p">,</span> <span class="n">round_pixels</span><span class="o">=</span><span class="kc">True</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            The time step in the SJI to get the pixel coordinates for. </span>
+<span class="sd">        wl_solar_coordinates : np.array</span>
+<span class="sd">            Numpy array with shape (coordinate_pairs,2) that contains wavelength in </span>
+<span class="sd">            angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">coords2pix</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">wl_solar_coordinates</span><span class="p">,</span> <span class="n">round_pixels</span><span class="o">=</span><span class="n">round_pixels</span> <span class="p">)</span>
+
+    <span class="c1"># function to get axis coordinates for a particular image</span>
+    <span class="k">def</span> <span class="nf">get_axis_coordinates</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns coordinates for the image at the given time step.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            The time step in the SJI to get the coordinates for.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            List [coordinates along x axis, coordinates along y axis]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_shape</span> <span class="p">)</span>
+        
+    <span class="c1"># function to get number of saturated pixels for an image</span>
+    <span class="k">def</span> <span class="nf">get_nsatpix</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of saturated pixels in an image. According to</span>
+<span class="sd">        iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Time step in the data cube.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of saturated pixels at time step &lt;step&gt;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">1.6e4</span> <span class="p">)</span>
+    
+    <span class="c1"># function to get millisecond timestamps of images</span>
+    <span class="k">def</span> <span class="nf">get_timestamps</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts DATE_OBS to milliseconds since 1970 with the aim to make </span>
+<span class="sd">        timestamp comparisons easier.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            List of millisecond timestamps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">):</span>
+            <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">to_epoch</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">timestamps</span>
+
+    <span class="c1"># function to get goes flux information</span>
+    <span class="k">def</span> <span class="nf">get_goes_flux</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolates GOES X-ray flux to time steps of the data cube.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            List of X-ray fluxes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">goes_data</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="p">),</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/goes_data&quot;</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+
+<span class="c1"># Test code  </span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+
+    <span class="n">fits_data1</span> <span class="o">=</span> <span class="n">iris_data_cube</span><span class="p">(</span> <span class="s1">&#39;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits&#39;</span> <span class="p">)</span>
+    <span class="n">fits_data2</span> <span class="o">=</span> <span class="n">iris_data_cube</span><span class="p">(</span> 
+           <span class="p">[</span> <span class="s2">&quot;/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits&quot;</span> <span class="p">],</span>
+            <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Cédric Huwyler.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
