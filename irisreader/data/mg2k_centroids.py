@@ -275,7 +275,11 @@ def get_mg2k_centroid_table( obs, crop_raster=False ):
         raster.crop()
     
     # get goes flux
-    goes_flux = raster.get_goes_flux()
+    try:
+        goes_flux = raster.get_goes_flux()
+    except Exception as e:
+        print("Could not get GOES flux - setting to None")
+        goes_flux = [None] * raster.n_steps
     
     # empty list for assigned centroids
     assigned_centroids = []
