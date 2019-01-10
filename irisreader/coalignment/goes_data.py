@@ -84,8 +84,8 @@ class goes_data:
             
     # function to download all required goes data for a certain time span
     def _get_files( self, start_date, end_date ):
-        for day in range((end_date-start_date).days + 2):
-            current_date = start_date + dt.timedelta(days=day)
+        for day in range((end_date-start_date).days + 3):
+            current_date = start_date + dt.timedelta(days=day-1)
             date_str = current_date.strftime("%Y%m%d")
             target_file_name = "g15_xrs_2s_" + date_str + "_" + date_str + ".csv"
             target_url = ir.config.GOES_BASE_URL + "/" + str(current_date.year) + "/" + str(current_date.month).zfill(2) + "/goes15/csv/" + target_file_name
@@ -104,13 +104,16 @@ class goes_data:
                 with open( self._data_dir + "/" + target_file_name, "wb" ) as f:
                     f.write( r.content )
             else:
-                raise Exception( "File could not be downloaded" )
+                raise Exception( "GOES: {} could not be downloaded (possibly change irisreader.config.GOES_BASE_URL)".format(url) )
 
     # function to parse goes csv data into a pandas data frame
     def _parse_file( self, file_path ):
         with open( file_path, "r" ) as f:
             # Skip lines until data: label is read
             for line in f:
+                if "<html" in line:
+                    #os.remove( file_path )
+                    raise Exception("GOES: Could not parse: {} is a html file (removed it)".format(file_path))
                 if line.startswith("data:"):
                     break
 
@@ -217,8 +220,8 @@ class goes_data:
 
 
 if __name__ == "__main__":
-    start = dt.datetime(2014, 3, 28, 14, 00)
-    end = dt.datetime(2014, 3, 30, 12, 00) # how does this work?
+    start = dt.datetime(2014, 1, 26, 0, 13, 24, 610000)
+    end = dt.datetime(2014, 1, 26, 1, 6, 2, 656000)
     
     g = goes_data( start, end, "/tmp/goes", lazy_eval=True )
     g.plot()
