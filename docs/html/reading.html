@@ -341,6 +341,7 @@ FITS file to assess the lines in the observation.</li>
 <li><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
 <li><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</li>
 <li><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</li>
+<li><strong>n_files</strong> (<em>int</em>) – Number of FITS files (always =1 for SJI)</li>
 <li><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</li>
 <li><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</li>
 <li><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</li>
@@ -610,6 +611,7 @@ corrupt image steps removed).</p>
 <li><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
 <li><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</li>
 <li><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</li>
+<li><strong>n_files</strong> (<em>int</em>) – Number of FITS files (abstracted to one)</li>
 <li><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</li>
 <li><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</li>
 <li><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</li>

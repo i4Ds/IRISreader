@@ -42,6 +42,8 @@ class sji_cube( iris_data_cube ):
         Description of the selected line.
     n_steps : int
         Number of time steps in the data cube.
+    n_files : int
+        Number of FITS files (always =1 for SJI)
     primary_headers : dict
         Dictionary with primary headers of the FITS file (lazy loaded).
     time_specific_headers : dict

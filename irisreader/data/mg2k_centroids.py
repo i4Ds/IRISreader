@@ -30,7 +30,7 @@ def get_mg2k_centroids( bins=216 ):
     In order to assign an observed spectrum to a centroid, it has to be interpolated, normalized by dividing it through its maximum
     and then a 1-nearest neighbour method has to be used.
     
-    Interpolation on a raster object::
+    Interpolation on a raster_cube instance::
 
         raster_image = raster.get_interpolated_image_step( 
                 step = <step>, 

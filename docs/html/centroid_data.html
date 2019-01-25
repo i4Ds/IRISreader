@@ -185,8 +185,8 @@ were found by the study</p>
 <div class="line">Astrophysical Journal, Volume 861, Number 1</div>
 <div class="line"><br /></div>
 </div>
-<p>The centroids were created in a semi-supervised way to encode as much
-different physics that can be seen in Mg II k as possible.</p>
+<p>The centroids were created in a semi-supervised way to provide a dictionary
+for the different observed solar flare physics in the Mg II k line.</p>
 <p>IRISreader provides functions to assign these centroids to arbitrary
 observations containing the Mg II k line window.</p>
 <div class="section" id="irisreader-data-mg2k-centroids-get-mg2k-centroids">
@@ -201,7 +201,7 @@ B. Panos et. al. 2018.</p>
 and LAMBDA_MAX = 2799.3239974882454.</p>
 <p>In order to assign an observed spectrum to a centroid, it has to be interpolated, normalized by dividing it through its maximum
 and then a 1-nearest neighbour method has to be used.</p>
-<p>Interpolation on a raster object:</p>
+<p>Interpolation on a raster_cube instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raster_image</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">get_interpolated_image_step</span><span class="p">(</span>
         <span class="n">step</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">step</span><span class="o">&gt;</span><span class="p">,</span>
         <span class="n">lambda_min</span> <span class="o">=</span> <span class="n">LAMBDA_MIN</span><span class="p">,</span>

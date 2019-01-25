@@ -9,12 +9,14 @@ were found by the study
 | Astrophysical Journal, Volume 861, Number 1
 |
  
-
-The centroids were created in a semi-supervised way to encode as much
-different physics that can be seen in Mg II k as possible.
+The centroids were created in a semi-supervised way to provide a dictionary
+for the different observed solar flare physics in the Mg II k line.
 
 IRISreader provides functions to assign these centroids to arbitrary
 observations containing the Mg II k line window.
+
+
+
 
 
 =================================================

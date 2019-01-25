@@ -45,6 +45,8 @@ class raster_cube( iris_data_cube ):
         Description of the selected line.
     n_steps : int
         Number of time steps in the data cube.
+    n_files : int
+        Number of FITS files (abstracted to one)
     primary_headers : dict
         Dictionary with primary headers of the FITS file (lazy loaded).
     time_specific_headers : dict
