@@ -263,10 +263,18 @@ class observation:
         Observation ID of the selected observation.
     desc : string
         Description of the selected observation.
-    date : string
-        Date of the selected observation.
     mode : string
         Observation mode of the selected observation ('sit-and-stare' or 'raster').
+    start_date : string
+        Start date of the selected observation.
+    end_date : string
+        End date of the selected observation.
+    full_obsid : string
+        Full OBSID uniquely specifying the observation, in the format YYYYmmdd_HHMMSS_OBSID
+    goes : irisreader.coalignment.goes
+        Instance of irisreader.coalignment.goes containing GOES X-ray data for this observation
+    hek : irisreader.coalignment.hek
+        Instance of irisreader.coalignment.hek containing HEK event data for this observation
     
     """
     

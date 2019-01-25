@@ -30,29 +30,25 @@ def get_mg2k_centroids( bins=216 ):
     In order to assign an observed spectrum to a centroid, it has to be interpolated, normalized by dividing it through its maximum
     and then a 1-nearest neighbour method has to be used.
     
-    Interpolation on a raster object:
-    ```
-    raster_image = raster.get_interpolated_image_step( 
-        step = <step>, 
-        lambda_min = LAMBDA_MIN, 
-        lambda_max = LAMBDA_MAX, 
-        n_breaks = 216 
-    )
-    ```
+    Interpolation on a raster object::
+
+        raster_image = raster.get_interpolated_image_step( 
+                step = <step>, 
+                lambda_min = LAMBDA_MIN, 
+                lambda_max = LAMBDA_MAX, 
+                n_breaks = 216 
+                )
     
-    Normalization:
-    ```
-    raster_image /= np.max( raster_image, axis=1 ).reshape(-1,1)
-    ```
+    Normalization::
     
-    Nearest neighbour assignment:
-    ```
-    from sklearn.neighbors import NearestCentroid
-    knc = NearestCentroid()
-    knc.fit( X=centroids, y=list( range( centroids.shape[0] ) ) )
+        raster_image /= np.max( raster_image, axis=1 ).reshape(-1,1)
     
-    assigned_centroids = knc.predict( raster_image )
-    ```
+    Nearest neighbour assignment::
+    
+        from sklearn.neighbors import NearestCentroid
+        knc = NearestCentroid()
+        knc.fit( X=centroids, y=list( range( centroids.shape[0] ) ) )
+        assigned_centroids = knc.predict( raster_image )
     
     Parameters
     ----------
@@ -89,16 +85,14 @@ def assign_mg2k_centroids( X ):
     are assigned using a nearest neighbour procedure.
     
     The spectra in X have to be interpolated to 216 wavelength bins between 
-    LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example:
+    LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example::
         
-    ```
-    X = raster.get_interpolated_image_step( 
-        step = <step>, 
-        lambda_min = LAMBDA_MIN, 
-        lambda_max = LAMBDA_MAX, 
-        n_breaks = 216 
-    )
-    ```
+        X = raster.get_interpolated_image_step( 
+                step = <step>, 
+                lambda_min = LAMBDA_MIN, 
+                lambda_max = LAMBDA_MAX, 
+                n_breaks = 216  
+                )
     
     Parameters
     ----------

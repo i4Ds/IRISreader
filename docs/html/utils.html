@@ -38,7 +38,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="irisreader 0.2 documentation" href="index.html"/>
-        <link rel="prev" title="Sample Data" href="centroids.html"/> 
+        <link rel="next" title="Sample Data" href="sample_data.html"/>
+        <link rel="prev" title="Co-alignment" href="coalignment.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -98,15 +99,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Sample Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-download">irisreader.utils.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-from-tformat">irisreader.utils.date.from_Tformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-to-tformat">irisreader.utils.date.to_Tformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-from-obsformat">irisreader.utils.date.from_obsformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-to-epoch">irisreader.utils.date.to_epoch</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -208,6 +214,97 @@
 </dd></dl>
 
 </div>
+<div class="section" id="irisreader-utils-date-from-tformat">
+<h2>irisreader.utils.date.from_Tformat<a class="headerlink" href="#irisreader-utils-date-from-tformat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.utils.date.from_Tformat">
+<code class="descclassname">irisreader.utils.date.</code><code class="descname">from_Tformat</code><span class="sig-paren">(</span><em>date_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#from_Tformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.from_Tformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts from the FITS date format ‘%Y-%m-%dT%H:%M:%S.%f’ to a datetime object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date_str</strong> (<em>str</em>) – FITS date string with ‘T’ between date and time.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Python datetime object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irisreader-utils-date-to-tformat">
+<h2>irisreader.utils.date.to_Tformat<a class="headerlink" href="#irisreader-utils-date-to-tformat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.utils.date.to_Tformat">
+<code class="descclassname">irisreader.utils.date.</code><code class="descname">to_Tformat</code><span class="sig-paren">(</span><em>date</em>, <em>milliseconds=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#to_Tformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.to_Tformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts from a datetime object to the FITS date format ‘%Y-%m-%dT%H:%M:%S’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>datetime</em>) – Python datetime object</li>
+<li><strong>milliseconds</strong> (<em>bool</em>) – Whether to include milliseconds in the output (separated with a dot)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>date_str</strong> – FITS date string with ‘T’ between date and time.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irisreader-utils-date-from-obsformat">
+<h2>irisreader.utils.date.from_obsformat<a class="headerlink" href="#irisreader-utils-date-from-obsformat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.utils.date.from_obsformat">
+<code class="descclassname">irisreader.utils.date.</code><code class="descname">from_obsformat</code><span class="sig-paren">(</span><em>full_obsid_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#from_obsformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.from_obsformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a full OBSID string to a date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>full_obsid_str</strong> (<em>str</em>) – Full OBSID</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Python datetime object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irisreader-utils-date-to-epoch">
+<h2>irisreader.utils.date.to_epoch<a class="headerlink" href="#irisreader-utils-date-to-epoch" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.utils.date.to_epoch">
+<code class="descclassname">irisreader.utils.date.</code><code class="descname">to_epoch</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#to_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.to_epoch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a date to an integer with the number of seconds since 1.1.1970.
+This can be useful for time difference calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<em>datetime</em>) – Python datetime object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Seconds since 1.1.1970 00:00:00</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -220,8 +317,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="sample_data.html" class="btn btn-neutral float-right" title="Sample Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="centroids.html" class="btn btn-neutral" title="Sample Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="coalignment.html" class="btn btn-neutral" title="Co-alignment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

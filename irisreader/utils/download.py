@@ -114,12 +114,12 @@ def download( obs_identifier, target_directory, type='all', uncompress=True, ope
         if open_obs: uncompress = True
         
         # set mirror url
-        if mirror is None: mirror = ir.config.DEFAULT_MIRROR
+        if mirror is None: mirror = ir.config.default_mirror
         
-        if not mirror in ir.config.MIRRORS.keys():
-            raise ValueError("The mirror you specified does not exist! Available mirrors: ", ir.config.MIRRORS.keys() )
+        if not mirror in ir.config.mirrors.keys():
+            raise ValueError("The mirror you specified does not exist! Available mirrors: ", ir.config.mirrors.keys() )
         else:
-            download_url = ir.config.MIRRORS[ mirror ]
+            download_url = ir.config.mirrors[ mirror ]
         
         # extract year, month and day from obs identifier
         m = re.search('([\d]{4})([\d]{2})([\d]{2})_([\d]{6})_([\d]{10})', obs_identifier )

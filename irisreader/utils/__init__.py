@@ -1,3 +1,2 @@
 from irisreader.utils.download import download
 from irisreader.utils.lazy_file_header_list import lazy_file_header_list
-from irisreader.utils.config import config

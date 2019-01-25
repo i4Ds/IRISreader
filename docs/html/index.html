@@ -98,12 +98,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Centroid Study Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -172,11 +173,19 @@
 <p>The IRISreader library provides functionality to read level 2 data from the
 <a class="reference external" href="https://www.nasa.gov/mission_pages/iris/index.html">IRIS satellite</a>
 and to preprocess it for big data applications.</p>
+<p>The following structure contains a quickstart tutorial and a reference
+library of the irisreader interface. IRISreader also involves a lot of
+functionality that is hidden from the end user, these classes and methods have
+not been documented yet and are not intended for use by non-developers.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#irisreader-config-template">irisreader.config_template</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-observation">irisreader.observation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-obs-iterator">irisreader.obs_iterator</a></li>
@@ -184,6 +193,7 @@ and to preprocess it for big data applications.</p>
 <li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-has-line">irisreader.has_line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-sji-cube">irisreader.sji_cube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-raster-cube">irisreader.raster_cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reading.html#irisreader-get-obs-path">irisreader.get_obs_path</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a><ul>
@@ -193,7 +203,18 @@ and to preprocess it for big data applications.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coalignment.html#irisreader-coalignment-find-closest-sji">irisreader.coalignment.find_closest_sji</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coalignment.html#irisreader-coalignment-find-closest-raster">irisreader.coalignment.find_closest_raster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="coalignment.html#irisreader-coalignment-goes-data">irisreader.coalignment.goes_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coalignment.html#irisreader-coalignment-hek-data">irisreader.coalignment.hek_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-download">irisreader.utils.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-date-from-tformat">irisreader.utils.date.from_Tformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-date-to-tformat">irisreader.utils.date.to_Tformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-date-from-obsformat">irisreader.utils.date.from_obsformat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-date-to-epoch">irisreader.utils.date.to_epoch</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a><ul>
@@ -202,9 +223,12 @@ and to preprocess it for big data applications.</p>
 <li class="toctree-l2"><a class="reference internal" href="sample_data.html#irisreader-data-sample-raster">irisreader.data.sample_raster</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Centroid Study Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#irisreader-utils-download">irisreader.utils.download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="centroid_data.html#irisreader-data-mg2k-centroids-get-mg2k-centroids">irisreader.data.mg2k_centroids.get_mg2k_centroids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="centroid_data.html#irisreader-data-mg2k-centroids-assign-mg2k-centroids">irisreader.data.mg2k_centroids.assign_mg2k_centroids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="centroid_data.html#irisreader-data-mg2k-centroids-normalize">irisreader.data.mg2k_centroids.normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="centroid_data.html#irisreader-data-mg2k-centroids-interpolate">irisreader.data.mg2k_centroids.interpolate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="centroid_data.html#irisreader-data-mg2k-centroids-get-mg2k-centroid-table">irisreader.data.mg2k_centroids.get_mg2k_centroid_table</a></li>
 </ul>
 </li>
 </ul>

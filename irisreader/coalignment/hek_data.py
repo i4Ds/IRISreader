@@ -76,7 +76,7 @@ def load_hek_data( start_date, end_date ):
     hek_events = []
     page = 1
     while True:
-        r = requests.get( ir.config.HEK_URL, params={
+        r = requests.get( ir.config.hek_base_url, params={
             "cosec": "2",  # JSON format
             "cmd": "search",
             "type": "column",

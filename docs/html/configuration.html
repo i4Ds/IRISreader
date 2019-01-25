@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration &mdash; irisreader 0.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="irisreader 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Reading" href="reading.html"/>
+        <link rel="prev" title="Tutorial" href="tutorial.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> irisreader
+          
+
+          
+            
+            <img src="_static/irisreader.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-config-template">irisreader.config_template</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">irisreader</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>IRISreader can be configured over irisreader.config, an instance of the
+irisreader.config_template class. Below is the documentation of the different available
+options.</p>
+<p>The current settings can be printed out with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span> <span class="p">)</span>
+<span class="go">IRISreader configuration:</span>
+<span class="go">---------------------------</span>
+<span class="go">default_mirror: lmsal</span>
+<span class="go">goes_base_url: https://satdat.ngdc.noaa.gov/sem/goes/data/full/</span>
+<span class="go">hek_url: http://www.lmsal.com/hek/her</span>
+<span class="go">max_open_files: 256</span>
+<span class="go">mirrors: {&#39;lmsal&#39;: &#39;http://www.lmsal.com/solarsoft/irisa/data/level2_compressed/&#39;, &#39;uio&#39;: &#39;http://sdc.uio.no/vol/fits/iris/level2/&#39;, &#39;fhnw&#39;: &#39;http://server1071.cs.technik.fhnw.ch/data/&#39;}</span>
+<span class="go">use_memmap: False</span>
+<span class="go">verbosity_level: 1</span>
+</pre></div>
+</div>
+<p>And options can be set via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">option</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<div class="section" id="irisreader-config-template">
+<h2>irisreader.config_template<a class="headerlink" href="#irisreader-config-template" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="irisreader.config_template">
+<em class="property">class </em><code class="descclassname">irisreader.</code><code class="descname">config_template</code><a class="reference internal" href="_modules/irisreader/config.html#config_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.config_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration template for the irisreader module of which an instance is
+created at irisreader.config.</p>
+<p>To see what options are currently set, run <cite>print(irisreader.config)</cite>.
+Options can be set with <cite>ir.config.OPTION = value</cite>.
+For help about the different configuration options run <a href="#id1"><span class="problematic" id="id2">``</span></a>help(irisreader.config)`.</p>
+<p>To learn more about a certain option, read the online documentation of
+irisreader or the docstrings in the source code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>verbosity_level</strong> (<em>int</em>) – <p>Sets verbosity level of IRISreader:
+0: batch mode (no printed output)
+1: interactive mode (printed output that informs the interactive user)
+2: developer mode (printed output that gives more diagnostics that are only useful for the developer)
+3: unfiltered mode (print all possible outputs, should only be used for specific debugging)</p>
+<p>Default: 1</p>
+</li>
+<li><strong>use_memmap</strong> (<em>bool</em>) – <p>Sets memory mapping mode:
+It currently seems that many computations are sometimes a factor of 1000
+faster when the file’s data are loaded into memory. The largest data cube has
+a size of ~2 GB (total raster file size 14 GB), which should not be a problem
+if only one data cube is loaded at the same time.
+Using memmap for interactive mode might be better because of the lower response times (loading data into memory)</p>
+<p>True: use memory mapping</p>
+<p>False: load data into memory (default)</p>
+</li>
+<li><strong>max_open_files</strong> (<em>int</em>) – <p>Sets maximum number of open files:
+Some rasters have &gt; 6000 files and irisreader may reach the open files limit of the host system when opening all at once.
+For this reason, the file_hub class abstracts file access and allows to limit the number of open files.</p>
+<p>Default: 256</p>
+</li>
+<li><strong>mirrors</strong> (<em>list</em>) – Available data mirrors for downloading observations.</li>
+<li><strong>default_mirror</strong> (<em>str</em>) – Default mirror to use from ir.config.mirrors</li>
+<li><strong>goes_base_url</strong> (<em>str</em>) – Base URL for GOES data (as used in GOES coalignment)</li>
+<li><strong>hek_base_url</strong> (<em>str</em>) – Base URL for HEK data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reading.html" class="btn btn-neutral float-right" title="Reading" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Cédric Huwyler.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

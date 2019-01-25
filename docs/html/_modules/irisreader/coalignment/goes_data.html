@@ -98,12 +98,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../centroids.html">Centroid Study Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -254,11 +255,11 @@
             
     <span class="c1"># function to download all required goes data for a certain time span</span>
     <span class="k">def</span> <span class="nf">_get_files</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="p">):</span>
-        <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">end_date</span><span class="o">-</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">day</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">end_date</span><span class="o">-</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">current_date</span> <span class="o">=</span> <span class="n">start_date</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">day</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">date_str</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">target_file_name</span> <span class="o">=</span> <span class="s2">&quot;g15_xrs_2s_&quot;</span> <span class="o">+</span> <span class="n">date_str</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">date_str</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
-            <span class="n">target_url</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">GOES_BASE_URL</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/goes15/csv/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span>
+            <span class="n">target_url</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">goes_base_url</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/goes15/csv/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_download_file</span><span class="p">(</span> <span class="n">target_url</span><span class="p">,</span> <span class="n">target_file_name</span> <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">target_file_name</span> <span class="p">)</span>
 
@@ -274,13 +275,16 @@
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">target_file_name</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span> <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s2">&quot;File could not be downloaded&quot;</span> <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s2">&quot;GOES: </span><span class="si">{}</span><span class="s2"> could not be downloaded (possibly change irisreader.config.goes_base_url)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="p">)</span>
 
     <span class="c1"># function to parse goes csv data into a pandas data frame</span>
     <span class="k">def</span> <span class="nf">_parse_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span> <span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="c1"># Skip lines until data: label is read</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;&lt;html&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span> <span class="n">file_path</span> <span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;GOES: Could not parse: </span><span class="si">{}</span><span class="s2"> is a html file (removed it)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;data:&quot;</span><span class="p">):</span>
                     <span class="k">break</span>
 
@@ -337,7 +341,6 @@
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">minorticks_off</span><span class="p">()</span></div>
         <span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-        
          
         
 <div class="viewcode-block" id="goes_data.interpolate"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">iris_timestamps</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">]</span> <span class="p">):</span>
@@ -388,8 +391,8 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">00</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">00</span><span class="p">)</span> <span class="c1"># how does this work?</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">610000</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">656000</span><span class="p">)</span>
     
     <span class="n">g</span> <span class="o">=</span> <span class="n">goes_data</span><span class="p">(</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s2">&quot;/tmp/goes&quot;</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
     <span class="n">g</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>

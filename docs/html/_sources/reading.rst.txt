@@ -29,8 +29,6 @@ irisreader.has_line
 
 .. autofunction:: irisreader.has_line
 
-
-
 ==========================================
 irisreader.sji_cube
 ==========================================
@@ -47,4 +45,8 @@ irisreader.raster_cube
    :members:
    :inherited-members:
 
+==========================================
+irisreader.get_obs_path
+==========================================
 
+.. autofunction:: irisreader.get_obs_path

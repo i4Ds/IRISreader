@@ -98,12 +98,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Centroid Study Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -169,12 +170,14 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#C"><strong>C</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -183,6 +186,14 @@
  | <a href="#U"><strong>U</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="centroid_data.html#irisreader.data.mg2k_centroids.assign_mg2k_centroids">assign_mg2k_centroids() (in module irisreader.data.mg2k_centroids)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -194,6 +205,8 @@
         <li><a href="reading.html#irisreader.sji_cube.close">(irisreader.sji_cube method)</a>
 </li>
       </ul></li>
+      <li><a href="configuration.html#irisreader.config_template">config_template (class in irisreader)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reading.html#irisreader.raster_cube.coords2pix">coords2pix() (irisreader.raster_cube method)</a>
@@ -222,6 +235,10 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="coalignment.html#irisreader.coalignment.find_closest_raster">find_closest_raster() (in module irisreader.coalignment)</a>
+</li>
+      <li><a href="coalignment.html#irisreader.coalignment.find_closest_sji">find_closest_sji() (in module irisreader.coalignment)</a>
+</li>
       <li><a href="preprocessing.html#irisreader.preprocessing.image_cropper.fit">fit() (irisreader.preprocessing.image_cropper method)</a>
 
       <ul>
@@ -230,6 +247,12 @@
         <li><a href="preprocessing.html#irisreader.preprocessing.spectrum_interpolator.fit">(irisreader.preprocessing.spectrum_interpolator method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#irisreader.utils.date.from_obsformat">from_obsformat() (in module irisreader.utils.date)</a>
+</li>
+      <li><a href="utils.html#irisreader.utils.date.from_Tformat">from_Tformat() (in module irisreader.utils.date)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -264,11 +287,15 @@
         <li><a href="reading.html#irisreader.sji_cube.get_image_step">(irisreader.sji_cube method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reading.html#irisreader.raster_cube.get_interpolated_image_step">get_interpolated_image_step() (irisreader.raster_cube method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reading.html#irisreader.get_lines">get_lines() (in module irisreader)</a>
+</li>
+      <li><a href="centroid_data.html#irisreader.data.mg2k_centroids.get_mg2k_centroid_table">get_mg2k_centroid_table() (in module irisreader.data.mg2k_centroids)</a>
+</li>
+      <li><a href="centroid_data.html#irisreader.data.mg2k_centroids.get_mg2k_centroids">get_mg2k_centroids() (in module irisreader.data.mg2k_centroids)</a>
 </li>
       <li><a href="reading.html#irisreader.raster_cube.get_nsatpix">get_nsatpix() (irisreader.raster_cube method)</a>
 
@@ -277,6 +304,8 @@
 </li>
       </ul></li>
       <li><a href="preprocessing.html#irisreader.preprocessing.image_cube_cropper.get_null_images">get_null_images() (irisreader.preprocessing.image_cube_cropper method)</a>
+</li>
+      <li><a href="reading.html#irisreader.get_obs_path">get_obs_path() (in module irisreader)</a>
 </li>
       <li><a href="coalignment.html#irisreader.coalignment.goes_data.get_peak_flux">get_peak_flux() (irisreader.coalignment.goes_data method)</a>
 </li>
@@ -299,6 +328,10 @@
       <li><a href="reading.html#irisreader.has_line">has_line() (in module irisreader)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="coalignment.html#irisreader.coalignment.hek_data">hek_data (class in irisreader.coalignment)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
@@ -306,11 +339,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="preprocessing.html#irisreader.preprocessing.image_cropper">image_cropper (class in irisreader.preprocessing)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="preprocessing.html#irisreader.preprocessing.image_cube_cropper">image_cube_cropper (class in irisreader.preprocessing)</a>
 </li>
-      <li><a href="coalignment.html#irisreader.coalignment.goes_data.interpolate">interpolate() (irisreader.coalignment.goes_data method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="centroid_data.html#irisreader.data.mg2k_centroids.interpolate">interpolate() (in module irisreader.data.mg2k_centroids)</a>
+
+      <ul>
+        <li><a href="coalignment.html#irisreader.coalignment.goes_data.interpolate">(irisreader.coalignment.goes_data method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="centroid_data.html#irisreader.data.mg2k_centroids.normalize">normalize() (in module irisreader.data.mg2k_centroids)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -379,6 +424,12 @@
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#irisreader.utils.date.to_epoch">to_epoch() (in module irisreader.utils.date)</a>
+</li>
+      <li><a href="utils.html#irisreader.utils.date.to_Tformat">to_Tformat() (in module irisreader.utils.date)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="preprocessing.html#irisreader.preprocessing.image_cropper.transform">transform() (irisreader.preprocessing.image_cropper method)</a>
 

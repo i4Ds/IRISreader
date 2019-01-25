@@ -7,14 +7,13 @@ from irisreader.has_line import has_line
 from irisreader.observation import observation
 from irisreader.observation import get_obs_path
 from irisreader.obs_iterator import obs_iterator
+from irisreader.config import config_template
 
-from irisreader.utils import config
+# instantiate a configuration object
+config = config_template()
 
 # instantiate file hub object and make it global
 file_hub = file_hub( ASTROPY_FILE_METHOD )
-
-# instantiate a configuration object
-config = config()
 
 # format for warnings
 import warnings

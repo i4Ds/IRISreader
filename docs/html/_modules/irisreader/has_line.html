@@ -98,12 +98,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../centroids.html">Centroid Study Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -186,7 +187,6 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
 <span class="sd">    line_info : string</span>
 <span class="sd">        line info data frame from get_lines() function.</span>
 <span class="sd">    description : string</span>
@@ -195,8 +195,7 @@
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    </span>
-<span class="sd">    integer :</span>
+<span class="sd">    int :</span>
 <span class="sd">        If -1 is returned, no matching line has been found. Otherwise a positive</span>
 <span class="sd">        integer indicating the position in the line_info data frame is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -229,19 +228,16 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
 <span class="sd">    file_object : string or iris_data_cube</span>
 <span class="sd">        The function accepts either an open iris_data_cube or the path to the</span>
 <span class="sd">        FITS file to assess the lines in the observation.</span>
-<span class="sd">    </span>
 <span class="sd">    description : string</span>
 <span class="sd">         Any abbreviation of the line description to look for.</span>
 <span class="sd">         </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    </span>
-<span class="sd">    boolean :</span>
+<span class="sd">    bool :</span>
 <span class="sd">        True / False</span>
 <span class="sd">        </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -250,6 +246,7 @@
     <span class="c1"># True otherwise    </span></div>
     <span class="k">return</span> <span class="n">find_line</span><span class="p">(</span> <span class="n">get_lines</span><span class="p">(</span> <span class="n">file_object</span> <span class="p">),</span> <span class="n">description</span> <span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
 
+<span class="c1"># MOVE TO TEST</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">has_line</span><span class="p">(</span> <span class="s1">&#39;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/iris_l2_20140329_140938_3860258481_SJI_1400_t000.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;Si&#39;</span> <span class="p">)</span>
     <span class="n">has_line</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits&quot;</span><span class="p">,</span> <span class="s1">&#39;Mg&#39;</span> <span class="p">)</span>

@@ -88,7 +88,7 @@ class goes_data:
             current_date = start_date + dt.timedelta(days=day-1)
             date_str = current_date.strftime("%Y%m%d")
             target_file_name = "g15_xrs_2s_" + date_str + "_" + date_str + ".csv"
-            target_url = ir.config.GOES_BASE_URL + "/" + str(current_date.year) + "/" + str(current_date.month).zfill(2) + "/goes15/csv/" + target_file_name
+            target_url = ir.config.goes_base_url + "/" + str(current_date.year) + "/" + str(current_date.month).zfill(2) + "/goes15/csv/" + target_file_name
             self._download_file( target_url, target_file_name )
             self._files.append( target_file_name )
 
@@ -104,7 +104,7 @@ class goes_data:
                 with open( self._data_dir + "/" + target_file_name, "wb" ) as f:
                     f.write( r.content )
             else:
-                raise Exception( "GOES: {} could not be downloaded (possibly change irisreader.config.GOES_BASE_URL)".format(url) )
+                raise Exception( "GOES: {} could not be downloaded (possibly change irisreader.config.goes_base_url)".format(url) )
 
     # function to parse goes csv data into a pandas data frame
     def _parse_file( self, file_path ):

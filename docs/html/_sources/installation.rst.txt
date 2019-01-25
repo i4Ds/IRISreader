@@ -9,7 +9,8 @@ To install the library, download the latest code from Github::
 
 run::
 
-	$ sudo python3 setup.py install
+	$ python3 setup.py install --user
+	(or in sudo mode without --user for global installation)
 
 
 To test it, go to the Python 3 console and run::

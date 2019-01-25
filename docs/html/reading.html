@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="irisreader 0.2 documentation" href="index.html"/>
         <link rel="next" title="Preprocessing" href="preprocessing.html"/>
-        <link rel="prev" title="Tutorial" href="tutorial.html"/> 
+        <link rel="prev" title="Configuration" href="configuration.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -99,6 +99,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reading</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-observation">irisreader.observation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-obs-iterator">irisreader.obs_iterator</a></li>
@@ -106,13 +107,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-has-line">irisreader.has_line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-sji-cube">irisreader.sji_cube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-raster-cube">irisreader.raster_cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-get-obs-path">irisreader.get_obs_path</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Centroid Study Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -206,8 +208,12 @@ removes them.</li>
 <li><strong>n_sji</strong> (<em>integer</em>) – Number of individual sji files in the selected observation.</li>
 <li><strong>obsid</strong> (<em>string</em>) – Observation ID of the selected observation.</li>
 <li><strong>desc</strong> (<em>string</em>) – Description of the selected observation.</li>
-<li><strong>date</strong> (<em>string</em>) – Date of the selected observation.</li>
 <li><strong>mode</strong> (<em>string</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
+<li><strong>start_date</strong> (<em>string</em>) – Start date of the selected observation.</li>
+<li><strong>end_date</strong> (<em>string</em>) – End date of the selected observation.</li>
+<li><strong>full_obsid</strong> (<em>string</em>) – Full OBSID uniquely specifying the observation, in the format YYYYmmdd_HHMMSS_OBSID</li>
+<li><strong>goes</strong> (<em>irisreader.coalignment.goes</em>) – Instance of irisreader.coalignment.goes containing GOES X-ray data for this observation</li>
+<li><strong>hek</strong> (<em>irisreader.coalignment.hek</em>) – Instance of irisreader.coalignment.hek containing HEK event data for this observation</li>
 </ul>
 </td>
 </tr>
@@ -302,7 +308,7 @@ FITS file to assess the lines in the observation.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True / False</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
 </td>
 </tr>
 </tbody>
@@ -862,6 +868,33 @@ corrupt image steps removed).</p>
 </dd></dl>
 
 </div>
+<div class="section" id="irisreader-get-obs-path">
+<h2>irisreader.get_obs_path<a class="headerlink" href="#irisreader-get-obs-path" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.get_obs_path">
+<code class="descclassname">irisreader.</code><code class="descname">get_obs_path</code><span class="sig-paren">(</span><em>full_obsid</em>, <em>basedir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/observation.html#get_obs_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.get_obs_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the full path for a given full OBSID (in the style of ‘20140910_003955_3860358888’).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>full_obsid</strong> (<em>str</em>) – full OBSID of the observation as a string</li>
+<li><strong>basedir</strong> (<em>str</em>) – base directory for search (where iris data lies in the structure year/month/day/observation)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>obs_path</strong> – full path to observation</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -877,7 +910,7 @@ corrupt image steps removed).</p>
         <a href="preprocessing.html" class="btn btn-neutral float-right" title="Preprocessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

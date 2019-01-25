@@ -38,7 +38,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="irisreader 0.2 documentation" href="index.html"/>
-        <link rel="next" title="Sample Data" href="sample_data.html"/>
+        <link rel="next" title="Utils" href="utils.html"/>
         <link rel="prev" title="Preprocessing" href="preprocessing.html"/> 
 
   
@@ -99,15 +99,19 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Co-alignment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-coalignment-find-closest-sji">irisreader.coalignment.find_closest_sji</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-coalignment-find-closest-raster">irisreader.coalignment.find_closest_raster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-coalignment-goes-data">irisreader.coalignment.goes_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-coalignment-hek-data">irisreader.coalignment.hek_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="centroids.html">Sample Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data.html">Sample Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="centroid_data.html">Centroid data</a></li>
 </ul>
 
             
@@ -173,6 +177,64 @@
             
   <div class="section" id="co-alignment">
 <h1>Co-alignment<a class="headerlink" href="#co-alignment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="irisreader-coalignment-find-closest-sji">
+<h2>irisreader.coalignment.find_closest_sji<a class="headerlink" href="#irisreader-coalignment-find-closest-sji" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.coalignment.find_closest_sji">
+<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_sji</code><span class="sig-paren">(</span><em>sji</em>, <em>raster</em>, <em>raster_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_sji"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_sji" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds closest sji step to raster step &lt;raster_step&gt; in time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</li>
+<li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
+<li><strong>raster_step</strong> (<em>int</em>) – raster step</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>sji_step</strong> (<em>int</em>) – SJI step</li>
+<li><strong>diff</strong> (<em>float</em>) – Difference in seconds</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irisreader-coalignment-find-closest-raster">
+<h2>irisreader.coalignment.find_closest_raster<a class="headerlink" href="#irisreader-coalignment-find-closest-raster" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.coalignment.find_closest_raster">
+<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_raster</code><span class="sig-paren">(</span><em>raster</em>, <em>sji</em>, <em>sji_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_raster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds closest raster step to SJI step &lt;sji_step&gt; in time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
+<li><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</li>
+<li><strong>sji_step</strong> (<em>int</em>) – sji step</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>raster_step</strong> (<em>int</em>) – SJI step</li>
+<li><strong>diff</strong> (<em>float</em>) – Difference in seconds</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="irisreader-coalignment-goes-data">
 <h2>irisreader.coalignment.goes_data<a class="headerlink" href="#irisreader-coalignment-goes-data" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -273,6 +335,40 @@ plotted.</td>
 </dd></dl>
 
 </div>
+<div class="section" id="irisreader-coalignment-hek-data">
+<h2>irisreader.coalignment.hek_data<a class="headerlink" href="#irisreader-coalignment-hek-data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="irisreader.coalignment.hek_data">
+<em class="property">class </em><code class="descclassname">irisreader.coalignment.</code><code class="descname">hek_data</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>lazy_eval=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents an interface to the Heliophysics Events Knowledge
+database (HEK). It loads all HEK active regions and flares that were
+recorded in a defined time span and makes them available as a pandas data
+frame. Optionally, the data are only loaded upon first read access.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the time window for which HEK events should be
+downloaded.</li>
+<li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the time window for which HEK events should be
+downloaded.</li>
+<li><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the HEK events time window</li>
+<li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the HEK events time window</li>
+<li><strong>data</strong> – Pandas data frame with HEK events.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -285,7 +381,7 @@ plotted.</td>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sample_data.html" class="btn btn-neutral float-right" title="Sample Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="preprocessing.html" class="btn btn-neutral" title="Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
