@@ -97,7 +97,7 @@ class goes_data:
         
         # download data
         if not os.path.exists( self._data_dir + "/" + target_file_name ):
-            print( "Downloading " + target_file_name )
+            print( "Downloading " + url )
             r = requests.get( url )
         
             if r.ok:
@@ -105,6 +105,7 @@ class goes_data:
                     f.write( r.content )
             else:
                 raise Exception( "GOES: {} could not be downloaded (possibly change irisreader.config.goes_base_url)".format(url) )
+        
 
     # function to parse goes csv data into a pandas data frame
     def _parse_file( self, file_path ):
