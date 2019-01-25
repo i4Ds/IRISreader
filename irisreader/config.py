@@ -75,4 +75,4 @@ class config_template:
     default_mirror = "lmsal"
     goes_base_url = "https://satdat.ngdc.noaa.gov/sem/goes/data/full/"
     #goes_base_url = "http://server1071.cs.technik.fhnw.ch/goes/xrs/"
-    hek_url = "http://www.lmsal.com/hek/her"
+    hek_base_url = "http://www.lmsal.com/hek/her"
