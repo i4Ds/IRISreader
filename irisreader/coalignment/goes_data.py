@@ -6,8 +6,10 @@ import requests
 import os
 from scipy.interpolate import interp1d
 import numpy as np
+import matplotlib.pyplot as plt
 
 import irisreader as ir
+from irisreader.utils.notebooks import in_notebook 
 # TODO: create a downloader utility function?
 
 
@@ -171,7 +173,10 @@ class goes_data:
         ax2.set_yticklabels(['A', 'B', 'C', 'M', 'X'])
         ax2.minorticks_off()
         ax2.tick_params( right=False )
-         
+        
+        if not in_notebook():
+            plt.show()
+    
         
     def interpolate( self, iris_timestamps, field=['B_FLUX'] ):
         """
