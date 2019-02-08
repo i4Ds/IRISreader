@@ -488,22 +488,47 @@ class iris_data_cube:
 
         # get file number and file step            
         file_no, file_step = self._whereat( step )
+
+        # put this into a try-except clause to catch too many open files
+        # note: astropy opens multiple handles per file, file_hub can't control this
+        try:
         
-        # request file from file hub
-        file = ir.file_hub.open( self._files[file_no] )
+            # request file from file hub
+            file = ir.file_hub.open( self._files[file_no] )
+                    
+            # get image (cropped if desired)
+            if self._cropped:
+                if ir.config.use_memmap: # use section interface if memory mapping is used
+                    return file[self._selected_ext].section[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
+                else: # otherwise use data interface
+                    return file[self._selected_ext].data[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
+            else:
+            
+                if ir.config.use_memmap: # use section interface if memory mapping is used
+                    return file[self._selected_ext].section[file_step, :, :]
+                else: # otherwise use data interface
+                    return file[self._selected_ext].data[file_step, :, :]
+        
+        except OSError as oe:
+            if oe.strerror.lower() == "too many open files":
+                ir.config.max_open_files = int( ir.config.max_open_files / 2 )
+                print( 
+"""-------------------------------------------------------------------------------------------------------------
+Too many open files! Setting maximum number of open files to half of the previous value ({}). 
+Also resetting all open file handles, this might slow down things for a short moment.
+This problem is due to the uncontrollable behaviour of astropy which can open multiple file handles per file.
+The current output has been re-requested and is not affected. 
+-------------------------------------------------------------------------------------------------------------""".format(ir.config.max_open_files) 
+                )
+                ir.file_hub.reset()
                 
-        # get image (cropped if desired)
-        if self._cropped:
-            if ir.config.use_memmap: # use section interface if memory mapping is used
-                return file[self._selected_ext].section[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
-            else: # otherwise use data interface
-                return file[self._selected_ext].data[file_step, self._ymin:self._ymax, self._xmin:self._xmax]
-        else:
-        
-            if ir.config.use_memmap: # use section interface if memory mapping is used
-                return file[self._selected_ext].section[file_step, :, :]
-            else: # otherwise use data interface
-                return file[self._selected_ext].data[file_step, :, :]
+                # this recursive call is dangerous and should be tested more thoroughly
+                return self.get_image_step( step )
+            else:
+                raise oe
+                
+            
+                
 
     # crop data cube
     def crop( self, remove_bad=True, check_coverage=True ):

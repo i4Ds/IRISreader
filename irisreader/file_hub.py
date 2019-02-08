@@ -100,7 +100,7 @@ class file_stack:
             if len( self._paths ) >= self.max_size:
                 self.drop()
             
-            # open file handle
+            # open file handle and catch too many files errors
             handle = self._file_method( path )
             
             if ir.config.verbosity_level >= 3: print( "[file hub] opening and pushing {} to stack".format( path ) )           
@@ -110,6 +110,7 @@ class file_stack:
             
             # return the item (last on stack)
             return self.get_by_index( -1 )
+
     
     def drop_by_idx( self, idx ):
         """
