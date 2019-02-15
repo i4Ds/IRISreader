@@ -23,6 +23,15 @@ class hek_data:
         downloaded.
     lazy_eval : boolean
         Whether or not data should only be loaded upon first read access.
+    x : float
+        solar coordinates x of center of field of view in arcsec (defaults to None)
+    y : float
+        solar coordinates y of center of field of view in arcsec (defaults to None)
+    fovx : float
+        width of the field of view (FOV) in x direction in arcsec (defaults to None)
+    fovy : float
+        width of the field of view (FOV) in y direction in arcsec (defaults to None)
+
 
     Attributes
     ----------    
@@ -34,10 +43,14 @@ class hek_data:
         Pandas data frame with HEK events.
     """
     
-    def __init__( self, start_date, end_date, lazy_eval=False ):
+    def __init__( self, start_date, end_date, lazy_eval=False, x=None, y=None, fovx=None, fovy=None ):
         self.start_date = start_date
         self.end_date = end_date
         self.data = None
+        self.x = x
+        self.y = y
+        self.fovx = fovx
+        self.fovy = fovy
         
         if not lazy_eval:
             self.data = load_hek_data( self.start_date, self.end_date )
@@ -48,10 +61,83 @@ class hek_data:
             return object.__getattribute__( self, "data" )
         else:
             return object.__getattribute__( self, name )
+
+    # return a short summary of the object        
+    def __repr__( self ):
+        ret_str = "HEK query\n--------------------------------------------------------------\n"
+        ret_str += "data source: {}\n".format( ir.config.hek_base_url ) 
+        ret_str += "time window: {} - {}\n".format( self.start_date, self.end_date )
+
+        if self.x is not None and self.y is not None:
+            ret_str += "instrument center of FOV: x = {}'', y = {}''\n".format( self.x, self.y )
+            
+        if self.fovx is not None and self.fovy is not None:
+            ret_str += "instrument FOV width: FOVX = {}'', FOVY = {}'\n".format( self.fovx, self.fovy )
         
-    def get_flares( self ):
+        ret_str += "--------------------------------------------------------------\n"
+
+        return ret_str
+        
+    def get_flares( self, in_FOV=False, margin=100 ):
+        """
+        Returns a data frame with all flare events in the time window.
+        
+        Parameters
+        ----------
+        in_FOV : bool
+            whether to return only flares that occured in the field of view (FOV)
+        margin : int
+            search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)
+        """
+        
         fields = ['fl_goescls', 'event_starttime', 'event_endtime', 'event_peaktime', 'hpc_radius', 'hpc_x', 'hpc_y']
-        return self.data[self.data.event_type == 'FL'][ fields ]
+        flare_data = self.data[self.data.event_type == 'FL'][ fields ]
+        
+        # raise exception if fovx, fovy, x or y are not initialized
+        if in_FOV: 
+            if self.x is None or self.y is None:
+                raise Exception("fovx and fovy are not initialized!")
+            if self.fovx is None or self.fovy is None:
+                raise Exception("x and y are not initialized!")
+            
+            flare_data = flare_data[ in_fov(flare_data, self.x, self.y, self.fovx, self.fovy, margin=margin) ]
+    
+        return flare_data
+
+def in_fov( data, x, y, fovx, fovy, margin=100 ):
+    """
+    This function takes a data frame with HEK events and (hpc_x, hpc_y) coordinates
+    and returns a list of booleans for every row of the data frame, indicating whether
+    the event happend within the field of view or not. Since flares can extend over up
+    to 100 arcseconds in diameter, also a margin (defaults to 100) can be specified.
+    
+    
+    Parameters
+    ----------
+    data : pd.DataFrame
+        event data frame given by load_hek_data()
+    x : float
+        solar coordinate x in arcsec
+    y : float
+        solar coordinate y in arcsec
+    fovx : float
+        field of view with in x-direction in arcsec
+    fovy : float
+        field of view with in y-direction in arcsec
+    margin : float
+        number of arcseconds to extend the field of view event search space (defaults to 100)
+    """
+    
+    # compute distances in x and y direction
+    dist_x = np.abs( x-data['hpc_x'] )
+    dist_y = np.abs( y-data['hpc_y'] )
+    
+    # define thresholds
+    threshold_x = fovx/2 + margin
+    threshold_y = fovy/2 + margin
+    
+    # return boolean indicating whether event is within margin
+    return np.logical_and( dist_x <= threshold_x, dist_y <= threshold_y )
 
 
 def load_hek_data( start_date, end_date ):
@@ -111,3 +197,10 @@ def load_hek_data( start_date, end_date ):
     
     return df
 
+if __name__ == "__main__":
+    from irisreader.utils.date import from_Tformat
+    s = from_Tformat("2014-01-01T21:30:11")
+    e = from_Tformat("2014-01-03T1:30:17")
+    h = hek_data( s, e, x=-900, y=-71, fovx=50, fovy=50 )
+    k = hek_data( s, e, x=-900, y=-71, fovx=50, fovy=None )
+    kk = hek_data( s, e, x=-900, y=None, fovx=50, fovy=None )
