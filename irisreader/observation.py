@@ -390,6 +390,7 @@ class observation:
 
 # Test code
 if __name__ == "__main__":
-    obs = observation( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/" )
-    many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165")
+    obs = observation( "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/" )
+    obs_sns = observation( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/" )
+    #many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165")
     

@@ -62,6 +62,8 @@ class iris_data_cube:
         Description of the selected line.
     n_steps : int
         Number of time steps in the data cube (this is affected by the keep_null argument).
+    n_raster_pos : int
+        Number of unique raster positions.
     n_files : int
         Number of FITS files (abstracted to one)
     primary_headers: dict
@@ -145,6 +147,9 @@ class iris_data_cube:
             self.mode = 'sit-and-stare'
         else:
             self.mode = 'n-step raster'
+
+        # set number of raster positions
+        self.n_raster_pos = first_file[0].header['NRASTERP']
 
         # number of files
         self.n_files = len( self._files )
@@ -250,6 +255,17 @@ class iris_data_cube:
                     # (keep_null=False), do not label these images as valid
                     for file_step in range( f[self._selected_ext].shape[0] ):
                         
+                        # assign the raster position
+                        # raster: raster position is either file_step (n-step raster) or 0 everywhere (sit-and-stare)
+                        # sji: there is only one file, raster position is file_step modulo the number of raster positions
+                        if self.n_raster_pos == 1:
+                            raster_pos = 0
+                        else:
+                            if self.type == 'raster':
+                                raster_pos = file_step
+                            else:
+                                raster_pos = file_step % self.n_raster_pos
+                        
                         # use the section or the data interface, depending on whether files are opened with memory mapping or not
                         if ir.config.use_memmap:
                             image_is_null = np.all( f[ self._selected_ext ].section[file_step,:,:] == -200 )
@@ -257,7 +273,7 @@ class iris_data_cube:
                             image_is_null = np.all( f[ self._selected_ext ].data[file_step,:,:] == -200 )
 
                         if self._keep_null or not image_is_null:
-                            valid_steps.append( [file_no, file_step] )
+                            valid_steps.append( [file_no, file_step, raster_pos] )
                         
                 except CorruptFITSException as e:
                     warnings.warn("File #{} is corrupt, discarding it ({})".format( file_no, e ) )
@@ -306,12 +322,12 @@ class iris_data_cube:
     # assign lazy_file_header_list to time_specific_headers        
     def _prepare_time_specific_headers( self ): 
         if ir.config.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers")
-        self.time_specific_headers = lazy_file_header_list( self._valid_steps, self._load_time_specific_header_file )
+        self.time_specific_headers = lazy_file_header_list( self._valid_steps[:,:2], self._load_time_specific_header_file )
         
     # assign lazy_file_header_list to headers
     def _prepare_combined_headers( self ):
         if ir.config.verbosity_level >= 2: print("[iris_data_cube] Assigning lazy_file_header_list object to headers")
-        self.headers = lazy_file_header_list( self._valid_steps, self._load_combined_header_file )    
+        self.headers = lazy_file_header_list( self._valid_steps[:,:2], self._load_combined_header_file )    
     
     # function to load time-specific headers from a file    
     def _load_time_specific_header_file( self, file_no ):
@@ -393,8 +409,11 @@ class iris_data_cube:
         self.shape = tuple( [ self.n_steps ] + list( self.shape[1:] ) )
 
     # function to find file number and file step of a given time step
-    def _whereat( self, step ):
-        return self._valid_steps[ step, : ]
+    def _whereat( self, step, raster_pos=None ):
+        if raster_pos is None:
+            return self._valid_steps[ step, : ]
+        else:
+            return self._valid_steps[self._valid_steps[:,2]==raster_pos, :][ step, : ]
     
     # function to return valid steps in a file
     def _get_valid_steps( self, file_no ):
@@ -423,9 +442,9 @@ class iris_data_cube:
         # get involved file numbers and steps
         # if index[0] is a single number (not iterable, not a slice), make a list of it
         if not hasattr( index[0], '__iter__') and not isinstance( index[0], slice ):
-            valid_steps = self._valid_steps[ [index[0]], : ]
+            valid_steps = self._valid_steps[ [index[0]], :2 ]
         else:
-            valid_steps = self._valid_steps[ index[0], : ]
+            valid_steps = self._valid_steps[ index[0], :2 ]
         
         # if image should be cropped make sure that slices stay slices (is about 30% faster)
         if self._cropped:  
@@ -465,7 +484,7 @@ class iris_data_cube:
     # function to get an image step
     # Note: this method makes use of astropy's section method to directly access
     # the data on-disk without loading all of the data into memory
-    def get_image_step( self, step ):
+    def get_image_step( self, step, raster_pos=None ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -475,6 +494,9 @@ class iris_data_cube:
         ----------
         step : int
             Time step in the data cube.
+        raster_pos : int
+            Raster position. If raster_pos is not None, get_image_step will
+            return the image_step on the given raster position.
 
         Returns
         -------
@@ -485,9 +507,13 @@ class iris_data_cube:
         # Check whether line and step exist
         if step < 0 or step >= self.n_steps:
             raise ValueError( "This image step does not exist!" )
+            
+        # Check whether this raster position exists
+        if raster_pos is not None and raster_pos >= self.n_raster_pos:
+            raise Exception("This raster position is not available.")
 
         # get file number and file step            
-        file_no, file_step = self._whereat( step )
+        file_no, file_step, raster_pos = self._whereat( step, raster_pos=raster_pos )
 
         # put this into a try-except clause to catch too many open files
         # note: astropy opens multiple handles per file, file_hub can't control this
@@ -654,7 +680,7 @@ The current output has been re-requested and is not affected.
             
         Returns
         -------
-        float
+        float :
             Numpy array with shape (pixel_pairs,2) containing solar coordinates
         """
 
@@ -675,7 +701,7 @@ The current output has been re-requested and is not affected.
             
         Returns
         -------
-        float
+        float :
             Numpy array with shape (coordinate_pairs,2) containing pixel coordinates
         """
         
@@ -693,7 +719,7 @@ The current output has been re-requested and is not affected.
 
         Returns
         -------
-        float
+        float :
             List [coordinates along x axis, coordinates along y axis]
         """
 
@@ -712,7 +738,7 @@ The current output has been re-requested and is not affected.
         
         Returns
         -------
-        int
+        int :
             Number of saturated pixels at time step <step>.
         """
     
@@ -726,13 +752,25 @@ The current output has been re-requested and is not affected.
         
         Returns
         -------
-        float
+        float :
             List of millisecond timestamps.
         """
         timestamps = []
         for i in range( 0, self.n_steps ):
             timestamps.append( to_epoch( from_Tformat( self.time_specific_headers[i]['DATE_OBS'] ) ) )
         return timestamps
+
+    # function to return exposure times
+    def get_exptimes( self ):
+        """
+        Returns a list of exposure times throughout the observation.
+        
+        Returns
+        -------
+        list :
+            List of exposure times.
+        """
+        return [h['EXPTIME'] for h in self.headers]
 
     # function to get goes flux information
     def get_goes_flux( self ):
@@ -741,7 +779,7 @@ The current output has been re-requested and is not affected.
         
         Returns
         -------
-        float
+        float :
             List of X-ray fluxes
         """
         
@@ -750,7 +788,106 @@ The current output has been re-requested and is not affected.
             return g.interpolate( self.get_timestamps() )
         else:
             return np.array([])
+        
+    # function to get data of a fixed raster position
+    def get_raster_pos_data( self, raster_pos ):
+        """
+        Returns a data cube only for the given raster position.
+        
+        Parameters
+        ----------
+        raster_pos : int
+            raster position (between 0 and n_raster_pos)
+            
+        Returns
+        -------
+        np.array :
+            Data cube with dimensions [t,y,x/lambda]
+        """
+        
+        if raster_pos >= self.n_raster_pos:
+            raise Exception("This raster position is not available.")
+        
+        return self[self._valid_steps[:,2] == raster_pos,:,:]
 
+
+    # function to get headers of a fixed raster position
+    def get_raster_pos_headers( self, raster_pos ):
+        """
+        Returns headers only for the given raster position.
+        
+        Parameters
+        ----------
+        raster_pos : int
+            raster position (between 0 and n_raster_pos)
+            
+        Returns
+        -------
+        list :
+            List of header dictionaries for the given raster position
+        """
+        
+        if raster_pos >= self.n_raster_pos:
+            raise Exception("This raster position is not available.")
+        
+        return [self.headers[i] for i in range(self.n_steps) if self._valid_steps[i,2] == raster_pos]
+    
+    # function to return number of exposures for a given raster position
+    def get_raster_pos_steps( self, raster_pos ):
+        """
+        Returns total number of image steps for the given raster position.
+        
+        Parameters
+        ----------
+        raster_pos : int
+            raster position (between 0 and n_raster_pos)
+            
+        Returns
+        -------
+        int :
+            Number of available image steps
+        """
+        
+        if raster_pos >= self.n_raster_pos:
+            raise Exception("This raster position is not available.")
+        
+        return np.sum( self._valid_steps[:,2] == raster_pos )
+
+    def animate( self, interval_ms=50, gamma=0.4, raster_pos=None, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
+        """
+        Creates an animation from the individual images of a data cube.
+        This function can be pretty slow and take 1-2 minutes.
+        Faster alternatives than matplotlib will be researched in the future.
+    
+        Parameters
+        ----------
+        data_cube : iris_data_cube
+            instance of sji_cube or raster_cube
+        interval_ms : int
+            number of milliseconds between two frames
+        gamma : float
+            gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)
+        raster_pos : int
+            If not None, only display images at raster postion *raster_pos*
+        figsize : tuple
+            figure size: (width,height)
+        cutoff_percentile : float
+            Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce 
+            this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
+            in a range between 0 and 100.  
+        save_path : str
+            path to file where animation output will be written to (use .mp4 extension)
+    
+    Returns
+    -------
+    IPython.HTML :
+        HTML object with the animation
+    """
+        return ir.utils.animate( 
+                self, interval_ms=interval_ms, gamma=gamma, raster_pos=raster_pos, figsize=figsize, 
+                cutoff_percentile=cutoff_percentile, save_path=save_path 
+        )
+        
 
 # Test code  
 if __name__ == "__main__":
@@ -762,3 +899,6 @@ if __name__ == "__main__":
             "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits" ],
             line="Mg"
     )
+
+    # Test:
+    # np.unique( sji._valid_steps[:,2] ) == ..

@@ -104,7 +104,7 @@ class raster_cube( iris_data_cube ):
     # divide_by_exptime defaults to False because the exposure time has to be 
     # searched for in the time-specific headers which slows file access down.
     # Moreover, often the data are normalized anyway.
-    def get_image_step( self, step, divide_by_exptime=False ):
+    def get_image_step( self, step, raster_pos=None, divide_by_exptime=False ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -117,6 +117,9 @@ class raster_cube( iris_data_cube ):
         divide_by_exptime : bool
             Whether to divide image by its exposure time or not. Dividing by exposure
             time will present a normalized image instead of the usual data numbers.
+        raster_pos : int
+            Raster position. If raster_pos is not None, get_image_step will
+            return the image_step on the given raster position.
 
         Returns
         -------
@@ -125,19 +128,22 @@ class raster_cube( iris_data_cube ):
         """
         
         if divide_by_exptime:
+            # get image
+            image = super().get_image_step( step, raster_pos=raster_pos )             
+            
             # get uv region
             uv_region = self.line_specific_headers['WAVEWIN'][0]
             
             # get exposure time stored in 'EXPTIMES'
-            exptime = self.time_specific_headers[ step ]['EXPTIME'+uv_region]
+            header_step = np.argwhere( self._valid_steps[:,2]==1 )[10][0]
+            exptime = self.time_specific_headers[ header_step ]['EXPTIME'+uv_region]
             
             # divide image by exposure time
-            image = super().get_image_step( step ) 
             image[image>0] /= exptime
             return image
         
         else: 
-            return super().get_image_step( step )
+            return super().get_image_step( step, raster_pos=raster_pos )
     
     # function to get interpolated image step
     def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=False ):
