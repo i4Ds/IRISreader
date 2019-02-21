@@ -9,6 +9,13 @@ irisreader.utils.download
 
 
 ==========================================
+irisreader.utils.animate
+==========================================
+
+.. autofunction:: irisreader.utils.animate
+
+
+==========================================
 irisreader.utils.date.from_Tformat
 ==========================================
 

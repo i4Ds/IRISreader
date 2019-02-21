@@ -233,6 +233,8 @@
 <span class="sd">        Description of the selected line.</span>
 <span class="sd">    n_steps : int</span>
 <span class="sd">        Number of time steps in the data cube (this is affected by the keep_null argument).</span>
+<span class="sd">    n_raster_pos : int</span>
+<span class="sd">        Number of unique raster positions.</span>
 <span class="sd">    n_files : int</span>
 <span class="sd">        Number of FITS files (abstracted to one)</span>
 <span class="sd">    primary_headers: dict</span>
@@ -316,6 +318,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;sit-and-stare&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;n-step raster&#39;</span>
+
+        <span class="c1"># set number of raster positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span> <span class="o">=</span> <span class="n">first_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NRASTERP&#39;</span><span class="p">]</span>
 
         <span class="c1"># number of files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="p">)</span>
@@ -421,6 +426,17 @@
                     <span class="c1"># (keep_null=False), do not label these images as valid</span>
                     <span class="k">for</span> <span class="n">file_step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">):</span>
                         
+                        <span class="c1"># assign the raster position</span>
+                        <span class="c1"># raster: raster position is either file_step (n-step raster) or 0 everywhere (sit-and-stare)</span>
+                        <span class="c1"># sji: there is only one file, raster position is file_step modulo the number of raster positions</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">raster_pos</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;raster&#39;</span><span class="p">:</span>
+                                <span class="n">raster_pos</span> <span class="o">=</span> <span class="n">file_step</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">raster_pos</span> <span class="o">=</span> <span class="n">file_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span>
+                        
                         <span class="c1"># use the section or the data interface, depending on whether files are opened with memory mapping or not</span>
                         <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span>
                             <span class="n">image_is_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,:,:]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">200</span> <span class="p">)</span>
@@ -428,7 +444,7 @@
                             <span class="n">image_is_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">f</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span> <span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,:,:]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">200</span> <span class="p">)</span>
 
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_null</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image_is_null</span><span class="p">:</span>
-                            <span class="n">valid_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span><span class="p">]</span> <span class="p">)</span>
+                            <span class="n">valid_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="p">]</span> <span class="p">)</span>
                         
                 <span class="k">except</span> <span class="n">CorruptFITSException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;File #</span><span class="si">{}</span><span class="s2"> is corrupt, discarding it (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="n">file_no</span><span class="p">,</span> <span class="n">e</span> <span class="p">)</span> <span class="p">)</span>
@@ -477,12 +493,12 @@
     <span class="c1"># assign lazy_file_header_list to time_specific_headers        </span>
     <span class="k">def</span> <span class="nf">_prepare_time_specific_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span> 
         <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Assigning lazy_file_header_list object to time_specific_headers&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_time_specific_header_file</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_time_specific_header_file</span> <span class="p">)</span>
         
     <span class="c1"># assign lazy_file_header_list to headers</span>
     <span class="k">def</span> <span class="nf">_prepare_combined_headers</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
         <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[iris_data_cube] Assigning lazy_file_header_list object to headers&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_combined_header_file</span> <span class="p">)</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="n">lazy_file_header_list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_combined_header_file</span> <span class="p">)</span>    
     
     <span class="c1"># function to load time-specific headers from a file    </span>
     <span class="k">def</span> <span class="nf">_load_time_specific_header_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
@@ -564,8 +580,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">)</span> <span class="p">)</span>
 
     <span class="c1"># function to find file number and file step of a given time step</span>
-    <span class="k">def</span> <span class="nf">_whereat</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">step</span><span class="p">,</span> <span class="p">:</span> <span class="p">]</span>
+    <span class="k">def</span> <span class="nf">_whereat</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">raster_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">step</span><span class="p">,</span> <span class="p">:</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="n">raster_pos</span><span class="p">,</span> <span class="p">:][</span> <span class="n">step</span><span class="p">,</span> <span class="p">:</span> <span class="p">]</span>
     
     <span class="c1"># function to return valid steps in a file</span>
     <span class="k">def</span> <span class="nf">_get_valid_steps</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">file_no</span> <span class="p">):</span>
@@ -594,9 +613,9 @@
         <span class="c1"># get involved file numbers and steps</span>
         <span class="c1"># if index[0] is a single number (not iterable, not a slice), make a list of it</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">slice</span> <span class="p">):</span>
-            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">:</span> <span class="p">]</span>
+            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">:</span><span class="mi">2</span> <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span> <span class="p">]</span>
+            <span class="n">valid_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span><span class="mi">2</span> <span class="p">]</span>
         
         <span class="c1"># if image should be cropped make sure that slices stay slices (is about 30% faster)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>  
@@ -636,7 +655,7 @@
     <span class="c1"># function to get an image step</span>
     <span class="c1"># Note: this method makes use of astropy&#39;s section method to directly access</span>
     <span class="c1"># the data on-disk without loading all of the data into memory</span>
-    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the image at position step. This function uses the section </span>
 <span class="sd">        routine of astropy to only return a slice of the image and avoid </span>
@@ -646,6 +665,9 @@
 <span class="sd">        ----------</span>
 <span class="sd">        step : int</span>
 <span class="sd">            Time step in the data cube.</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            Raster position. If raster_pos is not None, get_image_step will</span>
+<span class="sd">            return the image_step on the given raster position.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -656,25 +678,54 @@
         <span class="c1"># Check whether line and step exist</span>
         <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="s2">&quot;This image step does not exist!&quot;</span> <span class="p">)</span>
+            
+        <span class="c1"># Check whether this raster position exists</span>
+        <span class="k">if</span> <span class="n">raster_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">raster_pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This raster position is not available.&quot;</span><span class="p">)</span>
 
         <span class="c1"># get file number and file step            </span>
-        <span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whereat</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span>
+        <span class="n">file_no</span><span class="p">,</span> <span class="n">file_step</span><span class="p">,</span> <span class="n">raster_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whereat</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span>
+
+        <span class="c1"># put this into a try-except clause to catch too many open files</span>
+        <span class="c1"># note: astropy opens multiple handles per file, file_hub can&#39;t control this</span>
+        <span class="k">try</span><span class="p">:</span>
         
-        <span class="c1"># request file from file hub</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">file_no</span><span class="p">]</span> <span class="p">)</span>
+            <span class="c1"># request file from file hub</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">file_no</span><span class="p">]</span> <span class="p">)</span>
+                    
+            <span class="c1"># get image (cropped if desired)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
+                    <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
+                    <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+            
+                <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
+                    <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
+                    <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">oe</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">oe</span><span class="o">.</span><span class="n">strerror</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;too many open files&quot;</span><span class="p">:</span>
+                <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_open_files</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_open_files</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span> 
+<span class="sd">&quot;&quot;&quot;-------------------------------------------------------------------------------------------------------------</span>
+<span class="sd">Too many open files! Setting maximum number of open files to half of the previous value ({}). </span>
+<span class="sd">Also resetting all open file handles, this might slow down things for a short moment.</span>
+<span class="sd">This problem is due to the uncontrollable behaviour of astropy which can open multiple file handles per file.</span>
+<span class="sd">The current output has been re-requested and is not affected. </span>
+<span class="sd">-------------------------------------------------------------------------------------------------------------&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_open_files</span><span class="p">)</span> 
+                <span class="p">)</span>
+                <span class="n">ir</span><span class="o">.</span><span class="n">file_hub</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
                 
-        <span class="c1"># get image (cropped if desired)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
-                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
-                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ymin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-        
-            <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_memmap</span><span class="p">:</span> <span class="c1"># use section interface if memory mapping is used</span>
-                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">section</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise use data interface</span>
-                <span class="k">return</span> <span class="n">file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ext</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">file_step</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+                <span class="c1"># this recursive call is dangerous and should be tested more thoroughly</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">oe</span>
+                
+            
+                
 
     <span class="c1"># crop data cube</span>
     <span class="k">def</span> <span class="nf">crop</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">remove_bad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_coverage</span><span class="o">=</span><span class="kc">True</span> <span class="p">):</span>
@@ -800,7 +851,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float :</span>
 <span class="sd">            Numpy array with shape (pixel_pairs,2) containing solar coordinates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -821,7 +872,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float :</span>
 <span class="sd">            Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
@@ -839,7 +890,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float :</span>
 <span class="sd">            List [coordinates along x axis, coordinates along y axis]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -858,7 +909,7 @@
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        int</span>
+<span class="sd">        int :</span>
 <span class="sd">            Number of saturated pixels at time step &lt;step&gt;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
     
@@ -872,13 +923,25 @@
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float :</span>
 <span class="sd">            List of millisecond timestamps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="p">):</span>
             <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">to_epoch</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
         <span class="k">return</span> <span class="n">timestamps</span>
+
+    <span class="c1"># function to return exposure times</span>
+    <span class="k">def</span> <span class="nf">get_exptimes</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of exposure times throughout the observation.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list :</span>
+<span class="sd">            List of exposure times.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="s1">&#39;EXPTIME&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">]</span>
 
     <span class="c1"># function to get goes flux information</span>
     <span class="k">def</span> <span class="nf">get_goes_flux</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
@@ -887,7 +950,7 @@
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float :</span>
 <span class="sd">            List of X-ray fluxes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
@@ -896,7 +959,106 @@
             <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span> <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        
+    <span class="c1"># function to get data of a fixed raster position</span>
+    <span class="k">def</span> <span class="nf">get_raster_pos_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">raster_pos</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a data cube only for the given raster position.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            raster position (between 0 and n_raster_pos)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.array :</span>
+<span class="sd">            Data cube with dimensions [t,y,x/lambda]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">raster_pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This raster position is not available.&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">raster_pos</span><span class="p">,:,:]</span>
 
+
+    <span class="c1"># function to get headers of a fixed raster position</span>
+    <span class="k">def</span> <span class="nf">get_raster_pos_headers</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">raster_pos</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns headers only for the given raster position.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            raster position (between 0 and n_raster_pos)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list :</span>
+<span class="sd">            List of header dictionaries for the given raster position</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">raster_pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This raster position is not available.&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">raster_pos</span><span class="p">]</span>
+    
+    <span class="c1"># function to return number of exposures for a given raster position</span>
+    <span class="k">def</span> <span class="nf">get_raster_pos_steps</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">raster_pos</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns total number of image steps for the given raster position.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            raster position (between 0 and n_raster_pos)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int :</span>
+<span class="sd">            Number of available image steps</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">raster_pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_raster_pos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This raster position is not available.&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">raster_pos</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">interval_ms</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an animation from the individual images of a data cube.</span>
+<span class="sd">        This function can be pretty slow and take 1-2 minutes.</span>
+<span class="sd">        Faster alternatives than matplotlib will be researched in the future.</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_cube : iris_data_cube</span>
+<span class="sd">            instance of sji_cube or raster_cube</span>
+<span class="sd">        interval_ms : int</span>
+<span class="sd">            number of milliseconds between two frames</span>
+<span class="sd">        gamma : float</span>
+<span class="sd">            gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            If not None, only display images at raster postion *raster_pos*</span>
+<span class="sd">        figsize : tuple</span>
+<span class="sd">            figure size: (width,height)</span>
+<span class="sd">        cutoff_percentile : float</span>
+<span class="sd">            Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce </span>
+<span class="sd">            this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile</span>
+<span class="sd">            in a range between 0 and 100.  </span>
+<span class="sd">        save_path : str</span>
+<span class="sd">            path to file where animation output will be written to (use .mp4 extension)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    IPython.HTML :</span>
+<span class="sd">        HTML object with the animation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ir</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span> 
+                <span class="bp">self</span><span class="p">,</span> <span class="n">interval_ms</span><span class="o">=</span><span class="n">interval_ms</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> 
+                <span class="n">cutoff_percentile</span><span class="o">=</span><span class="n">cutoff_percentile</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span> 
+        <span class="p">)</span>
+        
 
 <span class="c1"># Test code  </span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -908,6 +1070,9 @@
             <span class="s2">&quot;/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits&quot;</span> <span class="p">],</span>
             <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span>
     <span class="p">)</span>
+
+    <span class="c1"># Test:</span>
+    <span class="c1"># np.unique( sji._valid_steps[:,2] ) == ..</span>
 </pre></div>
 
            </div>

@@ -339,7 +339,7 @@ plotted.</td>
 <h2>irisreader.coalignment.hek_data<a class="headerlink" href="#irisreader-coalignment-hek-data" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="irisreader.coalignment.hek_data">
-<em class="property">class </em><code class="descclassname">irisreader.coalignment.</code><code class="descname">hek_data</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>lazy_eval=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">irisreader.coalignment.</code><code class="descname">hek_data</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>lazy_eval=False</em>, <em>x=None</em>, <em>y=None</em>, <em>fovx=None</em>, <em>fovy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents an interface to the Heliophysics Events Knowledge
 database (HEK). It loads all HEK active regions and flares that were
 recorded in a defined time span and makes them available as a pandas data
@@ -354,6 +354,10 @@ downloaded.</li>
 <li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the time window for which HEK events should be
 downloaded.</li>
 <li><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</li>
+<li><strong>x</strong> (<em>float</em>) – solar coordinates x of center of field of view in arcsec (defaults to None)</li>
+<li><strong>y</strong> (<em>float</em>) – solar coordinates y of center of field of view in arcsec (defaults to None)</li>
+<li><strong>fovx</strong> (<em>float</em>) – width of the field of view (FOV) in x direction in arcsec (defaults to None)</li>
+<li><strong>fovy</strong> (<em>float</em>) – width of the field of view (FOV) in y direction in arcsec (defaults to None)</li>
 </ul>
 </td>
 </tr>
@@ -366,6 +370,24 @@ downloaded.</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="irisreader.coalignment.hek_data.get_flares">
+<code class="descname">get_flares</code><span class="sig-paren">(</span><em>in_FOV=False</em>, <em>margin=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data.get_flares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data.get_flares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a data frame with all flare events in the time window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_FOV</strong> (<em>bool</em>) – whether to return only flares that occured in the field of view (FOV)</li>
+<li><strong>margin</strong> (<em>int</em>) – search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>

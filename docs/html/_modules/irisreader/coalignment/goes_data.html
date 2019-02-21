@@ -177,8 +177,10 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.notebooks</span> <span class="k">import</span> <span class="n">in_notebook</span> 
 <span class="c1"># TODO: create a downloader utility function?</span>
 
 
@@ -340,9 +342,12 @@
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span> <span class="p">)</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mf">3e-8</span><span class="p">,</span> <span class="mf">3e-7</span><span class="p">,</span> <span class="mf">3e-6</span><span class="p">,</span> <span class="mf">3e-5</span><span class="p">,</span> <span class="mf">3e-4</span><span class="p">])</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">])</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">minorticks_off</span><span class="p">()</span></div>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">minorticks_off</span><span class="p">()</span>
         <span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-         
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_notebook</span><span class="p">():</span></div>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    
         
 <div class="viewcode-block" id="goes_data.interpolate"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">iris_timestamps</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">]</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

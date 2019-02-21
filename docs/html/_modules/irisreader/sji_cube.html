@@ -268,7 +268,7 @@
     <span class="c1"># divide_by_exptime defaults to False because the exposure time has to be </span>
     <span class="c1"># searched for in the time-specific headers which slows file access down.</span>
     <span class="c1"># Moreover, often the data are normalized anyway.</span>
-<div class="viewcode-block" id="sji_cube.get_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.get_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+<div class="viewcode-block" id="sji_cube.get_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.get_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the image at position step. This function uses the section </span>
 <span class="sd">        routine of astropy to only return a slice of the image and avoid </span>
@@ -277,7 +277,10 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        step : int</span>
-<span class="sd">            Time step in the data cube.</span>
+<span class="sd">            Time step in the data cube</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            Raster position. If raster_pos is not None, get_image_step will</span>
+<span class="sd">            return the image_step on the given raster position.</span>
 <span class="sd">        divide_by_exptime : bool</span>
 <span class="sd">            Whether to divide image by its exposure time or not. Dividing by exposure</span>
 <span class="sd">            time will present a normalized image instead of the usual data numbers.</span>
@@ -289,16 +292,21 @@
 <span class="sd">        &quot;&quot;&quot;</span> 
         
         <span class="k">if</span> <span class="n">divide_by_exptime</span><span class="p">:</span>
-            <span class="c1"># get exposure time stored in &#39;EXPTIMES&#39;</span>
-            <span class="n">exptime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">step</span> <span class="p">][</span><span class="s1">&#39;EXPTIMES&#39;</span><span class="p">]</span>
+            <span class="c1"># get image</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span>             
+            
+            <span class="c1"># get exposure time stored in &#39;EXPTIMES&#39; (make sure we get the right headers if raster_pos is not None)</span>
+            <span class="c1"># repeating _whereat here to save time; maybe this can be implemented in a better way</span>
+            <span class="n">header_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span> <span class="p">)[</span><span class="mi">10</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;header_step: &quot;</span><span class="p">,</span> <span class="n">header_step</span> <span class="p">)</span>
+            <span class="n">exptime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">header_step</span> <span class="p">][</span><span class="s1">&#39;EXPTIMES&#39;</span><span class="p">]</span>
         
             <span class="c1"># divide image by exposure time</span>
-            <span class="n">image</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span> 
             <span class="n">image</span><span class="p">[</span><span class="n">image</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">exptime</span>
             <span class="k">return</span> <span class="n">image</span>
         
         <span class="k">else</span><span class="p">:</span></div>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span> 
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span> 
         
             
     <span class="c1"># function to plot an image step</span>

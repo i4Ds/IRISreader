@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="coalignment.html">Co-alignment</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-download">irisreader.utils.download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-animate">irisreader.utils.animate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-from-tformat">irisreader.utils.date.from_Tformat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-to-tformat">irisreader.utils.date.to_Tformat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#irisreader-utils-date-from-obsformat">irisreader.utils.date.from_obsformat</a></li>
@@ -207,6 +208,42 @@
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">An open observation handle or a boolean indicating download success.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irisreader-utils-animate">
+<h2>irisreader.utils.animate<a class="headerlink" href="#irisreader-utils-animate" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="irisreader.utils.animate">
+<code class="descclassname">irisreader.utils.</code><code class="descname">animate</code><span class="sig-paren">(</span><em>data_cube</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>raster_pos=None</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/animate.html#animate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.animate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an animation from the individual images of a data cube.
+This function can be pretty slow and take 1-2 minutes.
+Faster alternatives than matplotlib will be researched in the future.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_cube</strong> (<em>iris_data_cube</em>) – instance of sji_cube or raster_cube</li>
+<li><strong>interval_ms</strong> (<em>int</em>) – number of milliseconds between two frames</li>
+<li><strong>gamma</strong> (<em>float</em>) – gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</li>
+<li><strong>raster_pos</strong> (<em>int</em>) – If not None, only display images at raster postion <em>raster_pos</em></li>
+<li><strong>figsize</strong> (<em>tuple</em>) – figure size: (width,height)</li>
+<li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
+in a range between 0 and 100.</li>
+<li><strong>save_path</strong> (<em>str</em>) – path to file where animation output will be written to (use .mp4 extension)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTML object with the animation</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IPython.HTML</p>
 </td>
 </tr>
 </tbody>
