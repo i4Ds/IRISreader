@@ -509,7 +509,7 @@ class iris_data_cube:
             raise ValueError( "This image step does not exist!" )
             
         # Check whether this raster position exists
-        if raster_pos is not None and raster_pos >= self.n_raster_pos:
+        if raster_pos is not None and raster_pos is not 0 and raster_pos >= self.n_raster_pos:
             raise Exception("This raster position is not available.")
 
         # get file number and file step            

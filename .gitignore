@@ -6,3 +6,4 @@
 /*.egg-info
 doctrees/
 .buildinfo
+.ipynb_checkpoints/
