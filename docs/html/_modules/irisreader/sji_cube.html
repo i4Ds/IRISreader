@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>irisreader.sji_cube &mdash; irisreader 0.2 documentation</title>
+  <title>irisreader.sji_cube &mdash; irisreader 0.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="irisreader 0.2 documentation" href="../../index.html"/>
+    <link rel="top" title="irisreader 0.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -297,8 +297,11 @@
             
             <span class="c1"># get exposure time stored in &#39;EXPTIMES&#39; (make sure we get the right headers if raster_pos is not None)</span>
             <span class="c1"># repeating _whereat here to save time; maybe this can be implemented in a better way</span>
-            <span class="n">header_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span> <span class="p">)[</span><span class="mi">10</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;header_step: &quot;</span><span class="p">,</span> <span class="n">header_step</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">raster_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">header_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="n">raster_pos</span> <span class="p">)[</span><span class="n">step</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">header_step</span> <span class="o">=</span> <span class="n">step</span>
+
             <span class="n">exptime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">header_step</span> <span class="p">][</span><span class="s1">&#39;EXPTIMES&#39;</span><span class="p">]</span>
         
             <span class="c1"># divide image by exposure time</span>
@@ -444,7 +447,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2',
+            VERSION:'0.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

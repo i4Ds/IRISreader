@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>irisreader.raster_cube &mdash; irisreader 0.2 documentation</title>
+  <title>irisreader.raster_cube &mdash; irisreader 0.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="irisreader 0.2 documentation" href="../../index.html"/>
+    <link rel="top" title="irisreader 0.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -306,7 +306,11 @@
             <span class="n">uv_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_specific_headers</span><span class="p">[</span><span class="s1">&#39;WAVEWIN&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             
             <span class="c1"># get exposure time stored in &#39;EXPTIMES&#39;</span>
-            <span class="n">header_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span> <span class="p">)[</span><span class="mi">10</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">raster_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">header_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_steps</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="n">raster_pos</span> <span class="p">)[</span><span class="n">step</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">header_step</span> <span class="o">=</span> <span class="n">step</span>
+                
             <span class="n">exptime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span> <span class="n">header_step</span> <span class="p">][</span><span class="s1">&#39;EXPTIME&#39;</span><span class="o">+</span><span class="n">uv_region</span><span class="p">]</span>
             
             <span class="c1"># divide image by exposure time</span>
@@ -317,7 +321,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span>
     
     <span class="c1"># function to get interpolated image step</span>
-<div class="viewcode-block" id="raster_cube.get_interpolated_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.get_interpolated_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_interpolated_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+<div class="viewcode-block" id="raster_cube.get_interpolated_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.get_interpolated_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_interpolated_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the image at position step. This function uses the section </span>
 <span class="sd">        routine of astropy to only return a slice of the image and avoid </span>
@@ -339,6 +343,9 @@
 <span class="sd">        divide_by_exptime : bool</span>
 <span class="sd">            Whether to divide image by its exposure time or not. Dividing by exposure</span>
 <span class="sd">            time will present a normalized image instead of the usual data numbers.</span>
+<span class="sd">        raster_pos : int</span>
+<span class="sd">            Raster position. If raster_pos is not None, get_image_step will</span>
+<span class="sd">            return the image_step on the given raster position.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -348,7 +355,7 @@
 
         <span class="n">interpolator</span> <span class="o">=</span> <span class="n">spectrum_interpolator</span><span class="p">(</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span> <span class="p">)</span>
         <span class="n">lambda_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
-        <span class="k">return</span> <span class="n">interpolator</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">divide_by_exptime</span> <span class="p">),</span> <span class="n">lambda_units</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">interpolator</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="n">divide_by_exptime</span> <span class="p">),</span> <span class="n">lambda_units</span> <span class="p">)</span>
     
     <span class="c1"># function to get a spectrum step</span>
     <span class="k">def</span> <span class="nf">get_spectrum</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lambda_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
@@ -539,7 +546,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2',
+            VERSION:'0.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
