@@ -770,7 +770,7 @@ The current output has been re-requested and is not affected.
         list :
             List of exposure times.
         """
-        return [h['EXPTIME'] for h in self.headers]
+        return np.array([h['EXPTIME'] for h in self.headers])
 
     # function to get goes flux information
     def get_goes_flux( self ):
@@ -852,7 +852,8 @@ The current output has been re-requested and is not affected.
             raise Exception("This raster position is not available.")
         
         return np.sum( self._valid_steps[:,2] == raster_pos )
-
+    
+    # function to animate the data cube
     def animate( self, interval_ms=50, gamma=0.4, raster_pos=None, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
         """
         Creates an animation from the individual images of a data cube.

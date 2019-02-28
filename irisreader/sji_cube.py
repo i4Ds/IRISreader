@@ -126,8 +126,11 @@ class sji_cube( iris_data_cube ):
             
             # get exposure time stored in 'EXPTIMES' (make sure we get the right headers if raster_pos is not None)
             # repeating _whereat here to save time; maybe this can be implemented in a better way
-            header_step = np.argwhere( self._valid_steps[:,2]==1 )[10][0]
-            print( "header_step: ", header_step )
+            if raster_pos is not None:
+                header_step = np.argwhere( self._valid_steps[:,2]==raster_pos )[step][0]
+            else:
+                header_step = step
+
             exptime = self.time_specific_headers[ header_step ]['EXPTIMES']
         
             # divide image by exposure time

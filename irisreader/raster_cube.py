@@ -135,7 +135,11 @@ class raster_cube( iris_data_cube ):
             uv_region = self.line_specific_headers['WAVEWIN'][0]
             
             # get exposure time stored in 'EXPTIMES'
-            header_step = np.argwhere( self._valid_steps[:,2]==1 )[10][0]
+            if raster_pos is not None:
+                header_step = np.argwhere( self._valid_steps[:,2]==raster_pos )[step][0]
+            else:
+                header_step = step
+                
             exptime = self.time_specific_headers[ header_step ]['EXPTIME'+uv_region]
             
             # divide image by exposure time
@@ -146,7 +150,7 @@ class raster_cube( iris_data_cube ):
             return super().get_image_step( step, raster_pos=raster_pos )
     
     # function to get interpolated image step
-    def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, divide_by_exptime=False ):
+    def get_interpolated_image_step( self, step, lambda_min, lambda_max, n_breaks, raster_pos=None, divide_by_exptime=False ):
         """
         Returns the image at position step. This function uses the section 
         routine of astropy to only return a slice of the image and avoid 
@@ -168,6 +172,9 @@ class raster_cube( iris_data_cube ):
         divide_by_exptime : bool
             Whether to divide image by its exposure time or not. Dividing by exposure
             time will present a normalized image instead of the usual data numbers.
+        raster_pos : int
+            Raster position. If raster_pos is not None, get_image_step will
+            return the image_step on the given raster position.
 
         Returns
         -------
@@ -177,7 +184,7 @@ class raster_cube( iris_data_cube ):
 
         interpolator = spectrum_interpolator( lambda_min, lambda_max, n_breaks )
         lambda_units = self.get_axis_coordinates( step )[0]
-        return interpolator.fit_transform( self.get_image_step( step, divide_by_exptime ), lambda_units )
+        return interpolator.fit_transform( self.get_image_step( step=step, raster_pos=raster_pos, divide_by_exptime=divide_by_exptime ), lambda_units )
     
     # function to get a spectrum step
     def get_spectrum( self, step, lambda_min=None, lambda_max=None, n_breaks=None, divide_by_exptime=False ):

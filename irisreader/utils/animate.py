@@ -4,8 +4,6 @@ from matplotlib import animation
 import matplotlib.pyplot as plt
 import numpy as np
 from IPython.display import HTML
-import io, base64
-import tempfile
 
 def animate( data_cube, interval_ms=50, gamma=0.4, raster_pos=None, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
     """
