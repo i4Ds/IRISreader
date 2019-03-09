@@ -21,4 +21,9 @@ def warning_format(message, category, filename, lineno, file=None, line=None):
     return 'Warning: {} \n'.format( message )
     warnings.formatwarning = warning_format
 
-
+# set some default matplotlib options
+import matplotlib.pyplot as plt
+plt.rcParams['figure.figsize'] = [10, 6]
+plt.rcParams['xtick.direction'] = 'out'
+plt.rcParams['image.origin'] = 'lower'
+plt.rcParams['image.cmap'] = 'gist_heat'
