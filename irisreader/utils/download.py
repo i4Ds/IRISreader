@@ -64,7 +64,7 @@ def extract_all( path ):
         with gzip.open( path + "/" + f, 'rb') as gzip_file:
             with open( path + "/" + f[:-3], 'wb') as extracted_file:
                 shutil.copyfileobj( gzip_file, extracted_file )
-                os.remove( path + "/" + f )
+        os.remove( path + "/" + f )
     
     # extract tar files if necessary
     tar_files = [file for file in os.listdir( path ) if file[-4:]=='.tar']
