@@ -61,8 +61,7 @@ def extract_all( path ):
     
     for f in gz_files:
         #print( "extracting " + path + "/" + f )
-        with gzip.open( path + "/" + f, 'rb') as gzip_file:
-            with open( path + "/" + f[:-3], 'wb') as extracted_file:
+        with open( path + "/" + f[:-3], 'wb') as extracted_file, gzip.open( path + "/" + f, 'rb') as gzip_file:
                 shutil.copyfileobj( gzip_file, extracted_file )
         os.remove( path + "/" + f )
     
@@ -133,6 +132,10 @@ def download( obs_identifier, target_directory, type='all', uncompress=True, ope
         
         # get directory listing and filter for SJI or raster if necessary
         listing = parse_url_content( obs_url )
+        if len( listing ) == 0:
+            raise Exception(
+                    "Something went wrong with getting the observation directory content! Please check whether your data mirror path is correct:\n {}\n Directory Listing: {}".format( ir.config.mirrors[ir.config.default_mirror], listing )
+            )
         listing_sji = listing[[('_SJI_' in filename and filename[-2:] == 'gz') for filename in listing['file']]]
         listing_raster = listing[[('_raster' in filename and filename[-2:] == 'gz') for filename in listing['file']]]
                 
