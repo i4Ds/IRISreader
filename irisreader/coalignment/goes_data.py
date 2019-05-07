@@ -123,7 +123,7 @@ class goes_data:
             return pd.read_csv( f, sep=",", parse_dates=["time_tag"], index_col="time_tag" )
 
 
-    def plot( self, restrict_to_obstime=False ):
+    def plot( self, restrict_to_obstime=False, **kwargs ):
         """
         This function plots the GOES X-ray flux around the given time period.
         
@@ -140,7 +140,7 @@ class goes_data:
         plot_data.loc[:]['B_FLUX'][plot_data['B_FLUX']==0] = np.nan
         
         # plot the fluxes
-        ax = plot_data.plot( y=['A_FLUX', 'B_FLUX'], logy=True, title="GOES X-ray Flux" )
+        ax = plot_data.plot( y=['A_FLUX', 'B_FLUX'], logy=True, title="GOES X-ray Flux", **kwargs )
         
         # restrict plot to observation time period if desired, otherwise draw
         # shaded region and dashed restriction lines where the observation
