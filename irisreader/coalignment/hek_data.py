@@ -41,7 +41,7 @@ class hek_data:
         self._caller = caller
         
         # not every observation has rasters
-        if len( caller.raster ) > 0:
+        if caller.n_raster > 0:
             self._caller_cube = caller.raster[0]
         else:
             self._caller_cube = caller.sji[0]
