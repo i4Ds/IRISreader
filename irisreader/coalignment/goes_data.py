@@ -55,6 +55,16 @@ class goes_data:
         
         if not lazy_eval:
             self._load()
+            
+    def __repr__( self ):
+        repr_str = "---------------- GOES XRS interface ------------------------------------\n"
+        repr_str += "data:                        XRS data\n"
+        repr_str += "plot():                      plot x-ray flux history\n"
+        repr_str += "interpolate( timestamps ):   interpolate to IRIS timestamps\n"
+        repr_str += "get_peak_flux():             get the peak flux in the observation\n"
+        repr_str += "------------------------------------------------------------------------\n"
+        return repr_str
+        
 
     # catch attribute requests to perform lazy loading if necessary
     def __getattribute__( self, name ):
@@ -220,7 +230,7 @@ class goes_data:
         """
         fluxes = self.data[np.logical_and( self.data.index >= self.start_date, self.data.index <= self.end_date)][flux]
         if len( fluxes ) > 0:
-            return np.nanmax( fluxes)
+            return np.nanmax( fluxes )
         else:
             return None
 

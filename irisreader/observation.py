@@ -233,6 +233,17 @@ class raster_loader:
         """
         return self._line_info
 
+class goes_struct:
+    """
+    Structure for goes XRS and HEK event data.
+    """
+    def __init__( self ):
+        self.xrs = None
+        self.events = None
+    
+    def __repr__( self ):
+        return "xrs: GOES xrs data interface\nevents: HEK event data for GOES"
+
 class observation:    
     """
     Presents an abstract representation of a whole observation. This class
@@ -325,10 +336,10 @@ class observation:
             self.full_obsid = None
         
         # create the goes loader
-        self.goes = goes_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), path + "/goes_data", lazy_eval=True )
-        
-        # create the hek loader
-        self.hek = hek_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), lazy_eval=True )
+        # TODO: read a few xcenix samples and generate xcen with median
+        self.goes = goes_struct()
+        self.goes.xrs = goes_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), path + "/goes_data", lazy_eval=True )
+        self.goes.events = hek_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), instrument="GOES", lazy_eval=True )
         
     # define print output
     def __str__( self ):
@@ -390,7 +401,8 @@ class observation:
 
 # Test code
 if __name__ == "__main__":
-    obs = observation( "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/" )
+    obs = observation( "/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/", keep_null=True )
     obs_sns = observation( "/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/" )
-    #many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165")
+    #obs_badxcen = observation( "/home/chuwyler/Desktop/FITS/20140212_215458_3860257280" )
+    #many_rasters_obs = observation("/home/chuwyler/Desktop/FITS/20150404_155958_3820104165", keep_null=True )
     
