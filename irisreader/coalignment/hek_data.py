@@ -142,7 +142,6 @@ class hek_data:
             search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)
         """
         
-        # check that jitter is in an interval between 0 and 1
         flare_events = self.get_flares( classes, in_FOV, FOV_margin )
 
         # plot IRIS FOV
@@ -179,7 +178,8 @@ class hek_data:
         plt.xlabel("solar x [arcsec]")
         plt.ylabel("solar y [arcsec]")
         plt.title("(points outside the FOV are subject to projection errors)")
-        plt.legend()
+        if len( flare_events ) > 0:
+            plt.legend()
         plt.show()        
         
 
@@ -300,7 +300,8 @@ def download_hek_data( start_date, end_date, instrument=None ):
     
     # convert results to a data frame and filter out events that stopped before the observation time or started after the observation time    
     df = pd.DataFrame( hek_events )
-    df = df[np.logical_and( df.event_starttime < to_Tformat( end_date ), df.event_endtime > to_Tformat( start_date ) )]
+    if len( df ) > 0:
+        df = df[np.logical_and( df.event_starttime < to_Tformat( end_date ), df.event_endtime > to_Tformat( start_date ) )]
     
     return df
 
