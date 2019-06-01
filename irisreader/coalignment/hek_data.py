@@ -153,19 +153,19 @@ class hek_data:
         upper_y = fovy/2
         lower_y = -fovy/2
         
-        plt.plot( [left_x, right_x], [upper_y, upper_y], c="black", label="FOV" )
+        plt.plot( [left_x, right_x], [upper_y, upper_y], c="black" )
         plt.plot( [left_x, right_x], [lower_y, lower_y], c="black" )
         plt.plot( [left_x, left_x], [lower_y, upper_y], c="black" )
         plt.plot( [right_x, right_x], [lower_y, upper_y], c="black" )
                 
         # plot margin if not zero
-        plt.plot( [left_x-FOV_margin, right_x+FOV_margin], [upper_y+FOV_margin, upper_y+FOV_margin], c="black", ls="--", label="tolerance margin" )
+        plt.plot( [left_x-FOV_margin, right_x+FOV_margin], [upper_y+FOV_margin, upper_y+FOV_margin], c="black", ls="--" )
         plt.plot( [left_x-FOV_margin, right_x+FOV_margin], [lower_y-FOV_margin, lower_y-FOV_margin], c="black", ls="--" )
         plt.plot( [left_x-FOV_margin, left_x-FOV_margin], [lower_y-FOV_margin, upper_y+FOV_margin], c="black", ls="--" )
         plt.plot( [right_x+FOV_margin, right_x+FOV_margin], [lower_y-FOV_margin, upper_y+FOV_margin], c="black", ls="--" )
         
         # plot FOV center
-        plt.scatter( 0, 0, marker="x", s=100, c="black", label="IRIS FOV center" )
+        plt.scatter( 0, 0, marker="x", s=100, c="black" )
 
         # plot flare events
         for index, event in flare_events.iterrows():
