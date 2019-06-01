@@ -56,18 +56,19 @@ class hek_data:
         self.data = download_hek_data( self.start_date, self.end_date, self.instrument )
         
         # add iris position information
-        iris_x = []
-        iris_y = []
-        for t in self.data.event_starttime:
-            x, y = self.get_iris_coordinates( from_Tformat( t ) )
-            iris_x.append( x )
-            iris_y.append( y )
-        self.data['iris_xcenix'] = iris_x
-        self.data['iris_ycenix'] = iris_y
-            
-        # add euclidean distances to IRIS FOV center
-        self.data['dist_arcsec'] = np.sqrt( (self.data.hpc_x-self.data.iris_xcenix)**2 + (self.data.hpc_y-self.data.iris_ycenix)**2 )
-        self.data.sort_values( by="dist_arcsec", inplace=True )
+        if len( self.data ) > 0:
+            iris_x = []
+            iris_y = []
+            for t in self.data.event_starttime:
+                x, y = self.get_iris_coordinates( from_Tformat( t ) )
+                iris_x.append( x )
+                iris_y.append( y )
+            self.data['iris_xcenix'] = iris_x
+            self.data['iris_ycenix'] = iris_y
+                
+            # add euclidean distances to IRIS FOV center
+            self.data['dist_arcsec'] = np.sqrt( (self.data.hpc_x-self.data.iris_xcenix)**2 + (self.data.hpc_y-self.data.iris_ycenix)**2 )
+            self.data.sort_values( by="dist_arcsec", inplace=True )
 
     # make sure that self.data is lazy loaded
     def __getattribute__( self, name ):
