@@ -39,8 +39,15 @@ class hek_data:
     
     def __init__( self, caller, instrument="GOES", lazy_eval=False ):
         self._caller = caller
-        self.start_date = from_Tformat( caller.raster[0].start_date )
-        self.end_date = from_Tformat( caller.raster[0].end_date )
+        
+        # not every observation has rasters
+        if len( caller.raster ) > 0:
+            self._caller_cube = caller.raster[0]
+        else:
+            self._caller_cube = caller.sji[0]
+            
+        self.start_date = from_Tformat( self._caller_cube.start_date )
+        self.end_date = from_Tformat( self._caller_cube.end_date )
         self.instrument = instrument
         self.data = None
         
@@ -83,12 +90,8 @@ class hek_data:
         repr_str = "GOES event query interface (through HEK)\n--------------------------------------------------------------\n"
         repr_str += "data source: {}\n".format( ir.config.hek_base_url ) 
         repr_str += "time window: {} - {}\n".format( self.start_date, self.end_date )
-
-        if self._caller is not None:
-            repr_str += "\ncaller: {}\n".format( self._caller.full_obsid )
-        
+        repr_str += "\ncaller: {}\n".format( self._caller.full_obsid )
         repr_str += "--------------------------------------------------------------\n"
-        
         repr_str += "data:            event data\n"
         repr_str += "get_flares():    get flare data\n"
         repr_str += "plot_flares():   plot flare data with respect to IRIS FOV\n"
@@ -146,8 +149,8 @@ class hek_data:
         flare_events = self.get_flares( classes, in_FOV, FOV_margin )
 
         # plot IRIS FOV
-        fovx = self._caller.raster[0].primary_headers['FOVX']
-        fovy = self._caller.raster[0].primary_headers['FOVY']
+        fovx = self._caller_cube.primary_headers['FOVX']
+        fovy = self._caller_cube.primary_headers['FOVY']
         left_x = -fovx/2
         right_x = fovx/2
         upper_y = fovy/2
@@ -207,8 +210,8 @@ class hek_data:
         dist_y = np.abs( self.data.hpc_y - self.data.iris_ycenix )
         
         # define thresholds
-        threshold_x = self._caller.raster[0].primary_headers['FOVX']/2 + margin
-        threshold_y = self._caller.raster[0].primary_headers['FOVY']/2 + margin
+        threshold_x = self._caller_cube.primary_headers['FOVX']/2 + margin
+        threshold_y = self._caller_cube.primary_headers['FOVY']/2 + margin
         
         # return boolean indicating whether event is within margin
         return np.logical_and( dist_x <= threshold_x, dist_y <= threshold_y )
@@ -230,8 +233,8 @@ class hek_data:
         iris_ycenix : float
             YCENIX coordinate of IRIS at the time of the flare
         """
-        n = int( np.round( self._caller.raster[0].n_steps * (flare_date-self.start_date) / (self.end_date-self.start_date) ) )
-        return [self._caller.raster[0].time_specific_headers[n]['XCENIX'], self._caller.raster[0].time_specific_headers[n]['YCENIX']]
+        n = int( np.round( self._caller_cube.n_steps * (flare_date-self.start_date) / (self.end_date-self.start_date) ) )
+        return [self._caller_cube.time_specific_headers[n]['XCENIX'], self._caller_cube.time_specific_headers[n]['YCENIX']]
 
 
 
