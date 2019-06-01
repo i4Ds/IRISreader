@@ -339,7 +339,7 @@ class observation:
         # TODO: read a few xcenix samples and generate xcen with median
         self.goes = goes_struct()
         self.goes.xrs = goes_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), path + "/goes_data", lazy_eval=True )
-        self.goes.events = hek_data( from_Tformat(self.start_date), from_Tformat( self.end_date ), instrument="GOES", lazy_eval=True )
+        self.goes.events = hek_data( self, instrument="GOES", lazy_eval=True )
         
     # define print output
     def __str__( self ):

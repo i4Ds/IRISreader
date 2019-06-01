@@ -22,6 +22,8 @@ class hek_data:
         This is required to give hek_data the ability to access the observation's XCENIX/YCENIX positions at different times in a lazy way.
     instrument : str
         which instrument to query - defaults to GOES which might be most practical
+    lazy_eval : boolean
+        Whether or not data should only be loaded upon first read access.
     
     Attributes
     ----------    
@@ -35,12 +37,15 @@ class hek_data:
         Pandas data frame with HEK events.
     """
     
-    def __init__( self, caller, instrument="GOES" ):
+    def __init__( self, caller, instrument="GOES", lazy_eval=False ):
         self._caller = caller
         self.start_date = from_Tformat( caller.raster[0].start_date )
         self.end_date = from_Tformat( caller.raster[0].end_date )
         self.instrument = instrument
         self.data = None
+        
+        if not lazy_eval:
+            self._load()
             
     def _load( self ):
         """
