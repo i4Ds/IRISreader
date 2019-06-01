@@ -150,7 +150,7 @@ class iris_data_cube:
 
         # set number of raster positions
         self.n_raster_pos = first_file[0].header['NRASTERP']
-
+        
         # number of files
         self.n_files = len( self._files )
             
@@ -229,16 +229,58 @@ class iris_data_cube:
         # generate the path to the file with the precomputed valid steps
         keep_null_str = "keep_null" if self._keep_null else "discard_null"
         valid_steps_file = "{}/.valid_steps_{}_{}.npy".format( os.path.dirname( self._files[0] ), self.line_info.replace(' ','_').replace('/','_'), keep_null_str )
+
+        # generate valid steps without looking into files if keep_null = True
+        # Warning: this routine needs to be checked thoroughly - it's unclear how this works for bad data    
+        if self._keep_null:
+        
+                if ir.config.verbosity_level >= 2:
+                    print("[iris_data_cube] Warning: Not testing for bad data if keep_null=True")
+            
+                # open first file
+                f = ir.file_hub.open( self._files[ 0 ] ) # open first file to look up steps
+                
+                # n-step raster
+                if self.mode == "n-step raster":
+                    if self.type == 'sji':
+                        steps = f[0].shape[0]
+                        sweeps = int( steps / self.n_raster_pos )
+                        
+                        # raise error if sweeps is not an integer
+                        if steps % self.n_raster_pos != 0:
+                            raise Exception("This SJI does not contain an integer repetition of raster sweeps. IRISreader can't handle this currently in the keep_null=True mode. Please contact cedric.huwyler@fhnw.ch if you encounter this error.")
+                        
+                        valid_steps = np.zeros( [steps, 3] )
+                        valid_steps[:,1] = np.arange( steps )
+                        valid_steps[:,2] = np.tile( np.arange(self.n_raster_pos), sweeps )
+                        
+                    else:
+                        valid_steps = np.zeros( [self.n_raster_pos * self.n_files, 3] )
+                        valid_steps[:,0] = np.repeat( np.arange(self.n_files), self.n_raster_pos )
+                        valid_steps[:,1] = np.tile( np.arange(self.n_raster_pos), self.n_files )
+                        valid_steps[:,2] = valid_steps[:,1].copy()
+                    
+                
+                # sit-and-stare
+                else:
+                    if self.type == "sji":
+                        steps = f[0].shape[0]
+                    else:
+                        steps = f[1].shape[0]
+                        
+                    valid_steps = np.zeros( [steps, 3] )
+                    valid_steps[:,1] = np.arange( steps )
     
         # valid steps have already been precomputed: try to load the file
-        if not self._force_valid_steps and os.path.exists( valid_steps_file ):
+        elif not self._force_valid_steps and os.path.exists( valid_steps_file ):
             if ir.config.verbosity_level >= 2: print("[iris_data_cube] using precomputed steps")
             try:
                 valid_steps = np.load( valid_steps_file )
         
             except Exception as e:
                 print( e )
-                
+
+        
         # no precomputed valid image steps: assess them now
         else:
             # go through all the files: make sure they are not corrupt with _check_integrity
@@ -291,7 +333,7 @@ class iris_data_cube:
             raise CorruptFITSException("This data cube contains no valid images!")
             
         # update class instance variables
-        self._valid_steps = np.array( valid_steps )
+        self._valid_steps = np.array( valid_steps, dtype=np.int )
         self.n_steps = len( valid_steps )
         f = ir.file_hub.open( self._files[ -1 ] )
         self.shape = tuple( [ self.n_steps ] + list( f[ self._selected_ext ].shape[1:] ) )
