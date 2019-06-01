@@ -114,22 +114,26 @@ class hek_data:
             search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)
         """
         
-        
         fields = ['fl_goescls', 'event_starttime', 'event_endtime', 'event_peaktime', 'hpc_radius', 'hpc_x', 'hpc_y', 'iris_xcenix', 'iris_ycenix', 'dist_arcsec']
-        raw_flare_data = self.data[self.data.event_type == 'FL'][ fields ]
         
-        # filter out certain flare classes
-        flare_data = pd.DataFrame( columns=raw_flare_data.columns )
-        if classes == "":
-            flare_data = raw_flare_data.copy()
-        for cls in classes:
-            flare_data = flare_data.append( raw_flare_data[raw_flare_data.fl_goescls.str.contains( cls )], ignore_index=True )
+        if len( self.data ) > 0:
+            raw_flare_data = self.data[self.data.event_type == 'FL'][fields]
         
-        # filter out only flares in FOV within margin if desired
-        if in_FOV:
-            flare_data = flare_data[ self.in_fov( margin=FOV_margin) ]
+            # filter out certain flare classes
+            flare_data = pd.DataFrame( columns=raw_flare_data.columns )
+            if classes == "":
+                flare_data = raw_flare_data.copy()
+            for cls in classes:
+                flare_data = flare_data.append( raw_flare_data[raw_flare_data.fl_goescls.str.contains( cls )], ignore_index=True )
+            
+            # filter out only flares in FOV within margin if desired
+            if in_FOV:
+                flare_data = flare_data[ self.in_fov( margin=FOV_margin) ]
 
-        return flare_data
+            return flare_data
+        
+        else:
+            return pd.DataFrame( columns=fields )
     
     def plot_flares( self, classes="", in_FOV=False, FOV_margin=100 ):
         """
@@ -146,8 +150,6 @@ class hek_data:
             search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)
         """
         
-        flare_events = self.get_flares( classes, in_FOV, FOV_margin )
-
         # plot IRIS FOV
         fovx = self._caller_cube.primary_headers['FOVX']
         fovy = self._caller_cube.primary_headers['FOVY']
@@ -171,6 +173,7 @@ class hek_data:
         plt.scatter( 0, 0, marker="x", s=100, c="black" )
 
         # plot flare events
+        flare_events = self.get_flares( classes, in_FOV, FOV_margin )
         for index, event in flare_events.iterrows():
             plt.scatter( 
                     event['hpc_x'] - event['iris_xcenix'], 
