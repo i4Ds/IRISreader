@@ -27,7 +27,7 @@ class lazy_file_header_list:
         
         # create a list with a sublist for every file: this is the representation
         # under the hood
-        n_files = np.max( valid_steps[:,0] ) + 1
+        n_files = int( np.max( valid_steps[:,0] ) + 1 )
         self._data = [[]] * n_files
 
     # abstract access to the headers in order to appear as list on the outside
@@ -86,7 +86,9 @@ class lazy_file_header_list:
 
 # Test code
 if __name__ == "__main__":
+    import irisreader as ir
     from irisreader import iris_data_cube
+    ir.config.verbosity_level = 4
     raster_data = iris_data_cube( 
            [ "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test1.fits", 
             "/home/chuwyler/Desktop/IRISreader/irisreader/data/IRIS_raster_test2.fits" ],
@@ -97,6 +99,7 @@ if __name__ == "__main__":
     
     for header in lh:
         print( header['DATE_OBS'] )
+    
 
 
 
