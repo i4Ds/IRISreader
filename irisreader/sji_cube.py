@@ -142,7 +142,7 @@ class sji_cube( iris_data_cube ):
         
             
     # function to plot an image step
-    def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9 ):
+    def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9, **kwargs ):
         """
         Plots the slit-jaw image at time step <step>. 
         
@@ -193,7 +193,9 @@ class sji_cube( iris_data_cube ):
         ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
 
         # show image
-        ax.imshow( image, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+        if not 'cmap' in kwargs.keys():
+            kwargs['cmap'] = 'gist_heat'
+        ax.imshow( image, origin='lower', vmax=vmax, extent=extent, **kwargs )
         
         # set aspect ratio depending
         ax.set_aspect('equal') 
@@ -230,13 +232,13 @@ class sji_cube( iris_data_cube ):
 if __name__ == "__main__":
     
     sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
-    very_large_sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
+    #very_large_sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
     sji.plot(1000)
     print( sji.shape )
-    sji.crop()
-    sji.plot(0)
-    print( sji.shape )
+    #sji.crop()
+    sji.plot(0, cmap="gray")
+    #print( sji.shape )
 
-    very_large_sji.crop()
-    very_large_sji.plot(0)
+    #very_large_sji.crop()
+    #very_large_sji.plot(0)

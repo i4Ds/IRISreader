@@ -210,9 +210,9 @@ class raster_cube( iris_data_cube ):
         return image_step, y_value, image[y_value,:]
     
     # function to plot an image step
-    def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9 ):
+    def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9, **kwargs ):
         """
-        Plots the slit-jaw image at time step <step>. 
+        Plots the raster image at time step <step>. 
         
         Parameters
         ----------
@@ -261,7 +261,9 @@ class raster_cube( iris_data_cube ):
 
         # show image
         if y is None:
-            ax.imshow( image**gamma, cmap='gist_heat', origin='lower', vmax=vmax, extent=extent )
+            if not 'cmap' in kwargs.keys():
+                kwargs['cmap'] = 'gist_heat'
+            ax.imshow( image**gamma, origin='lower', vmax=vmax, extent=extent, **kwargs )
         else:
             ax.set_ylabel("photons / s (y=" + str(y) + ")")
             ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )
