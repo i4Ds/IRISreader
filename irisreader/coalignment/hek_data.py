@@ -130,6 +130,9 @@ class hek_data:
             if in_FOV:
                 flare_data = flare_data[ self.in_fov( margin=FOV_margin) ]
 
+            # make sure that data are still sorted by distance
+            flare_data.sort_values( by="dist_arcsec", inplace=True )
+
             return flare_data
         
         else:
