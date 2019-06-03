@@ -787,21 +787,28 @@ The current output has been re-requested and is not affected.
         return np.sum( self.get_image_step( step, divide_by_exptime=False ) >= 1.6e4 )
     
     # function to get millisecond timestamps of images
-    def get_timestamps( self ):
+    def get_timestamps( self, raster_pos=None ):
         """
         Converts DATE_OBS to milliseconds since 1970 with the aim to make 
         timestamp comparisons easier.
+        
+        Parameters
+        ----------
+        raster_pos : int
+            raster position (between 0 and n_raster_pos)
         
         Returns
         -------
         float :
             List of millisecond timestamps.
         """
-        timestamps = []
-        for i in range( 0, self.n_steps ):
-            timestamps.append( to_epoch( from_Tformat( self.time_specific_headers[i]['DATE_OBS'] ) ) )
-        return timestamps
-
+        if raster_pos is None:
+            headers = self.time_specific_headers
+        else:
+            headers = self.get_raster_pos_headers( raster_pos )
+            
+        return [to_epoch( from_Tformat( h['DATE_OBS'] ) ) for h in headers]
+    
     # function to return exposure times
     def get_exptimes( self ):
         """
