@@ -903,7 +903,7 @@ The current output has been re-requested and is not affected.
         return np.sum( self._valid_steps[:,2] == raster_pos )
     
     # function to animate the data cube
-    def animate( self, interval_ms=50, gamma=0.4, raster_pos=None, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
+    def animate( self, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
         """
         Creates an animation from the individual images of a data cube.
         This function can be pretty slow and take 1-2 minutes.
@@ -913,12 +913,12 @@ The current output has been re-requested and is not affected.
         ----------
         data_cube : iris_data_cube
             instance of sji_cube or raster_cube
+        raster_pos : int
+            If not None, only display images at raster postion *raster_pos*
         interval_ms : int
             number of milliseconds between two frames
         gamma : float
             gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)
-        raster_pos : int
-            If not None, only display images at raster postion *raster_pos*
         figsize : tuple
             figure size: (width,height)
         cutoff_percentile : float
@@ -934,7 +934,8 @@ The current output has been re-requested and is not affected.
         HTML object with the animation
     """
         return ir.utils.animate( 
-                self, interval_ms=interval_ms, gamma=gamma, raster_pos=raster_pos, figsize=figsize, 
+                self, raster_pos=raster_pos, index_start=index_start, index_stop=index_stop,
+                interval_ms=interval_ms, gamma=gamma, figsize=figsize, 
                 cutoff_percentile=cutoff_percentile, save_path=save_path 
         )
         
