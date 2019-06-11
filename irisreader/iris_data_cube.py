@@ -902,6 +902,38 @@ The current output has been re-requested and is not affected.
         
         return np.sum( self._valid_steps[:,2] == raster_pos )
     
+    # function to get the overall step for a pair (raster_pos, raster_step)
+    def get_global_raster_step( self, raster_pos, raster_step ):
+        """
+        Returns the overall step for a pair (raster_pos, raster_step).
+        When looking at a single raster position, steps are counted as 0,1,2,3,.. etc.
+        Sometimes it is necessary to convert this step into the actual image step
+        of the whole raster.
+        
+        Example: three raster positions: 0, 1, 2 with three exposures each
+        
+        raster image step: 0, 1, 2, 3, 4, 5, 6, 7, 8
+        raster position:   0, 1, 2, 0, 1, 2, 0, 1, 2
+        raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2
+        
+        Parameters
+        ----------
+        raster_pos : int
+            raster position (between 0 and n_raster_pos)
+        raster_step : int
+            raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )
+            
+        Returns
+        -------
+        int :
+            global raster image step
+        """
+        
+        v = self._valid_steps
+        identifier = v[v[:,2]==raster_pos][ raster_step ]
+        global_step = np.where( np.all( v==identifier, axis=1 ) )
+        return global_step[0][0] 
+    
     # function to animate the data cube
     def animate( self, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
         """
