@@ -442,14 +442,19 @@ class iris_data_cube:
         else:
             self._valid_steps = valid_steps
 
+        # remove steps from time-specific headers if already loaded
+        if not object.__getattribute__( self, "time_specific_headers" ) is None:
+            self.time_specific_headers = [ self.time_specific_headers[i] for i in range( self.n_steps ) if i not in steps ]
+        
         # remove steps from headers if already loaded
         if not object.__getattribute__( self, "headers" ) is None:
             self.headers = [ self.headers[i] for i in range( self.n_steps ) if i not in steps ]
-        
+            
         # update n_steps and shape
         self.n_steps = len( self._valid_steps )
         self.shape = tuple( [ self.n_steps ] + list( self.shape[1:] ) )
-
+        
+        
     # function to find file number and file step of a given time step
     def _whereat( self, step, raster_pos=None ):
         if raster_pos is None:
@@ -596,7 +601,23 @@ The current output has been re-requested and is not affected.
                 raise oe
                 
             
-                
+    # cut data cube
+    def cut( self, i_start, i_stop ):
+        """
+        Cuts out only a part of the observation.
+        
+        Parameters
+        ----------
+        i_start : int
+            Index where to start the cut
+        i_stop : int
+            Index where to stop the cut (INCLUDING THIS INDEX)
+        """
+        # create two series of indices, combine them and remove them from the data cube
+        beginning = np.arange( i_start, dtype=int )
+        end = np.arange( i_stop+1, self.n_steps, dtype=int )
+        self._remove_steps( np.concatenate([beginning,end]).tolist() )
+        
 
     # crop data cube
     def crop( self, remove_bad=True, check_coverage=True ):
@@ -605,7 +626,7 @@ The current output has been re-requested and is not affected.
         
         Parameters
         ----------
-        remove_bad: boolean
+        remove_bad : boolean
             Whether to remove corrupt images.
         check_coverage : boolean
             Whether to check the coverage of the cropped image. It can happen that
