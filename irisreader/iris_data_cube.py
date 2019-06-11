@@ -611,11 +611,11 @@ The current output has been re-requested and is not affected.
         i_start : int
             Index where to start the cut
         i_stop : int
-            Index where to stop the cut (INCLUDING THIS INDEX)
+            Index where to stop the cut (not including this index)
         """
         # create two series of indices, combine them and remove them from the data cube
         beginning = np.arange( i_start, dtype=int )
-        end = np.arange( i_stop+1, self.n_steps, dtype=int )
+        end = np.arange( i_stop, self.n_steps, dtype=int )
         self._remove_steps( np.concatenate([beginning,end]).tolist() )
         
 
