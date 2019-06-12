@@ -350,6 +350,8 @@ class iris_data_cube:
         self.primary_headers = dict( first_file[0].header )
         self.primary_headers['SAA'] = self.primary_headers['SAA'].strip() 
         self.primary_headers['NAXIS'] = 2
+        self.primary_headers['HISTORY'] = str( self.primary_headers['HISTORY'] )
+        self.primary_headers['COMMENT'] = str( self.primary_headers['COMMENT'] )
         
         # remove empty headers
         if '' in self.primary_headers.keys():
