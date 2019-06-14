@@ -953,9 +953,17 @@ The current output has been re-requested and is not affected.
         """
         
         v = self._valid_steps
-        identifier = v[v[:,2]==raster_pos][ raster_step ]
-        global_step = np.where( np.all( v==identifier, axis=1 ) )
-        return global_step[0][0] 
+        
+        # allow raster_step for raster position 0 to go over the maximum to make sure that ranges can be represented correctly
+        if raster_pos == 0 and raster_step == self.get_raster_pos_steps( raster_pos ):
+            global_step = self.n_steps
+        
+        else:
+            # filter out only valid step entries for the given raster position and access raster step
+            identifier = v[v[:,2]==raster_pos][ raster_step ]
+            global_step = np.where( np.all( v==identifier, axis=1 ) )[0][0]
+        
+        return global_step
     
     # function to animate the data cube
     def animate( self, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
