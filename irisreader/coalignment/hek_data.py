@@ -138,7 +138,7 @@ class hek_data:
         else:
             return pd.DataFrame( columns=fields )
     
-    def plot_flares( self, classes="", in_FOV=False, FOV_margin=100 ):
+    def plot_flares( self, classes="", in_FOV=False, FOV_margin=100, show=True, savefile=None ):
         """
         Plots all flare events with respect to the field of view.
         
@@ -151,6 +151,10 @@ class hek_data:
             whether to return only flares that occured in the field of view (FOV)
         margin : int
             search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)
+        show : bool
+            whether to show plot (for saving only)
+        savefile : str
+            where to save plot if savefile is not None
         """
         
         # plot IRIS FOV
@@ -190,7 +194,15 @@ class hek_data:
         plt.title("(points outside the FOV are subject to projection errors)")
         if len( flare_events ) > 0:
             plt.legend()
-        plt.show()        
+
+        # save and show
+        if savefile is not None:
+            plt.save( savefile )
+        
+        if show:
+            plt.show()        
+        else:
+            plt.close()
         
 
     def in_fov( self, margin=100 ):
