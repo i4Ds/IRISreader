@@ -4,6 +4,7 @@ from matplotlib import animation
 import matplotlib.pyplot as plt
 import numpy as np
 from IPython.display import HTML
+import irisreader as ir
 
 def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
     """
@@ -57,7 +58,7 @@ def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, inte
         raise Exception("Please make sure that index_start < index_stop < n_steps")
     
     # release a duration warning
-    if index_stop-index_start > 100:
+    if index_stop-index_start > 100 and ir.config.verbosity_level >= 1:
         print( "Creating animation with {} frames (this may take while)".format(index_stop-index_start) )
     
     # initialize plot
