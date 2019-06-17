@@ -197,7 +197,7 @@ class hek_data:
 
         # save and show
         if savefile is not None:
-            plt.save( savefile )
+            plt.savefig( savefile )
         
         if show:
             plt.show()        
