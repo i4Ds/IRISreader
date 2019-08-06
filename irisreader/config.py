@@ -73,6 +73,6 @@ class config_template:
         'fhnw': 'http://server0090.cs.technik.fhnw.ch/iris_compressed/' # only available through vpn
         }
     default_mirror = "lmsal"
-    #goes_base_url = "https://satdat.ngdc.noaa.gov/sem/goes/data/full/"
-    goes_base_url = "http://server1071.cs.technik.fhnw.ch/iris/goes/xrs/"
+    goes_base_url = "https://satdat.ngdc.noaa.gov/sem/goes/data/full/"
+    #goes_base_url = "http://server1071.cs.technik.fhnw.ch/iris/goes/xrs/"
     hek_base_url = "http://www.lmsal.com/hek/her"
