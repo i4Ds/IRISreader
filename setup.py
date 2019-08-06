@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='irisreader',
-      version='0.3.0',
+      version='0.3.1',
       description='IRISreader is a Python library that allows for efficient browsing through IRIS satellite data in order to simplify machine learning applications',
       long_description=long_description,
       long_description_content_type="text/markdown",
