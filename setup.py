@@ -1,8 +1,13 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(name='irisreader',
       version='0.3.0',
       description='IRISreader is a Python library that allows for efficient browsing through IRIS satellite data in order to simplify machine learning applications',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
       url='https://www.github.com/i4Ds/IRISreader',
       author='Cedric Huwyler',
       author_email='cedric.huwyler@fhnw.ch',
