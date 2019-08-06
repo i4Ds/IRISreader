@@ -15,6 +15,6 @@ setup(name='irisreader',
       packages=find_packages(),
       package_data={'irisreader': ['data/*.fits', 'data/20140518_151415_3820607204/*.fits', 'data/*.npz'] },
       install_requires=['numpy', 'pandas', 'matplotlib', 'astropy', 'scipy', 'scikit-learn', 'requests', 'beautifulsoup4', 'tqdm', 'ipython'],
-      download_url='https://github.com/i4Ds/IRISreader/archive/v0.3.0.tar.gz',
+      download_url='https://github.com/i4Ds/IRISreader/archive/v0.3.1.tar.gz',
       zip_safe=False)
 
