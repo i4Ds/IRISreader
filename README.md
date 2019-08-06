@@ -12,7 +12,7 @@ additions.
 
 ## Installation ##
 
-To install the latest stable release fro pypi, run
+To install the latest stable release from pypi, run
 
     pip install irisreader
 
