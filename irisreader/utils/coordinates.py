@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import numpy as np
 import warnings
+import numpy as np
 from astropy.wcs import WCS
+import matplotlib.pyplot as plt
 
 # some unit conversions
 UNIT_M_NM = 1e10
@@ -10,6 +11,35 @@ UNIT_DEC_ARCSEC = 3600
 XLABEL_ARCSEC = "solar x [arcsec]"
 YLABEL_ARCSEC = "solar y [arcsec]"
 XLABEL_ANGSTROM = r'$\lambda$ [$\AA$]'
+
+
+
+# an adapter for coordinate transform when working in a WCS projection with matplotlib
+def _ArcsecTransformAdapter( transformer ):
+    
+    # change points from arcseconds to degrees
+    transformer.transform_non_affine_deg = transformer.transform_non_affine
+    transformer.transform_non_affine = lambda x: transformer.transform_non_affine_deg( np.array(x)/3600 )
+    transformer.transform_path_non_affine_deg = transformer.transform_path_non_affine
+    
+    # change path vertices from arcseconds to degrees
+    def my_transform_path_non_affine( path ):
+        path.vertices /= 3600
+        return transformer.transform_path_non_affine_deg( path )
+    transformer.transform_path_non_affine = my_transform_path_non_affine 
+    
+    return transformer
+
+def get_ax_transform():
+    """
+    Get the necessary coordinate transformer when plotting in WCS projected world coordinates.
+    
+    Usage:
+    sji.plot( 0, units="coordinates" )
+    """
+    return _ArcsecTransformAdapter( plt.gca().get_transform('world') )
+
+
 
 class iris_coordinates:
     """
@@ -237,4 +267,5 @@ class iris_coordinates:
             return [ coords_x[self.xmin:self.xmax], coords_y[self.ymin:self.ymax] ]
         else:
             return [ coords_x, coords_y ]
+        
 

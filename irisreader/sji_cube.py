@@ -142,7 +142,7 @@ class sji_cube( iris_data_cube ):
         
             
     # function to plot an image step
-    def plot( self, step, units='pixels', gamma=None, cutoff_percentile=99.9, **kwargs ):
+    def plot( self, step, units='pixels', grid=False, gamma=None, cutoff_percentile=99.9, **kwargs ):
         """
         Plots the slit-jaw image at time step <step>. 
         
@@ -152,6 +152,8 @@ class sji_cube( iris_data_cube ):
             The time step in the SJI.
         units : str
             Tick units: 'pixels' for indices in the array or 'coordinates' for units in arcseconds on the sun.
+        grid : bool
+            Whether to draw a grid on the plot.
         gamma : float
             Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
             gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.
@@ -172,22 +174,25 @@ class sji_cube( iris_data_cube ):
         image = self.get_image_step( step ).clip( min=0 ) ** gamma
         vmax = np.percentile( image, cutoff_percentile )
     
-        # set image extent and labels according to choice of units
-        ax = plt.gca()
+        # set labels according to choice of units and choose projected coordinates if necessary
+        
         
         if units == 'coordinates':
-            units = self.get_axis_coordinates( step=step )
-            extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]
+            ax = plt.subplot(projection=self._ico.wcs.celestial )
             ax.set_xlabel( self._ico.xlabel )
             ax.set_ylabel( self._ico.ylabel )
 
         elif units == 'pixels':
-            extent = [ 0, image.shape[1], 0, image.shape[0] ]
+            ax = plt.gca()
             ax.set_xlabel("camera x")
             ax.set_ylabel("camera y")
             
         else:
             raise ValueError( "Plot units '" + units + "' not defined!" )
+
+        # draw grid if desired
+        if grid:
+            ax.grid(color='white', ls='--')
             
         # create title
         ax.set_title(self.line_info + '\n' + self.time_specific_headers[step]['DATE_OBS'] )
@@ -195,7 +200,7 @@ class sji_cube( iris_data_cube ):
         # show image
         if not 'cmap' in kwargs.keys():
             kwargs['cmap'] = 'gist_heat'
-        ax.imshow( image, origin='lower', vmax=vmax, extent=extent, **kwargs )
+        ax.imshow( image, origin='lower', vmax=vmax, **kwargs )
         
         # set aspect ratio depending
         ax.set_aspect('equal') 
@@ -231,13 +236,21 @@ class sji_cube( iris_data_cube ):
 # MOVE TO TEST
 if __name__ == "__main__":
     
+    from irisreader.utils.coordinates import get_ax_transform
+    
+    
     sji = sji_cube( '/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits' )
-    #very_large_sji = sji_cube( "/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits" )
 
-    sji.plot(1000)
-    print( sji.shape )
     #sji.crop()
-    sji.plot(0, cmap="gray")
+    plt.figure()
+    sji.plot(0, cmap="gray", grid=True )
+    plt.figure()
+    sji.plot(0, cmap="gray", units="coordinates", grid=True )
+    
+    plt.scatter( 400, 400, c="green" )
+    plt.scatter( -140, 120, c="red", transform=get_ax_transform() )
+    plt.plot( [-180,-120],[80,140], transform=get_ax_transform() )
+    
     #print( sji.shape )
 
     #very_large_sji.crop()
