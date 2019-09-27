@@ -219,7 +219,7 @@
 <h2>irisreader.utils.animate<a class="headerlink" href="#irisreader-utils-animate" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.utils.animate">
-<code class="descclassname">irisreader.utils.</code><code class="descname">animate</code><span class="sig-paren">(</span><em>data_cube</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>raster_pos=None</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/animate.html#animate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.animate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">irisreader.utils.</code><code class="descname">animate</code><span class="sig-paren">(</span><em>data_cube</em>, <em>raster_pos=None</em>, <em>index_start=None</em>, <em>index_stop=None</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/animate.html#animate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.animate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
 Faster alternatives than matplotlib will be researched in the future.</p>
@@ -229,9 +229,11 @@ Faster alternatives than matplotlib will be researched in the future.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_cube</strong> (<em>iris_data_cube</em>) – instance of sji_cube or raster_cube</li>
+<li><strong>raster_pos</strong> (<em>int</em>) – If not None, only display images at raster postion <em>raster_pos</em></li>
+<li><strong>index_start</strong> (<em>int</em>) – index where to start animation (defaults to None -&gt; will be set to 0)</li>
+<li><strong>index_stop</strong> (<em>int</em>) – index where to stop animation (defaults to None -&gt; will be set to n)</li>
 <li><strong>interval_ms</strong> (<em>int</em>) – number of milliseconds between two frames</li>
 <li><strong>gamma</strong> (<em>float</em>) – gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</li>
-<li><strong>raster_pos</strong> (<em>int</em>) – If not None, only display images at raster postion <em>raster_pos</em></li>
 <li><strong>figsize</strong> (<em>tuple</em>) – figure size: (width,height)</li>
 <li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile

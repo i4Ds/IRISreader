@@ -404,6 +404,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line_info</span>
 
+<span class="k">class</span> <span class="nc">goes_struct</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Structure for goes XRS and HEK event data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;xrs: GOES xrs data interface</span><span class="se">\n</span><span class="s2">events: HEK event data for GOES&quot;</span>
+
 <div class="viewcode-block" id="observation"><a class="viewcode-back" href="../../reading.html#irisreader.observation">[docs]</a><span class="k">class</span> <span class="nc">observation</span><span class="p">:</span>    
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Presents an abstract representation of a whole observation. This class</span>
@@ -496,10 +507,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">full_obsid</span> <span class="o">=</span> <span class="kc">None</span>
         
         <span class="c1"># create the goes loader</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">goes</span> <span class="o">=</span> <span class="n">goes_data</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">),</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="p">),</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/goes_data&quot;</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
-        
-        <span class="c1"># create the hek loader</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hek</span> <span class="o">=</span> <span class="n">hek_data</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">),</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="p">),</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+        <span class="c1"># TODO: read a few xcenix samples and generate xcen with median</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goes</span> <span class="o">=</span> <span class="n">goes_struct</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goes</span><span class="o">.</span><span class="n">xrs</span> <span class="o">=</span> <span class="n">goes_data</span><span class="p">(</span> <span class="n">from_Tformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">),</span> <span class="n">from_Tformat</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="p">),</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/goes_data&quot;</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goes</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">hek_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s2">&quot;GOES&quot;</span><span class="p">,</span> <span class="n">lazy_eval</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
         
     <span class="c1"># define print output</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
@@ -561,9 +572,10 @@
 
 <span class="c1"># Test code</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">obs</span> <span class="o">=</span> <span class="n">observation</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/&quot;</span> <span class="p">)</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">observation</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
     <span class="n">obs_sns</span> <span class="o">=</span> <span class="n">observation</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/&quot;</span> <span class="p">)</span>
-    <span class="c1">#many_rasters_obs = observation(&quot;/home/chuwyler/Desktop/FITS/20150404_155958_3820104165&quot;)</span>
+    <span class="c1">#obs_badxcen = observation( &quot;/home/chuwyler/Desktop/FITS/20140212_215458_3860257280&quot; )</span>
+    <span class="c1">#many_rasters_obs = observation(&quot;/home/chuwyler/Desktop/FITS/20150404_155958_3820104165&quot;, keep_null=True )</span>
     
 </pre></div>
 

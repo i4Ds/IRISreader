@@ -226,6 +226,16 @@
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lazy_eval</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+            
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+        <span class="n">repr_str</span> <span class="o">=</span> <span class="s2">&quot;---------------- GOES XRS interface ------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">repr_str</span> <span class="o">+=</span> <span class="s2">&quot;data:                        XRS data</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">repr_str</span> <span class="o">+=</span> <span class="s2">&quot;plot():                      plot x-ray flux history</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">repr_str</span> <span class="o">+=</span> <span class="s2">&quot;interpolate( timestamps ):   interpolate to IRIS timestamps</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">repr_str</span> <span class="o">+=</span> <span class="s2">&quot;get_peak_flux():             get the peak flux in the observation</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">repr_str</span> <span class="o">+=</span> <span class="s2">&quot;------------------------------------------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">repr_str</span>
+        
 
     <span class="c1"># catch attribute requests to perform lazy loading if necessary</span>
     <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">):</span>
@@ -294,7 +304,7 @@
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span> <span class="n">f</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time_tag&quot;</span><span class="p">],</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;time_tag&quot;</span> <span class="p">)</span>
 
 
-<div class="viewcode-block" id="goes_data.plot"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">restrict_to_obstime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+<div class="viewcode-block" id="goes_data.plot"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.goes_data.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">restrict_to_obstime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function plots the GOES X-ray flux around the given time period.</span>
 <span class="sd">        </span>
@@ -311,7 +321,7 @@
         <span class="n">plot_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:][</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">][</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">&#39;B_FLUX&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         
         <span class="c1"># plot the fluxes</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A_FLUX&#39;</span><span class="p">,</span> <span class="s1">&#39;B_FLUX&#39;</span><span class="p">],</span> <span class="n">logy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;GOES X-ray Flux&quot;</span> <span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A_FLUX&#39;</span><span class="p">,</span> <span class="s1">&#39;B_FLUX&#39;</span><span class="p">],</span> <span class="n">logy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;GOES X-ray Flux&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
         
         <span class="c1"># restrict plot to observation time period if desired, otherwise draw</span>
         <span class="c1"># shaded region and dashed restriction lines where the observation</span>
@@ -391,7 +401,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fluxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">)][</span><span class="n">flux</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span> <span class="n">fluxes</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span> <span class="n">fluxes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span> <span class="n">fluxes</span> <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span></div></div>
             <span class="k">return</span> <span class="kc">None</span>
 

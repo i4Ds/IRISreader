@@ -313,7 +313,7 @@
         
             
     <span class="c1"># function to plot an image step</span>
-<div class="viewcode-block" id="sji_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span> <span class="p">):</span>
+<div class="viewcode-block" id="sji_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.sji_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the slit-jaw image at time step &lt;step&gt;. </span>
 <span class="sd">        </span>
@@ -323,6 +323,8 @@
 <span class="sd">            The time step in the SJI.</span>
 <span class="sd">        units : str</span>
 <span class="sd">            Tick units: &#39;pixels&#39; for indices in the array or &#39;coordinates&#39; for units in arcseconds on the sun.</span>
+<span class="sd">        grid : bool</span>
+<span class="sd">            Whether to draw a grid on the plot.</span>
 <span class="sd">        gamma : float</span>
 <span class="sd">            Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),</span>
 <span class="sd">            gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</span>
@@ -343,28 +345,33 @@
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
         <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span> <span class="n">image</span><span class="p">,</span> <span class="n">cutoff_percentile</span> <span class="p">)</span>
     
-        <span class="c1"># set image extent and labels according to choice of units</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="c1"># set labels according to choice of units and choose projected coordinates if necessary</span>
+        
         
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span>
-            <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span> <span class="p">)</span>
-            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">celestial</span> <span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">xlabel</span> <span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">ylabel</span> <span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;pixels&#39;</span><span class="p">:</span>
-            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;camera x&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;camera y&quot;</span><span class="p">)</span>
             
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span> <span class="s2">&quot;Plot units &#39;&quot;</span> <span class="o">+</span> <span class="n">units</span> <span class="o">+</span> <span class="s2">&quot;&#39; not defined!&quot;</span> <span class="p">)</span>
+
+        <span class="c1"># draw grid if desired</span>
+        <span class="k">if</span> <span class="n">grid</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
             
         <span class="c1"># create title</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_info</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_specific_headers</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="s1">&#39;DATE_OBS&#39;</span><span class="p">]</span> <span class="p">)</span>
 
         <span class="c1"># show image</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gist_heat&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gist_heat&#39;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
         
         <span class="c1"># set aspect ratio depending</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span> 
@@ -400,17 +407,25 @@
 <span class="c1"># MOVE TO TEST</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     
+    <span class="kn">from</span> <span class="nn">irisreader.utils.coordinates</span> <span class="k">import</span> <span class="n">get_ax_transform</span>
+    
+    
     <span class="n">sji</span> <span class="o">=</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="s1">&#39;/home/chuwyler/Desktop/FITS/20140910_112825_3860259453/iris_l2_20140910_112825_3860259453_SJI_1400_t000.fits&#39;</span> <span class="p">)</span>
-    <span class="n">very_large_sji</span> <span class="o">=</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_SJI_1400_t000.fits&quot;</span> <span class="p">)</span>
 
-    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">sji</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
-    <span class="n">sji</span><span class="o">.</span><span class="n">crop</span><span class="p">()</span>
-    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">sji</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
+    <span class="c1">#sji.crop()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;green&quot;</span> <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="o">-</span><span class="mi">140</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">get_ax_transform</span><span class="p">()</span> <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="p">[</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="o">-</span><span class="mi">120</span><span class="p">],[</span><span class="mi">80</span><span class="p">,</span><span class="mi">140</span><span class="p">],</span> <span class="n">transform</span><span class="o">=</span><span class="n">get_ax_transform</span><span class="p">()</span> <span class="p">)</span>
+    
+    <span class="c1">#print( sji.shape )</span>
 
-    <span class="n">very_large_sji</span><span class="o">.</span><span class="n">crop</span><span class="p">()</span>
-    <span class="n">very_large_sji</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1">#very_large_sji.crop()</span>
+    <span class="c1">#very_large_sji.plot(0)</span>
 </pre></div>
 
            </div>

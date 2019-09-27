@@ -240,7 +240,7 @@ and then a 1-nearest neighbour method has to be used.</p>
 <h2>irisreader.data.mg2k_centroids.assign_mg2k_centroids<a class="headerlink" href="#irisreader-data-mg2k-centroids-assign-mg2k-centroids" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.data.mg2k_centroids.assign_mg2k_centroids">
-<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">assign_mg2k_centroids</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#assign_mg2k_centroids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.assign_mg2k_centroids" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">assign_mg2k_centroids</code><span class="sig-paren">(</span><em>X</em>, <em>centroids=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#assign_mg2k_centroids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.assign_mg2k_centroids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assigns Mg II k centroids found in the study
 ‘Identifying typical Mg II flare spectra using machine learning’, by
 B. Panos et. al. 2018 to the Mg II k spectra supplied in X. The centroids
@@ -259,11 +259,18 @@ LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>numpy.array</em>) – interpolated raster image of shape (_,bins)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>numpy.array</em>) – interpolated raster image of shape (_,bins)</li>
+<li><strong>centroids</strong> (<em>numpy.array</em>) – If None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed.
+Important: both the spectra in ‘X’ and in ‘centroids’ should be constrained to the same wavelength region!</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy vector with shape (X.shape[1],)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy vector with shape (X.shape[1],)</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">assigned_mg2k_centroids</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">assigned_mg2k_centroids</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -291,13 +298,8 @@ LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example
 <h2>irisreader.data.mg2k_centroids.interpolate<a class="headerlink" href="#irisreader-data-mg2k-centroids-interpolate" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.data.mg2k_centroids.interpolate">
-<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>raster</em>, <em>step</em>, <em>bins=216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.interpolate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assigns Mg II k centroids found in the study
-‘Identifying typical Mg II flare spectra using machine learning’, by
-B. Panos et. al. 2018 to the Mg II k spectra supplied in X. The centroids
-are assigned using a nearest neighbour procedure.</p>
-<p>The spectra in X have to be interpolated to 216 wavelength bins between
-LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example:</p>
+<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>raster</em>, <em>step</em>, <em>bins=216</em>, <em>lambda_min=2793.85009765625</em>, <em>lambda_max=2799.3239974882454</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an interpolated image step from the raster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -306,6 +308,8 @@ LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example
 <li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
 <li><strong>step</strong> (<em>int</em>) – image step in the raster</li>
 <li><strong>bins</strong> (<em>int</em>) – number of bins to interpolate to (defaults to 216)</li>
+<li><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</li>
+<li><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</li>
 </ul>
 </td>
 </tr>
@@ -324,7 +328,7 @@ LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example
 <h2>irisreader.data.mg2k_centroids.get_mg2k_centroid_table<a class="headerlink" href="#irisreader-data-mg2k-centroids-get-mg2k-centroid-table" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.data.mg2k_centroids.get_mg2k_centroid_table">
-<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">get_mg2k_centroid_table</code><span class="sig-paren">(</span><em>obs</em>, <em>crop_raster=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#get_mg2k_centroid_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.get_mg2k_centroid_table" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">get_mg2k_centroid_table</code><span class="sig-paren">(</span><em>obs</em>, <em>centroids=None</em>, <em>lambda_min=2793.85009765625</em>, <em>lambda_max=2799.3239974882454</em>, <em>crop_raster=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#get_mg2k_centroid_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.get_mg2k_centroid_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a data frame with centroid counts for each raster image of a given
 observation.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -333,6 +337,9 @@ observation.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>obs_path</strong> (<em>str</em>) – Path to observation</li>
+<li><strong>centroids</strong> (<em>numpy.array</em>) – if None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed</li>
+<li><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</li>
+<li><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</li>
 <li><strong>crop_raster</strong> (<em>bool</em>) – Whether to crop raster before assigning centroids. If set to False,
 spectra which are -200 everywhere will be assigned to centroid 51 and
 spectra that are for some part -200 will be assigned to the nearest

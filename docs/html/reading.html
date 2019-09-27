@@ -352,7 +352,7 @@ FITS file to assess the lines in the observation.</li>
 </table>
 <dl class="method">
 <dt id="irisreader.sji_cube.animate">
-<code class="descname">animate</code><span class="sig-paren">(</span><em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>raster_pos=None</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.animate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">animate</code><span class="sig-paren">(</span><em>raster_pos=None</em>, <em>index_start=None</em>, <em>index_stop=None</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.animate" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
@@ -360,12 +360,12 @@ Faster alternatives than matplotlib will be researched in the future.</p>
 <dl class="docutils">
 <dt>data_cube <span class="classifier-delimiter">:</span> <span class="classifier">iris_data_cube</span></dt>
 <dd>instance of sji_cube or raster_cube</dd>
+<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
 <dt>interval_ms <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd>number of milliseconds between two frames</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</dd>
-<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
 <dt>figsize <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
 <dd>figure size: (width,height)</dd>
 <dt>cutoff_percentile <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
@@ -449,6 +449,24 @@ helpful here.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="irisreader.sji_cube.cut">
+<code class="descname">cut</code><span class="sig-paren">(</span><em>i_start</em>, <em>i_stop</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cuts out only a part of the observation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</li>
+<li><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="irisreader.sji_cube.get_axis_coordinates">
 <code class="descname">get_axis_coordinates</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_axis_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns coordinates for the image at the given time step.</p>
@@ -477,6 +495,37 @@ helpful here.</li>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of exposure times.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="irisreader.sji_cube.get_global_raster_step">
+<code class="descname">get_global_raster_step</code><span class="sig-paren">(</span><em>raster_pos</em>, <em>raster_step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_global_raster_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the overall step for a pair (raster_pos, raster_step).
+When looking at a single raster position, steps are counted as 0,1,2,3,.. etc.
+Sometimes it is necessary to convert this step into the actual image step
+of the whole raster.</p>
+<p>Example: three raster positions: 0, 1, 2 with three exposures each</p>
+<p>raster image step: 0, 1, 2, 3, 4, 5, 6, 7, 8
+raster position:   0, 1, 2, 0, 1, 2, 0, 1, 2
+raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</li>
+<li><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">global raster image step</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -620,16 +669,18 @@ iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_timestamps">
-<code class="descname">get_timestamps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_timestamps</code><span class="sig-paren">(</span><em>raster_pos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts DATE_OBS to milliseconds since 1970 with the aim to make
 timestamp comparisons easier.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
 </tbody>
 </table>
@@ -664,7 +715,7 @@ in the format [x,y]</li>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>units='pixels'</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/sji_cube.html#sji_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.sji_cube.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>units='pixels'</em>, <em>grid=False</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/sji_cube.html#sji_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.sji_cube.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the slit-jaw image at time step &lt;step&gt;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -673,6 +724,7 @@ in the format [x,y]</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>step</strong> (<em>int</em>) – The time step in the SJI.</li>
 <li><strong>units</strong> (<em>str</em>) – Tick units: ‘pixels’ for indices in the array or ‘coordinates’ for units in arcseconds on the sun.</li>
+<li><strong>grid</strong> (<em>bool</em>) – Whether to draw a grid on the plot.</li>
 <li><strong>gamma</strong> (<em>float</em>) – Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
 gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</li>
 <li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
@@ -732,7 +784,7 @@ corrupt image steps removed).</p>
 </table>
 <dl class="method">
 <dt id="irisreader.raster_cube.animate">
-<code class="descname">animate</code><span class="sig-paren">(</span><em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>raster_pos=None</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.animate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">animate</code><span class="sig-paren">(</span><em>raster_pos=None</em>, <em>index_start=None</em>, <em>index_stop=None</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.animate" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
@@ -740,12 +792,12 @@ Faster alternatives than matplotlib will be researched in the future.</p>
 <dl class="docutils">
 <dt>data_cube <span class="classifier-delimiter">:</span> <span class="classifier">iris_data_cube</span></dt>
 <dd>instance of sji_cube or raster_cube</dd>
+<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
 <dt>interval_ms <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd>number of milliseconds between two frames</dd>
 <dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</dd>
-<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
 <dt>figsize <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
 <dd>figure size: (width,height)</dd>
 <dt>cutoff_percentile <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
@@ -829,6 +881,24 @@ helpful here.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="irisreader.raster_cube.cut">
+<code class="descname">cut</code><span class="sig-paren">(</span><em>i_start</em>, <em>i_stop</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cuts out only a part of the observation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</li>
+<li><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="irisreader.raster_cube.get_axis_coordinates">
 <code class="descname">get_axis_coordinates</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_axis_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns coordinates for the image at the given time step.</p>
@@ -857,6 +927,37 @@ helpful here.</li>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of exposure times.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="irisreader.raster_cube.get_global_raster_step">
+<code class="descname">get_global_raster_step</code><span class="sig-paren">(</span><em>raster_pos</em>, <em>raster_step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_global_raster_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the overall step for a pair (raster_pos, raster_step).
+When looking at a single raster position, steps are counted as 0,1,2,3,.. etc.
+Sometimes it is necessary to convert this step into the actual image step
+of the whole raster.</p>
+<p>Example: three raster positions: 0, 1, 2 with three exposures each</p>
+<p>raster image step: 0, 1, 2, 3, 4, 5, 6, 7, 8
+raster position:   0, 1, 2, 0, 1, 2, 0, 1, 2
+raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</li>
+<li><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">global raster image step</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1016,16 +1117,18 @@ iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_timestamps">
-<code class="descname">get_timestamps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_timestamps</code><span class="sig-paren">(</span><em>raster_pos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts DATE_OBS to milliseconds since 1970 with the aim to make
 timestamp comparisons easier.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
 </tbody>
 </table>
@@ -1060,8 +1163,8 @@ in the format [x,y]</li>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>y=None</em>, <em>units='pixels'</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/raster_cube.html#raster_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.raster_cube.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots the slit-jaw image at time step &lt;step&gt;.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>y=None</em>, <em>units='pixels'</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/raster_cube.html#raster_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.raster_cube.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the raster image at time step &lt;step&gt;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

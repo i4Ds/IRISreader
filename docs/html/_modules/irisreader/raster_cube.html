@@ -381,9 +381,9 @@
         <span class="k">return</span> <span class="n">image_step</span><span class="p">,</span> <span class="n">y_value</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="n">y_value</span><span class="p">,:]</span>
     
     <span class="c1"># function to plot an image step</span>
-<div class="viewcode-block" id="raster_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span> <span class="p">):</span>
+<div class="viewcode-block" id="raster_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plots the slit-jaw image at time step &lt;step&gt;. </span>
+<span class="sd">        Plots the raster image at time step &lt;step&gt;. </span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -414,13 +414,15 @@
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span>
-            <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span> <span class="p">)</span>
-            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">wcs</span> <span class="p">)</span>
+            <span class="c1">#units = self.get_axis_coordinates( step=step )</span>
+            <span class="c1">#extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">xlabel</span> <span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">ylabel</span> <span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;pixels&#39;</span><span class="p">:</span>
-            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+            <span class="c1">#extent = [ 0, image.shape[1], 0, image.shape[0] ]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;camera x&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;camera y&quot;</span><span class="p">)</span>
             
@@ -432,10 +434,13 @@
 
         <span class="c1"># show image</span>
         <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="o">**</span><span class="n">gamma</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gist_heat&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gist_heat&#39;</span>
+            <span class="c1">#ax.imshow( image**gamma, origin=&#39;lower&#39;, vmax=vmax, extent=extent, **kwargs )</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="o">**</span><span class="n">gamma</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;photons / s (y=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">image</span><span class="p">[</span><span class="n">y</span><span class="p">,:]</span> <span class="p">)</span>
+            <span class="c1">#ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )</span>
         
         <span class="c1"># set aspect ratio depending</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span> 
@@ -453,63 +458,29 @@
     <span class="c1"># try this on the 16 core machine</span>
     <span class="c1"># why is raster3 so much slower? jumps to the next file should be marginal</span>
     <span class="c1"># probably because new data has to be loaded into memory all the time</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
     
-    <span class="k">def</span> <span class="nf">compute_dn</span><span class="p">(</span> <span class="n">raster</span> <span class="p">):</span>
-        <span class="n">dn</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span> <span class="nb">range</span><span class="p">(</span> <span class="n">raster</span><span class="o">.</span><span class="n">n_spectra</span> <span class="p">)</span> <span class="p">):</span>
-            <span class="n">image_step</span><span class="p">,</span> <span class="n">y_value</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span> <span class="n">step</span> <span class="p">)</span>
-            <span class="n">dn</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span> <span class="p">)</span>
-       
-        <span class="k">return</span> <span class="n">dn</span>
-    
-    
-    <span class="kn">from</span> <span class="nn">irisreader.data.sample</span> <span class="k">import</span> <span class="n">sample_raster</span>
-    <span class="n">raster0</span> <span class="o">=</span> <span class="n">sample_raster</span><span class="p">(</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-    <span class="n">raster0</span><span class="o">.</span><span class="n">n_steps</span>
-    <span class="n">raster0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">raster0</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span> <span class="n">check_coverage</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-    <span class="n">raster0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">raster0</span><span class="o">.</span><span class="n">n_steps</span>
-    
-    <span class="kn">import</span> <span class="nn">os</span>    
-    <span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">raster_cube</span>
-    <span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
-    <span class="n">ir</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_level</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="kn">import</span> <span class="nn">os</span>
     <span class="n">raster_dir</span> <span class="o">=</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/&quot;</span>
     <span class="n">raster_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span> <span class="p">[</span><span class="n">raster_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span> <span class="n">raster_dir</span> <span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;raster&#39;</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span> <span class="p">)</span>
-    <span class="n">raster1</span> <span class="o">=</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raster_files</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;C&quot;</span> <span class="p">)</span>
-    <span class="n">raster1</span><span class="o">.</span><span class="n">n_steps</span>
-    <span class="n">raster1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1300</span><span class="p">)</span>
-    <span class="n">raster1</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span> <span class="n">check_coverage</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-    <span class="n">raster1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1300</span><span class="p">)</span>
+    <span class="n">raster</span> <span class="o">=</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raster_files</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span> <span class="p">)</span>
     
-    <span class="n">dn</span> <span class="o">=</span> <span class="n">compute_dn</span><span class="p">(</span> <span class="n">raster1</span> <span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">raster</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span> <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">raster</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;coordinates&quot;</span> <span class="p">)</span>
 
-    <span class="c1"># open a raster with 14 GB size    </span>
-    <span class="n">raster2</span> <span class="o">=</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140420_223915_3864255603/iris_l2_20140420_223915_3864255603_raster_t000_r00000.fits&quot;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span> <span class="p">)</span>
-    <span class="n">raster2</span><span class="o">.</span><span class="n">n_steps</span>
-    <span class="n">raster2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">raster2</span><span class="o">.</span><span class="n">crop</span><span class="p">()</span>
-    <span class="n">raster2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="n">dn</span> <span class="o">=</span> <span class="n">compute_dn</span><span class="p">(</span> <span class="n">raster2</span> <span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
-
-    <span class="c1"># open a raster with 7000 files</span>
-    <span class="n">raster3_dir</span> <span class="o">=</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20150404_155958_3820104165&quot;</span>
-    <span class="n">raster3_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span> <span class="p">[</span><span class="n">raster3_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span> <span class="n">raster3_dir</span> <span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;raster&#39;</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span> <span class="p">)</span>
-    <span class="n">raster3</span> <span class="o">=</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="n">raster3_files</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;Mg&quot;</span> <span class="p">)</span>
-    <span class="n">raster3</span><span class="o">.</span><span class="n">n_steps</span> 
-    <span class="n">raster3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-    <span class="n">raster3</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span> <span class="n">check_coverage</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
-    <span class="n">raster3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
     
-    <span class="n">dn</span> <span class="o">=</span> <span class="n">compute_dn</span><span class="p">(</span> <span class="n">raster3</span> <span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+<span class="c1">#    #sji.crop()</span>
+<span class="c1">#    plt.figure()</span>
+<span class="c1">#    sji.plot(0, cmap=&quot;gray&quot;, grid=True )</span>
+<span class="c1">#    plt.figure()</span>
+<span class="c1">#    sji.plot(0, cmap=&quot;gray&quot;, units=&quot;coordinates&quot;, grid=True )</span>
+<span class="c1">#    </span>
+<span class="c1">#    plt.scatter( 400, 400, c=&quot;green&quot; )</span>
+<span class="c1">#    plt.scatter( -140, 120, c=&quot;red&quot;, transform=get_ax_transform() )</span>
+<span class="c1">#    plt.plot( [-180,-120],[80,140], transform=get_ax_transform() )</span>
+<span class="c1">#    </span>
 </pre></div>
 
            </div>
