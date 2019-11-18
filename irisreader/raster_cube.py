@@ -66,9 +66,6 @@ class raster_cube( iris_data_cube ):
             self.close()
             raise ValueError("This is a SJI file. Please use sji_cube to open it.")
             
-        # set up an image cache for the get_spectrum function
-        self._image_cache = [-1,None]
-            
     # return description upon a print call
     def __repr__( self ):
         return "raster {} line window:\n(n_steps, n_y, n_x) = {}".format( self.line_info, self.shape )
@@ -185,29 +182,6 @@ class raster_cube( iris_data_cube ):
         interpolator = spectrum_interpolator( lambda_min, lambda_max, n_breaks )
         lambda_units = self.get_axis_coordinates( step )[0]
         return interpolator.fit_transform( self.get_image_step( step=step, raster_pos=raster_pos, divide_by_exptime=divide_by_exptime ), lambda_units )
-    
-    # function to get a spectrum step
-    def get_spectrum( self, step, lambda_min=None, lambda_max=None, n_breaks=None, divide_by_exptime=False ):
-        
-        image_size = self.shape[1]
-        image_step = int(step/image_size)
-        y_value = step % image_size
-        
-        # image is already in cache
-        if image_step == self._image_cache[0]:
-            image = self._image_cache[1]
-        
-        # image is not in cache, get it
-        else:
-            # if interpolation is desired
-            if lambda_min is not None and lambda_max is not None and n_breaks is not None:
-                image = self.get_interpolated_image_step( image_step, lambda_min, lambda_max, n_breaks, divide_by_exptime )
-            else:
-                image = self.get_image_step( image_step, divide_by_exptime )
-        
-            self._image_cache = [ image_step, image ]
-            
-        return image_step, y_value, image[y_value,:]
     
     # function to plot an image step
     def plot( self, step, y=None, units='pixels', gamma=None, cutoff_percentile=99.9, **kwargs ):
