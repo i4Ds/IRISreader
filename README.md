@@ -2,10 +2,11 @@
 
 The __IRISreader__ library provides functionality to read IRIS level 2 data
 by the [IRIS satellite](https://www.nasa.gov/mission_pages/iris/index.html) and to process it for big data applications. 
+IRISreader works best with a Jupyter notebook.
+
 If you came here to look for something that provides a good python
 replacement for IDL code and is well-integrated into SunPy, have a look at
 [IRISpy](https://github.com/sunpy/irispy).
-IRISreader works best with a Jupyter notebook.
 
 __Warning__:
 
