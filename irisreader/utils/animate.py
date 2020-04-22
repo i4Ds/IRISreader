@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
+import matplotlib
 from matplotlib import animation
 import matplotlib.pyplot as plt
 import numpy as np
 from IPython.display import HTML
 import irisreader as ir
+
+# set a huge animation limit for matplotlib
+matplotlib.rcParams['animation.embed_limit'] = 2**128
 
 def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
     """
