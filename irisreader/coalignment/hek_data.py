@@ -1,4 +1,5 @@
 import requests
+import time
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -307,7 +308,13 @@ def download_hek_data( start_date, end_date, instrument=None ):
     # get HEK events within +/- two hours of the observation time frame
     hek_events = []
     while True:
-        r = requests.get( ir.config.hek_base_url, hek_params )
+        for i in range( 5 ):
+            try:
+                r = requests.get( ir.config.hek_base_url, hek_params )
+                break
+            except:
+                time.sleep(10)
+                print("Connection to HEK failed, retry {} of 5".format(i))
 
         if not r:
             raise Exception("Connection error. Please check HEK: https://www.lmsal.com/isolsearch")
