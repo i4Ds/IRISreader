@@ -10,8 +10,7 @@ replacement for IDL code and is well-integrated into SunPy, have a look at
 
 __Warning__:
 
-IRISreader is currently under heavy development and not yet available in a
-stable version. Documentation is available but might not reflect the newest
+IRISreader is under constant development and a stable version cannot always be guaranteed. Documentation is available but might not reflect the newest
 additions.
 
 ## Installation ##
