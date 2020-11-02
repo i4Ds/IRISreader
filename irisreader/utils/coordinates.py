@@ -259,8 +259,8 @@ class iris_coordinates:
             
         # pass pixel lists to wcs.all_pix2world and extract axis values
         # convert from degrees to arcseconds by multiplying with 3600
-        coords_x = self.wcs.all_pix2world( arr_x, 1 )[:,0] * self.conversion_factor[0]
-        coords_y = self.wcs.all_pix2world( arr_y, 1 )[:,1] * self.conversion_factor[1]
+        coords_x = self.wcs.all_pix2world( arr_x, 0 )[:,0] * self.conversion_factor[0]
+        coords_y = self.wcs.all_pix2world( arr_y, 0 )[:,1] * self.conversion_factor[1]
             
         # Return bounded units if image is cropped
         if self.cropped:
