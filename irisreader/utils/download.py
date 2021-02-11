@@ -131,7 +131,7 @@ def download( obs_identifier, target_directory, type='all', uncompress=True, ope
         obs_url = download_url + year + "/" + month + "/" + day + "/" + obs_identifier
         
         # get directory listing and filter for SJI or raster if necessary
-        listing = parse_url_content( obs_url )
+        listing = parse_url_content( obs_url + "/" )
         if len( listing ) == 0:
             raise Exception(
                     "Something went wrong with getting the observation directory content! Please check whether your data mirror path is correct:\n {}\n Directory Listing: {}".format( ir.config.mirrors[ir.config.default_mirror], listing )
