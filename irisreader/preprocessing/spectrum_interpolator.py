@@ -41,7 +41,7 @@ class spectrum_interpolator( BaseEstimator, TransformerMixin ):
         spectrum_interpolator
             This object with fitted variables.
         """
-        self._f = interp1d( y, X, kind="cubic" )
+        self._f = interp1d( y, X, kind="linear" )
         return self
     
     def transform( self, X ):
