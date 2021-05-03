@@ -17,44 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="next" title="Sample Data" href="sample_data.html"/>
-        <link rel="prev" title="Co-alignment" href="coalignment.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Sample Data" href="sample_data.html" />
+    <link rel="prev" title="Co-alignment" href="coalignment.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,7 +56,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -125,7 +118,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -133,9 +126,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -185,33 +179,29 @@
 <dt id="irisreader.utils.download">
 <code class="descclassname">irisreader.utils.</code><code class="descname">download</code><span class="sig-paren">(</span><em>obs_identifier</em>, <em>target_directory</em>, <em>type='all'</em>, <em>uncompress=True</em>, <em>open_obs=True</em>, <em>mirror=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/download.html#download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads a given IRIS observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>obs_identifier</strong> (<em>str</em>) – Observation identifier in the form yyyymmdd_hhmmss_oooooooooo, e.g. 20140323_052543_3860263227</li>
-<li><strong>target_directory</strong> (<em>str</em>) – Path to store downloaded observation to (defaults to home directory)</li>
-<li><strong>type</strong> (<em>str</em>) – Type of data to download:
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs_identifier</strong> (<em>str</em>) – Observation identifier in the form yyyymmdd_hhmmss_oooooooooo, e.g. 20140323_052543_3860263227</p></li>
+<li><p><strong>target_directory</strong> (<em>str</em>) – Path to store downloaded observation to (defaults to home directory)</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – Type of data to download:
 ‘all’: all data
 ‘sji’: only SJI files
-‘raster’: only raster files</li>
-<li><strong>uncompress</strong> (<em>bool</em>) – Uncompress files after download? (automatically set to True if open_obs is True)</li>
-<li><strong>open_obs</strong> (<em>bool</em>) – Immediately open observation and return observation object? Otherwise a boolean indicating download success is returned</li>
-<li><strong>mirror</strong> (<em>str</em>) – Mirror to be used:
+‘raster’: only raster files</p></li>
+<li><p><strong>uncompress</strong> (<em>bool</em>) – Uncompress files after download? (automatically set to True if open_obs is True)</p></li>
+<li><p><strong>open_obs</strong> (<em>bool</em>) – Immediately open observation and return observation object? Otherwise a boolean indicating download success is returned</p></li>
+<li><p><strong>mirror</strong> (<em>str</em>) – Mirror to be used:
 ‘lmsal’: LMSAL (<a class="reference external" href="http://www.lmsal.com/solarsoft/irisa/data/level2_compressed/">http://www.lmsal.com/solarsoft/irisa/data/level2_compressed/</a>)
-‘uio’: University of Oslo (<a class="reference external" href="http://sdc.uio.no/vol/fits/iris/level2/">http://sdc.uio.no/vol/fits/iris/level2/</a>)</li>
+‘uio’: University of Oslo (<a class="reference external" href="http://sdc.uio.no/vol/fits/iris/level2/">http://sdc.uio.no/vol/fits/iris/level2/</a>)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">An open observation handle or a boolean indicating download success.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>An open observation handle or a boolean indicating download success.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -223,33 +213,29 @@
 <dd><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
 Faster alternatives than matplotlib will be researched in the future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_cube</strong> (<em>iris_data_cube</em>) – instance of sji_cube or raster_cube</li>
-<li><strong>raster_pos</strong> (<em>int</em>) – If not None, only display images at raster postion <em>raster_pos</em></li>
-<li><strong>index_start</strong> (<em>int</em>) – index where to start animation (defaults to None -&gt; will be set to 0)</li>
-<li><strong>index_stop</strong> (<em>int</em>) – index where to stop animation (defaults to None -&gt; will be set to n)</li>
-<li><strong>interval_ms</strong> (<em>int</em>) – number of milliseconds between two frames</li>
-<li><strong>gamma</strong> (<em>float</em>) – gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</li>
-<li><strong>figsize</strong> (<em>tuple</em>) – figure size: (width,height)</li>
-<li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_cube</strong> (<em>iris_data_cube</em>) – instance of sji_cube or raster_cube</p></li>
+<li><p><strong>raster_pos</strong> (<em>int</em>) – If not None, only display images at raster postion <em>raster_pos</em></p></li>
+<li><p><strong>index_start</strong> (<em>int</em>) – index where to start animation (defaults to None -&gt; will be set to 0)</p></li>
+<li><p><strong>index_stop</strong> (<em>int</em>) – index where to stop animation (defaults to None -&gt; will be set to n)</p></li>
+<li><p><strong>interval_ms</strong> (<em>int</em>) – number of milliseconds between two frames</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – figure size: (width,height)</p></li>
+<li><p><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
-in a range between 0 and 100.</li>
-<li><strong>save_path</strong> (<em>str</em>) – path to file where animation output will be written to (use .mp4 extension)</li>
+in a range between 0 and 100.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – path to file where animation output will be written to (use .mp4 extension)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTML object with the animation</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IPython.HTML</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTML object with the animation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>IPython.HTML</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -259,18 +245,17 @@ in a range between 0 and 100.</li>
 <dt id="irisreader.utils.date.from_Tformat">
 <code class="descclassname">irisreader.utils.date.</code><code class="descname">from_Tformat</code><span class="sig-paren">(</span><em>date_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#from_Tformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.from_Tformat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts from the FITS date format ‘%Y-%m-%dT%H:%M:%S.%f’ to a datetime object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date_str</strong> (<em>str</em>) – FITS date string with ‘T’ between date and time.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Python datetime object</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_str</strong> (<em>str</em>) – FITS date string with ‘T’ between date and time.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -280,24 +265,20 @@ in a range between 0 and 100.</li>
 <dt id="irisreader.utils.date.to_Tformat">
 <code class="descclassname">irisreader.utils.date.</code><code class="descname">to_Tformat</code><span class="sig-paren">(</span><em>date</em>, <em>milliseconds=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#to_Tformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.to_Tformat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts from a datetime object to the FITS date format ‘%Y-%m-%dT%H:%M:%S’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>date</strong> (<em>datetime</em>) – Python datetime object</li>
-<li><strong>milliseconds</strong> (<em>bool</em>) – Whether to include milliseconds in the output (separated with a dot)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>datetime</em>) – Python datetime object</p></li>
+<li><p><strong>milliseconds</strong> (<em>bool</em>) – Whether to include milliseconds in the output (separated with a dot)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>date_str</strong> – FITS date string with ‘T’ between date and time.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>date_str</strong> – FITS date string with ‘T’ between date and time.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -307,18 +288,17 @@ in a range between 0 and 100.</li>
 <dt id="irisreader.utils.date.from_obsformat">
 <code class="descclassname">irisreader.utils.date.</code><code class="descname">from_obsformat</code><span class="sig-paren">(</span><em>full_obsid_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#from_obsformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.from_obsformat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a full OBSID string to a date.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>full_obsid_str</strong> (<em>str</em>) – Full OBSID</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Python datetime object</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>full_obsid_str</strong> (<em>str</em>) – Full OBSID</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -329,18 +309,17 @@ in a range between 0 and 100.</li>
 <code class="descclassname">irisreader.utils.date.</code><code class="descname">to_epoch</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/utils/date.html#to_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.utils.date.to_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a date to an integer with the number of seconds since 1.1.1970.
 This can be useful for time difference calculations.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<em>datetime</em>) – Python datetime object</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Seconds since 1.1.1970 00:00:00</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<em>datetime</em>) – Python datetime object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Seconds since 1.1.1970 00:00:00</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -348,9 +327,7 @@ This can be useful for time difference calculations.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -359,7 +336,7 @@ This can be useful for time difference calculations.</p>
         <a href="sample_data.html" class="btn btn-neutral float-right" title="Sample Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="coalignment.html" class="btn btn-neutral" title="Co-alignment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="coalignment.html" class="btn btn-neutral float-left" title="Co-alignment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -368,11 +345,11 @@ This can be useful for time difference calculations.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -385,37 +362,15 @@ This can be useful for time difference calculations.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

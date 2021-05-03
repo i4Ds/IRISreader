@@ -17,43 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -62,7 +54,7 @@
 
           
             
-            <img src="../../../_static/irisreader.png" class="logo" />
+            <img src="../../../_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -116,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">irisreader</a>
@@ -124,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -156,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -172,7 +163,7 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">sji_cube</span><span class="p">,</span> <span class="n">raster_cube</span><span class="p">,</span> <span class="n">observation</span>
+<span class="kn">from</span> <span class="nn">irisreader</span> <span class="kn">import</span> <span class="n">sji_cube</span><span class="p">,</span> <span class="n">raster_cube</span><span class="p">,</span> <span class="n">observation</span>
 
 <span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span> <span class="s1">&#39;irisreader&#39;</span><span class="p">,</span> <span class="s1">&#39;data/&#39;</span> <span class="p">)</span>
 
@@ -190,8 +181,8 @@
 <span class="sd">    sji_cube</span>
 <span class="sd">        sample SJI data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-</div>
-    <span class="k">return</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_SJI_test.fits&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sji_cube</span><span class="p">(</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_SJI_test.fits&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span></div>
 
 <div class="viewcode-block" id="sample_raster"><a class="viewcode-back" href="../../../sample_data.html#irisreader.data.sample_raster">[docs]</a><span class="k">def</span> <span class="nf">sample_raster</span><span class="p">(</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;Mg&#39;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -210,8 +201,8 @@
 <span class="sd">    raster_cube</span>
 <span class="sd">        sample raster data</span>
 <span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="p">[</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_raster_test1.fits&quot;</span><span class="p">,</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_raster_test2.fits&quot;</span><span class="p">],</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">raster_cube</span><span class="p">(</span> <span class="p">[</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_raster_test1.fits&quot;</span><span class="p">,</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/IRIS_raster_test2.fits&quot;</span><span class="p">],</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span></div>
 
 <div class="viewcode-block" id="sample_observation"><a class="viewcode-back" href="../../../sample_data.html#irisreader.data.sample_observation">[docs]</a><span class="k">def</span> <span class="nf">sample_observation</span><span class="p">(</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -227,14 +218,12 @@
 <span class="sd">    observation</span>
 <span class="sd">        sample IRIS observation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    </div>
-    <span class="k">return</span> <span class="n">observation</span><span class="p">(</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/20140518_151415_3820607204&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">observation</span><span class="p">(</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/20140518_151415_3820607204&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span> <span class="p">)</span></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -243,11 +232,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -260,37 +249,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

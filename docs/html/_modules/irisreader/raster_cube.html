@@ -17,43 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -62,7 +54,7 @@
 
           
             
-            <img src="../../_static/irisreader.png" class="logo" />
+            <img src="../../_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -116,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">irisreader</a>
@@ -124,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -156,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -180,9 +171,9 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">import</span> <span class="nn">irisreader</span> <span class="k">as</span> <span class="nn">ir</span>
-<span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">iris_data_cube</span>
-<span class="kn">from</span> <span class="nn">irisreader.preprocessing</span> <span class="k">import</span> <span class="n">spectrum_interpolator</span>
-<span class="kn">from</span> <span class="nn">irisreader.utils.notebooks</span> <span class="k">import</span> <span class="n">in_notebook</span>
+<span class="kn">from</span> <span class="nn">irisreader</span> <span class="kn">import</span> <span class="n">iris_data_cube</span>
+<span class="kn">from</span> <span class="nn">irisreader.preprocessing</span> <span class="kn">import</span> <span class="n">spectrum_interpolator</span>
+<span class="kn">from</span> <span class="nn">irisreader.utils.notebooks</span> <span class="kn">import</span> <span class="n">in_notebook</span>
 
 <div class="viewcode-block" id="raster_cube"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube">[docs]</a><span class="k">class</span> <span class="nc">raster_cube</span><span class="p">(</span> <span class="n">iris_data_cube</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -227,7 +218,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># constructor</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
         
         <span class="c1"># call constructor of parent iris_data_cube</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="n">files</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="n">keep_null</span><span class="p">,</span> <span class="n">force_valid_steps</span><span class="o">=</span><span class="n">force_valid_steps</span> <span class="p">)</span>        
@@ -237,15 +228,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is a SJI file. Please use sji_cube to open it.&quot;</span><span class="p">)</span>
             
-        <span class="c1"># set up an image cache for the get_spectrum function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_cache</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
-            
     <span class="c1"># return description upon a print call</span>
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;raster </span><span class="si">{}</span><span class="s2"> line window:</span><span class="se">\n</span><span class="s2">(n_steps, n_y, n_x) = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="p">)</span>
         
     <span class="c1"># load some variables upon request</span>
-    <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span><span class="o">==</span><span class="s1">&#39;n_spectra&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -317,8 +305,8 @@
             <span class="n">image</span><span class="p">[</span><span class="n">image</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">exptime</span>
             <span class="k">return</span> <span class="n">image</span>
         
-        <span class="k">else</span><span class="p">:</span> </div>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span> <span class="p">)</span></div>
     
     <span class="c1"># function to get interpolated image step</span>
 <div class="viewcode-block" id="raster_cube.get_interpolated_image_step"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.get_interpolated_image_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_interpolated_image_step</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
@@ -354,31 +342,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">interpolator</span> <span class="o">=</span> <span class="n">spectrum_interpolator</span><span class="p">(</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span> <span class="p">)</span>
-        <span class="n">lambda_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
-        <span class="k">return</span> <span class="n">interpolator</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="n">divide_by_exptime</span> <span class="p">),</span> <span class="n">lambda_units</span> <span class="p">)</span>
-    
-    <span class="c1"># function to get a spectrum step</span>
-    <span class="k">def</span> <span class="nf">get_spectrum</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lambda_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
-        
-        <span class="n">image_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">image_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">step</span><span class="o">/</span><span class="n">image_size</span><span class="p">)</span>
-        <span class="n">y_value</span> <span class="o">=</span> <span class="n">step</span> <span class="o">%</span> <span class="n">image_size</span>
-        
-        <span class="c1"># image is already in cache</span>
-        <span class="k">if</span> <span class="n">image_step</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_cache</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_cache</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        
-        <span class="c1"># image is not in cache, get it</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># if interpolation is desired</span>
-            <span class="k">if</span> <span class="n">lambda_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lambda_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_breaks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interpolated_image_step</span><span class="p">(</span> <span class="n">image_step</span><span class="p">,</span> <span class="n">lambda_min</span><span class="p">,</span> <span class="n">lambda_max</span><span class="p">,</span> <span class="n">n_breaks</span><span class="p">,</span> <span class="n">divide_by_exptime</span> <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">image_step</span><span class="p">,</span> <span class="n">divide_by_exptime</span> <span class="p">)</span>
-        
-            <span class="bp">self</span><span class="o">.</span><span class="n">_image_cache</span> <span class="o">=</span> <span class="p">[</span> <span class="n">image_step</span><span class="p">,</span> <span class="n">image</span> <span class="p">]</span>
-            
-        <span class="k">return</span> <span class="n">image_step</span><span class="p">,</span> <span class="n">y_value</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="n">y_value</span><span class="p">,:]</span>
+        <span class="n">lambda_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">interpolator</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_step</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">raster_pos</span><span class="o">=</span><span class="n">raster_pos</span><span class="p">,</span> <span class="n">divide_by_exptime</span><span class="o">=</span><span class="n">divide_by_exptime</span> <span class="p">),</span> <span class="n">lambda_units</span> <span class="p">)</span></div>
     
     <span class="c1"># function to plot an image step</span>
 <div class="viewcode-block" id="raster_cube.plot"><a class="viewcode-back" href="../../reading.html#irisreader.raster_cube.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pixels&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff_percentile</span><span class="o">=</span><span class="mf">99.9</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
@@ -414,15 +379,13 @@
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">wcs</span> <span class="p">)</span>
-            <span class="c1">#units = self.get_axis_coordinates( step=step )</span>
-            <span class="c1">#extent = [ units[0][0], units[0][-1], units[1][0], units[1][-1]  ]</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_coordinates</span><span class="p">(</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span> <span class="p">)</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">xlabel</span> <span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ico</span><span class="o">.</span><span class="n">ylabel</span> <span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;pixels&#39;</span><span class="p">:</span>
-            <span class="c1">#extent = [ 0, image.shape[1], 0, image.shape[0] ]</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;camera x&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;camera y&quot;</span><span class="p">)</span>
             
@@ -436,11 +399,10 @@
         <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gist_heat&#39;</span>
-            <span class="c1">#ax.imshow( image**gamma, origin=&#39;lower&#39;, vmax=vmax, extent=extent, **kwargs )</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="o">**</span><span class="n">gamma</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">image</span><span class="o">**</span><span class="n">gamma</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;photons / s (y=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
-            <span class="c1">#ax.plot( extent[0]+np.linspace(0, extent[1]-extent[0], image.shape[1]), image[y,:] )</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">image</span><span class="p">[</span><span class="n">y</span><span class="p">,:]</span> <span class="p">)</span>
         
         <span class="c1"># set aspect ratio depending</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span> 
@@ -449,17 +411,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">in_notebook</span><span class="p">():</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         
-        <span class="c1"># delete image variable (otherwise memory mapping keeps file open)</span></div></div>
-        <span class="k">del</span> <span class="n">image</span>
+        <span class="c1"># delete image variable (otherwise memory mapping keeps file open)</span>
+        <span class="k">del</span> <span class="n">image</span></div></div>
 
 <span class="c1"># MOVE TO TEST</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="c1"># try this on the 16 core machine</span>
-    <span class="c1"># why is raster3 so much slower? jumps to the next file should be marginal</span>
-    <span class="c1"># probably because new data has to be loaded into memory all the time</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    
     <span class="kn">import</span> <span class="nn">os</span>
     <span class="n">raster_dir</span> <span class="o">=</span> <span class="s2">&quot;/home/chuwyler/Desktop/FITS/20140329_140938_3860258481/&quot;</span>
     <span class="n">raster_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span> <span class="p">[</span><span class="n">raster_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span> <span class="n">raster_dir</span> <span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;raster&#39;</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span> <span class="p">)</span>
@@ -470,23 +427,11 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
     <span class="n">raster</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;coordinates&quot;</span> <span class="p">)</span>
 
-    
-<span class="c1">#    #sji.crop()</span>
-<span class="c1">#    plt.figure()</span>
-<span class="c1">#    sji.plot(0, cmap=&quot;gray&quot;, grid=True )</span>
-<span class="c1">#    plt.figure()</span>
-<span class="c1">#    sji.plot(0, cmap=&quot;gray&quot;, units=&quot;coordinates&quot;, grid=True )</span>
-<span class="c1">#    </span>
-<span class="c1">#    plt.scatter( 400, 400, c=&quot;green&quot; )</span>
-<span class="c1">#    plt.scatter( -140, 120, c=&quot;red&quot;, transform=get_ax_transform() )</span>
-<span class="c1">#    plt.plot( [-180,-120],[80,140], transform=get_ax_transform() )</span>
 <span class="c1">#    </span>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -495,11 +440,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -512,37 +457,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

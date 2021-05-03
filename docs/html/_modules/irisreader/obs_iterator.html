@@ -17,43 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -62,7 +54,7 @@
 
           
             
-            <img src="../../_static/irisreader.png" class="logo" />
+            <img src="../../_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -116,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">irisreader</a>
@@ -124,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -156,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -173,7 +164,7 @@
 
 <span class="c1"># import libraries</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">irisreader</span> <span class="k">import</span> <span class="n">observation</span>
+<span class="kn">from</span> <span class="nn">irisreader</span> <span class="kn">import</span> <span class="n">observation</span>
 
 <div class="viewcode-block" id="obs_iterator"><a class="viewcode-back" href="../../reading.html#irisreader.obs_iterator">[docs]</a><span class="k">class</span> <span class="nc">obs_iterator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class implements a generator class to iterate over a set of </span>
@@ -207,7 +198,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># constructor</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">read_v4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_log</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">keep_null</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">read_v4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">error_log</span><span class="o">=</span><span class="kc">None</span> <span class="p">):</span>
         
         <span class="c1"># set variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keep_null</span> <span class="o">=</span> <span class="n">keep_null</span>
@@ -245,15 +236,15 @@
         <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;done [&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; directories]&quot;</span> <span class="p">)</span>
 
     <span class="c1"># return length to len function</span>
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
     
     <span class="c1"># return iteration on demand</span>
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="c1"># return next observation</span>
-    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># close previous observation</span>
@@ -286,8 +277,8 @@
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_log</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="s2">&quot;Error reading directory &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">directories</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; Returning the next valid observation.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">)</span>
             
-            <span class="c1"># return next valid observation</span></div>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span>
+            <span class="c1"># return next valid observation</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span></div>
 
 
 <span class="c1"># MOVE TO TEST</span>
@@ -301,9 +292,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -312,11 +301,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -329,37 +318,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

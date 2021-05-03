@@ -17,44 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="next" title="Co-alignment" href="coalignment.html"/>
-        <link rel="prev" title="Reading" href="reading.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Co-alignment" href="coalignment.html" />
+    <link rel="prev" title="Reading" href="reading.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,7 +56,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -122,7 +115,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -130,9 +123,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -190,14 +184,12 @@ worked well, the cropped image is checked for negative pixels at the end,
 throwing an error if more than 5% of the image border pixels or the whole image
 are negative. In this way, bounds for the image are determined with the <cite>fit</cite>
 method while the <cite>transform</cite> method returns a the cropped image.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>offset</strong> (<em>integer</em>) – Number of pixels that are removed as a safety border from all sides
-after the cropping.</li>
-<li><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<em>integer</em>) – Number of pixels that are removed as a safety border from all sides
+after the cropping.</p></li>
+<li><p><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
 there are patches of negative values in images, either due to loss of
 data during transmission (typically a band or a large rectangular patch
 of negative data) or due to overall low data counts (missing data is no
@@ -208,45 +200,40 @@ data counts (and therefore many missing pixels) and the user is advised
 to disable the coverage check for such lines.
 A method that is able to distinguish missing data arising from
 transmission errors from missing data due to low data counts could be
-helpful here.</li>
+helpful here.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cropper.fit">
 <code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cropper.html#image_cropper.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cropper.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines bounds for the supplied image with the sliding lines approach
 mentioned in the class description.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>numpy.ndarray</em>) – 2D image data that is to be cropped, format [y,x]</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns this object with fitted variables.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#irisreader.preprocessing.image_cropper" title="irisreader.preprocessing.image_cropper">image_cropper</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>numpy.ndarray</em>) – 2D image data that is to be cropped, format [y,x]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns this object with fitted variables.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#irisreader.preprocessing.image_cropper" title="irisreader.preprocessing.image_cropper">image_cropper</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cropper.get_bounds">
 <code class="descname">get_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cropper.html#image_cropper.get_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cropper.get_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the bounds computed by image_cropper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List [ xmin, xmax, ymin, ymax ] for the given image.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List [ xmin, xmax, ymin, ymax ] for the given image.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -259,18 +246,17 @@ mentioned in the class description.</p>
 <dt id="irisreader.preprocessing.image_cropper.transform">
 <code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cropper.html#image_cropper.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cropper.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounded image.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>numpy.ndarray</em>) – 2D image data that is to be cropped.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Cropped image data.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>numpy.ndarray</em>) – 2D image data that is to be cropped.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cropped image data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -293,14 +279,12 @@ width and the height of the valid image. We thus look for outliers in the data
 returned by <a class="reference internal" href="#irisreader.preprocessing.image_cropper" title="irisreader.preprocessing.image_cropper"><code class="xref py py-class docutils literal notranslate"><span class="pre">image_cropper</span></code></a> and degrade them to corrupt images.
 Outliers are defined here as values that deviate more than 1.5% from the
 median bound (15 pixels on 1000 pixels).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>offset</strong> (<em>integer</em>) – Number of pixels that are removed as a safety border from all sides
-after the cropping.</li>
-<li><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<em>integer</em>) – Number of pixels that are removed as a safety border from all sides
+after the cropping.</p></li>
+<li><p><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
 there are patches of negative values in images, either due to loss of
 data during transmission (typically a band or a large rectangular patch
 of negative data) or due to overall low data counts (missing data is no
@@ -311,76 +295,67 @@ data counts (and therefore many missing pixels) and the user is advised
 to disable the coverage check for such lines.
 A method that is able to distinguish missing data arising from
 transmission errors from missing data due to low data counts could be
-helpful here.</li>
+helpful here.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cube_cropper.fit">
 <code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cube_cropper.html#image_cube_cropper.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cube_cropper.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines the overall cropping bounds and the corrupt images for the supplied data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>irisreader.iris_data_cube</em><em> (</em><em>irisreader.sji_cube / irisreader.raster_cube</em><em>)</em>) – Data cube object that has to be cropped.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">This object with fitted variables.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#irisreader.preprocessing.image_cube_cropper" title="irisreader.preprocessing.image_cube_cropper">image_cube_cropper</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>irisreader.iris_data_cube</em><em> (</em><em>irisreader.sji_cube / irisreader.raster_cube</em><em>)</em>) – Data cube object that has to be cropped.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>This object with fitted variables.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#irisreader.preprocessing.image_cube_cropper" title="irisreader.preprocessing.image_cube_cropper">image_cube_cropper</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cube_cropper.get_bounds">
 <code class="descname">get_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cube_cropper.html#image_cube_cropper.get_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cube_cropper.get_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the overall bounds recovered by image_cube_cropper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List [ xmin, xmax, ymin, ymax ] for the given data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List [ xmin, xmax, ymin, ymax ] for the given data cube.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cube_cropper.get_corrupt_images">
 <code class="descname">get_corrupt_images</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cube_cropper.html#image_cube_cropper.get_corrupt_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cube_cropper.get_corrupt_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets time-step indices of corrupt images in the data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Time-step indices of corrupt images in the data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Time-step indices of corrupt images in the data cube.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.image_cube_cropper.get_null_images">
 <code class="descname">get_null_images</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/image_cube_cropper.html#image_cube_cropper.get_null_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.image_cube_cropper.get_null_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets time-step indices of null images in the data cube (if any, usually data cubes are read with keep_null=False).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Time-step indices of null images in the data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Time-step indices of null images in the data cube.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -392,75 +367,64 @@ helpful here.</li>
 <dt id="irisreader.preprocessing.spectrum_interpolator">
 <em class="property">class </em><code class="descclassname">irisreader.preprocessing.</code><code class="descname">spectrum_interpolator</code><span class="sig-paren">(</span><em>lambda_min</em>, <em>lambda_max</em>, <em>steps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/spectrum_interpolator.html#spectrum_interpolator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.spectrum_interpolator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates supplied spectra to a certain range and size using cubic splines.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>lambda_min</strong> (<em>float</em>) – Minimum wavelength.</li>
-<li><strong>lambda_max</strong> (<em>float</em>) – Maximum wavelength.</li>
-<li><strong>steps</strong> (<em>integer</em>) – Number of interpolation steps.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lambda_min</strong> (<em>float</em>) – Minimum wavelength.</p></li>
+<li><p><strong>lambda_max</strong> (<em>float</em>) – Maximum wavelength.</p></li>
+<li><p><strong>steps</strong> (<em>integer</em>) – Number of interpolation steps.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.preprocessing.spectrum_interpolator.fit">
 <code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/spectrum_interpolator.html#spectrum_interpolator.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.spectrum_interpolator.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a cubic spline function fitting the supplied spectrum data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>numpy.ndarray</em>) – Array of spectra to interpolate (rows are different spectra and columns are wavelength bins)</li>
-<li><strong>y</strong> (<em>float</em>) – List of wavelength units.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – Array of spectra to interpolate (rows are different spectra and columns are wavelength bins)</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – List of wavelength units.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This object with fitted variables.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#irisreader.preprocessing.spectrum_interpolator" title="irisreader.preprocessing.spectrum_interpolator">spectrum_interpolator</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>This object with fitted variables.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#irisreader.preprocessing.spectrum_interpolator" title="irisreader.preprocessing.spectrum_interpolator">spectrum_interpolator</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.spectrum_interpolator.get_coordinates">
 <code class="descname">get_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/spectrum_interpolator.html#spectrum_interpolator.get_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.spectrum_interpolator.get_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the units of the interpolated spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of wavelengths for each bin.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of wavelengths for each bin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.preprocessing.spectrum_interpolator.transform">
 <code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/preprocessing/spectrum_interpolator.html#spectrum_interpolator.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.preprocessing.spectrum_interpolator.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates the supplied spectrum data to the desired range and size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>numpy.ndarray</em>) – Array of spectra to interpolate (rows are different spectra and columns are wavelength bins)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Array with interpolated spectra.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>numpy.ndarray</em>) – Array of spectra to interpolate (rows are different spectra and columns are wavelength bins)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array with interpolated spectra.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -470,9 +434,7 @@ helpful here.</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -481,7 +443,7 @@ helpful here.</li>
         <a href="coalignment.html" class="btn btn-neutral float-right" title="Co-alignment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="reading.html" class="btn btn-neutral" title="Reading" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reading.html" class="btn btn-neutral float-left" title="Reading" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -490,11 +452,11 @@ helpful here.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -507,37 +469,15 @@ helpful here.</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

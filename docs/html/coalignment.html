@@ -17,44 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="next" title="Utils" href="utils.html"/>
-        <link rel="prev" title="Preprocessing" href="preprocessing.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Preprocessing" href="preprocessing.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,7 +56,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -123,7 +116,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -131,9 +124,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -183,26 +177,22 @@
 <dt id="irisreader.coalignment.find_closest_sji">
 <code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_sji</code><span class="sig-paren">(</span><em>sji</em>, <em>raster</em>, <em>raster_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_sji"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_sji" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds closest sji step to raster step &lt;raster_step&gt; in time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</li>
-<li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
-<li><strong>raster_step</strong> (<em>int</em>) – raster step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</p></li>
+<li><p><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</p></li>
+<li><p><strong>raster_step</strong> (<em>int</em>) – raster step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>sji_step</strong> (<em>int</em>) – SJI step</li>
-<li><strong>diff</strong> (<em>float</em>) – Difference in seconds</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>sji_step</strong> (<em>int</em>) – SJI step</p></li>
+<li><p><strong>diff</strong> (<em>float</em>) – Difference in seconds</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -212,26 +202,22 @@
 <dt id="irisreader.coalignment.find_closest_raster">
 <code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_raster</code><span class="sig-paren">(</span><em>raster</em>, <em>sji</em>, <em>sji_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds closest raster step to SJI step &lt;sji_step&gt; in time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
-<li><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</li>
-<li><strong>sji_step</strong> (<em>int</em>) – sji step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</p></li>
+<li><p><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</p></li>
+<li><p><strong>sji_step</strong> (<em>int</em>) – sji step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>raster_step</strong> (<em>int</em>) – SJI step</li>
-<li><strong>diff</strong> (<em>float</em>) – Difference in seconds</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>raster_step</strong> (<em>int</em>) – SJI step</p></li>
+<li><p><strong>diff</strong> (<em>float</em>) – Difference in seconds</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -247,46 +233,41 @@ will not be downloaded again. The stored data is made accessible as a
 pandas data frame which can then be plotted with <cite>plot</cite> or interpolated to
 other points in time with <cite>interpolate</cite>. Optionally, the data are only
 loaded upon first read access.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the time window for which GOES data should be
-downloaded.</li>
-<li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the time window for which GOES data should be
-downloaded.</li>
-<li><strong>data_dir</strong> (<em>string</em>) – Data directory in which the downloaded data will be stored.</li>
-<li><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the time window for which GOES data should be
+downloaded.</p></li>
+<li><p><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the time window for which GOES data should be
+downloaded.</p></li>
+<li><p><strong>data_dir</strong> (<em>string</em>) – Data directory in which the downloaded data will be stored.</p></li>
+<li><p><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the GOES X-ray flux data time window</li>
-<li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the GOES X-ray flux data time window</li>
-<li><strong>data</strong> – Pandas data frame with GOES data.</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the GOES X-ray flux data time window</p></li>
+<li><p><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the GOES X-ray flux data time window</p></li>
+<li><p><strong>data</strong> – Pandas data frame with GOES data.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.coalignment.goes_data.get_peak_flux">
 <code class="descname">get_peak_flux</code><span class="sig-paren">(</span><em>flux='B_FLUX'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/goes_data.html#goes_data.get_peak_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.goes_data.get_peak_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the peak flux measured in the observation time period.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> (<em>str</em>) – ‘B_FLUX’ (default) for the 1-8 Angstrom X-ray flux or ‘A_FLUX’ for
-the 0.5-1 Angstrom X-ray flux.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Peak flux in W/m^2</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>str</em>) – ‘B_FLUX’ (default) for the 1-8 Angstrom X-ray flux or ‘A_FLUX’ for
+the 0.5-1 Angstrom X-ray flux.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Peak flux in W/m^2</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -295,41 +276,34 @@ the 0.5-1 Angstrom X-ray flux.</td>
 <dd><p>This function takes timestamps from <cite>iris_data_cube.get_timestamps()</cite>
 (UNIX time - seconds since Thursday, 1 January 1970 00:00:00) and
 computes interpolated GOES flux data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>iris_timestamps</strong> (<em>float</em>) – Array with timestamps from <cite>iris_data_cube.get_timestamps()</cite> or
-<cite>combined_raster.get_timestamps()</cite>.</li>
-<li><strong>field</strong> (<em>string</em>) – ‘B_FLUX’ (default) for the 1-8 Angstrom X-ray flux or ‘A_FLUX’ for
-the 0.5-1 Angstrom X-ray flux.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iris_timestamps</strong> (<em>float</em>) – Array with timestamps from <cite>iris_data_cube.get_timestamps()</cite> or
+<cite>combined_raster.get_timestamps()</cite>.</p></li>
+<li><p><strong>field</strong> (<em>string</em>) – ‘B_FLUX’ (default) for the 1-8 Angstrom X-ray flux or ‘A_FLUX’ for
+the 0.5-1 Angstrom X-ray flux.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List with interpolated GOES fluxes in W/m^2</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List with interpolated GOES fluxes in W/m^2</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.coalignment.goes_data.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>restrict_to_obstime=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/goes_data.html#goes_data.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.goes_data.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function plots the GOES X-ray flux around the given time period.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restrict_to_obstime</strong> (<em>boolean</em>) – If True, only the flux within the observation time period will be
-plotted.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>restrict_to_obstime</strong> (<em>boolean</em>) – If True, only the flux within the observation time period will be
+plotted.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -344,69 +318,59 @@ plotted.</td>
 database (HEK). It loads all HEK active regions and flares that were
 recorded during an IRIS observation and makes them available as a pandas data
 frame.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>caller</strong> (<em>iris_data_cube</em>) – observation object that called the hek_data object.
-This is required to give hek_data the ability to access the observation’s XCENIX/YCENIX positions at different times in a lazy way.</li>
-<li><strong>instrument</strong> (<em>str</em>) – which instrument to query - defaults to GOES which might be most practical</li>
-<li><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>caller</strong> (<em>iris_data_cube</em>) – observation object that called the hek_data object.
+This is required to give hek_data the ability to access the observation’s XCENIX/YCENIX positions at different times in a lazy way.</p></li>
+<li><p><strong>instrument</strong> (<em>str</em>) – which instrument to query - defaults to GOES which might be most practical</p></li>
+<li><p><strong>lazy_eval</strong> (<em>boolean</em>) – Whether or not data should only be loaded upon first read access.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the HEK events time window</li>
-<li><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the HEK events time window</li>
-<li><strong>instrument</strong> (<em>str</em>) – Queried instrument</li>
-<li><strong>data</strong> – Pandas data frame with HEK events.</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>start_date</strong> (<em>datetime.datetime</em>) – Start date/time of the HEK events time window</p></li>
+<li><p><strong>end_date</strong> (<em>datetime.datetime</em>) – End date/time of the HEK events time window</p></li>
+<li><p><strong>instrument</strong> (<em>str</em>) – Queried instrument</p></li>
+<li><p><strong>data</strong> – Pandas data frame with HEK events.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.coalignment.hek_data.get_flares">
 <code class="descname">get_flares</code><span class="sig-paren">(</span><em>classes=''</em>, <em>in_FOV=False</em>, <em>FOV_margin=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data.get_flares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data.get_flares" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a data frame with all flare events in the time window.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>classes</strong> (<em>str</em>) – <dl class="docutils">
-<dt>what flare event classes to return:</dt>
-<dd>”“: all classes, “C”: only C-class, “M”: only M-class, “X”: only X-class, “MX”: both M- and X-class, etc.</dd>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>classes</strong> (<em>str</em>) – <dl class="simple">
+<dt>what flare event classes to return:</dt><dd><p>”“: all classes, “C”: only C-class, “M”: only M-class, “X”: only X-class, “MX”: both M- and X-class, etc.</p>
+</dd>
 </dl>
-</li>
-<li><strong>in_FOV</strong> (<em>bool</em>) – whether to return only flares that occured in the field of view (FOV)</li>
-<li><strong>FOV_margin</strong> (<em>int</em>) – search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)</li>
+</p></li>
+<li><p><strong>in_FOV</strong> (<em>bool</em>) – whether to return only flares that occured in the field of view (FOV)</p></li>
+<li><p><strong>FOV_margin</strong> (<em>int</em>) – search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.coalignment.hek_data.get_iris_coordinates">
 <code class="descname">get_iris_coordinates</code><span class="sig-paren">(</span><em>flare_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data.get_iris_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data.get_iris_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Approximates FOV center coordinates of IRIS at the time of a flare.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flare_date</strong> (<em>datetime.datetime</em>) – start date and time of the flare</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>iris_xcenix</strong> (<em>float</em>) – XCENIX coordinate of IRIS at the time of the flare</li>
-<li><strong>iris_ycenix</strong> (<em>float</em>) – YCENIX coordinate of IRIS at the time of the flare</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flare_date</strong> (<em>datetime.datetime</em>) – start date and time of the flare</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>iris_xcenix</strong> (<em>float</em>) – XCENIX coordinate of IRIS at the time of the flare</p></li>
+<li><p><strong>iris_ycenix</strong> (<em>float</em>) – YCENIX coordinate of IRIS at the time of the flare</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -415,43 +379,38 @@ This is required to give hek_data the ability to access the observation’s XCEN
 <dd><p>This function returns a list of boolean values for each row in the event
 data frame, stating for each event whether it occured in the IRIS FOV plus
 some margin (flares can spread to diameters of up to 100 arcseconds).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>margin</strong> (<em>float</em>) – number of arcseconds to extend the field of view event search space (defaults to 100)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of boolean values</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">in_fov</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>margin</strong> (<em>float</em>) – number of arcseconds to extend the field of view event search space (defaults to 100)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of boolean values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>in_fov</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.coalignment.hek_data.plot_flares">
 <code class="descname">plot_flares</code><span class="sig-paren">(</span><em>classes=''</em>, <em>in_FOV=False</em>, <em>FOV_margin=100</em>, <em>show=True</em>, <em>savefile=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/hek_data.html#hek_data.plot_flares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.hek_data.plot_flares" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots all flare events with respect to the field of view.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>classes</strong> (<em>str</em>) – <dl class="docutils">
-<dt>what flare event classes to return:</dt>
-<dd>”“: all classes, “C”: only C-class, “M”: only M-class, “X”: only X-class, “MX”: both M- and X-class, etc.</dd>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>classes</strong> (<em>str</em>) – <dl class="simple">
+<dt>what flare event classes to return:</dt><dd><p>”“: all classes, “C”: only C-class, “M”: only M-class, “X”: only X-class, “MX”: both M- and X-class, etc.</p>
+</dd>
 </dl>
-</li>
-<li><strong>in_FOV</strong> (<em>bool</em>) – whether to return only flares that occured in the field of view (FOV)</li>
-<li><strong>margin</strong> (<em>int</em>) – search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)</li>
-<li><strong>show</strong> (<em>bool</em>) – whether to show plot (for saving only)</li>
-<li><strong>savefile</strong> (<em>str</em>) – where to save plot if savefile is not None</li>
+</p></li>
+<li><p><strong>in_FOV</strong> (<em>bool</em>) – whether to return only flares that occured in the field of view (FOV)</p></li>
+<li><p><strong>margin</strong> (<em>int</em>) – search margin in arcsec in addition to field of view (flares can have diameters of ~100 arcsec)</p></li>
+<li><p><strong>show</strong> (<em>bool</em>) – whether to show plot (for saving only)</p></li>
+<li><p><strong>savefile</strong> (<em>str</em>) – where to save plot if savefile is not None</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -461,9 +420,7 @@ some margin (flares can spread to diameters of up to 100 arcseconds).</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -472,7 +429,7 @@ some margin (flares can spread to diameters of up to 100 arcseconds).</p>
         <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="preprocessing.html" class="btn btn-neutral" title="Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="preprocessing.html" class="btn btn-neutral float-left" title="Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -481,11 +438,11 @@ some margin (flares can spread to diameters of up to 100 arcseconds).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -498,37 +455,15 @@ some margin (flares can spread to diameters of up to 100 arcseconds).</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

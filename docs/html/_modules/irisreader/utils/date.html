@@ -17,43 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -62,7 +54,7 @@
 
           
             
-            <img src="../../../_static/irisreader.png" class="logo" />
+            <img src="../../../_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -116,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">irisreader</a>
@@ -124,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -156,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -173,8 +164,8 @@
 
 <span class="c1"># This file contains date utility functions</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 
 <span class="n">T_FORMAT_MS</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span>
 <span class="n">T_FORMAT_S</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span>
@@ -198,8 +189,8 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span> <span class="n">date_str</span> <span class="p">,</span> <span class="n">T_FORMAT_MS</span> <span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span> <span class="n">date_str</span> <span class="p">,</span> <span class="n">T_FORMAT_S</span> <span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">date</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span> <span class="n">date_str</span> <span class="p">,</span> <span class="n">T_FORMAT_S</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">date</span></div>
 
 <div class="viewcode-block" id="to_Tformat"><a class="viewcode-back" href="../../../utils.html#irisreader.utils.date.to_Tformat">[docs]</a><span class="k">def</span> <span class="nf">to_Tformat</span><span class="p">(</span> <span class="n">date</span><span class="p">,</span> <span class="n">milliseconds</span><span class="o">=</span><span class="kc">True</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -221,8 +212,8 @@
         <span class="n">date_str</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span> <span class="n">date</span><span class="p">,</span> <span class="n">T_FORMAT_MS</span> <span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span> <span class="c1"># round to seconds</span>
         <span class="n">microseconds</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">/</span> <span class="mf">1e6</span>
-        <span class="n">date_str</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span> <span class="n">date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span> <span class="n">seconds</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">microseconds</span><span class="p">)</span> <span class="p">)</span> <span class="p">,</span> <span class="n">T_FORMAT_S</span> <span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">date_str</span>
+        <span class="n">date_str</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span> <span class="n">date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span> <span class="n">seconds</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">microseconds</span><span class="p">)</span> <span class="p">)</span> <span class="p">,</span> <span class="n">T_FORMAT_S</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">date_str</span></div>
 
 <div class="viewcode-block" id="from_obsformat"><a class="viewcode-back" href="../../../utils.html#irisreader.utils.date.from_obsformat">[docs]</a><span class="k">def</span> <span class="nf">from_obsformat</span><span class="p">(</span> <span class="n">full_obsid_str</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -239,8 +230,8 @@
 <span class="sd">        Python datetime object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">date_str</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">full_obsid_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span> <span class="n">date_str</span><span class="p">,</span> <span class="n">OBS_FORMAT</span> <span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">date</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span> <span class="n">date_str</span><span class="p">,</span> <span class="n">OBS_FORMAT</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">date</span></div>
 
 <div class="viewcode-block" id="to_epoch"><a class="viewcode-back" href="../../../utils.html#irisreader.utils.date.to_epoch">[docs]</a><span class="k">def</span> <span class="nf">to_epoch</span><span class="p">(</span> <span class="n">date</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -256,15 +247,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    int :</span>
 <span class="sd">        Seconds since 1.1.1970 00:00:00</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="p">(</span><span class="n">date</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">date</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span></div>
 
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -273,11 +262,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -290,37 +279,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

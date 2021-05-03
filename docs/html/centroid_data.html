@@ -17,43 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="prev" title="Sample Data" href="sample_data.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Sample Data" href="sample_data.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -62,7 +55,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -123,7 +116,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -131,9 +124,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -215,24 +209,23 @@ and then a 1-nearest neighbour method has to be used.</p>
 </pre></div>
 </div>
 <p>Nearest neighbour assignment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">NearestCentroid</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestCentroid</span>
 <span class="n">knc</span> <span class="o">=</span> <span class="n">NearestCentroid</span><span class="p">()</span>
 <span class="n">knc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span> <span class="n">X</span><span class="o">=</span><span class="n">centroids</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span> <span class="nb">range</span><span class="p">(</span> <span class="n">centroids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
 <span class="n">assigned_centroids</span> <span class="o">=</span> <span class="n">knc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span> <span class="n">raster_image</span> <span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bins</strong> (<em>int</em>) – Number of bins to interpolate to (defaults to 216)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array with shape (216, 53)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">mg2k_centroids</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bins</strong> (<em>int</em>) – Number of bins to interpolate to (defaults to 216)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with shape (216, 53)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>mg2k_centroids</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -255,25 +248,21 @@ LAMBDA_MIN = 2793.8500976562500 and LAMBDA_MAX = 2799.3239974882454. For example
         <span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>numpy.array</em>) – interpolated raster image of shape (_,bins)</li>
-<li><strong>centroids</strong> (<em>numpy.array</em>) – If None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed.
-Important: both the spectra in ‘X’ and in ‘centroids’ should be constrained to the same wavelength region!</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy.array</em>) – interpolated raster image of shape (_,bins)</p></li>
+<li><p><strong>centroids</strong> (<em>numpy.array</em>) – If None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed.
+Important: both the spectra in ‘X’ and in ‘centroids’ should be constrained to the same wavelength region!</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy vector with shape (X.shape[1],)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">assigned_mg2k_centroids</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy vector with shape (X.shape[1],)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>assigned_mg2k_centroids</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -283,14 +272,11 @@ Important: both the spectra in ‘X’ and in ‘centroids’ should be constrai
 <dt id="irisreader.data.mg2k_centroids.normalize">
 <code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Divides each row of X by its maximum to make sure that the maximum value per row is 1.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>numpy.array</em>) – raster image to normalize</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>numpy.array</em>) – raster image to normalize</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -300,27 +286,23 @@ Important: both the spectra in ‘X’ and in ‘centroids’ should be constrai
 <dt id="irisreader.data.mg2k_centroids.interpolate">
 <code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>raster</em>, <em>step</em>, <em>bins=216</em>, <em>lambda_min=2793.85009765625</em>, <em>lambda_max=2799.3239974882454</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.interpolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an interpolated image step from the raster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</li>
-<li><strong>step</strong> (<em>int</em>) – image step in the raster</li>
-<li><strong>bins</strong> (<em>int</em>) – number of bins to interpolate to (defaults to 216)</li>
-<li><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</li>
-<li><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – image step in the raster</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – number of bins to interpolate to (defaults to 216)</p></li>
+<li><p><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</p></li>
+<li><p><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy vector with shape (X.shape[1],)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">assigned_mg2k_centroids</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy vector with shape (X.shape[1],)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>assigned_mg2k_centroids</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -331,31 +313,27 @@ Important: both the spectra in ‘X’ and in ‘centroids’ should be constrai
 <code class="descclassname">irisreader.data.mg2k_centroids.</code><code class="descname">get_mg2k_centroid_table</code><span class="sig-paren">(</span><em>obs</em>, <em>centroids=None</em>, <em>lambda_min=2793.85009765625</em>, <em>lambda_max=2799.3239974882454</em>, <em>crop_raster=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/mg2k_centroids.html#get_mg2k_centroid_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.mg2k_centroids.get_mg2k_centroid_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a data frame with centroid counts for each raster image of a given
 observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>obs_path</strong> (<em>str</em>) – Path to observation</li>
-<li><strong>centroids</strong> (<em>numpy.array</em>) – if None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed</li>
-<li><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</li>
-<li><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</li>
-<li><strong>crop_raster</strong> (<em>bool</em>) – Whether to crop raster before assigning centroids. If set to False,
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs_path</strong> (<em>str</em>) – Path to observation</p></li>
+<li><p><strong>centroids</strong> (<em>numpy.array</em>) – if None, the centroids defined in the above study will be used, otherwise an array of shape (n_centroids, n_bins) should be passed</p></li>
+<li><p><strong>lambda_min</strong> (<em>float</em>) – wavelength value where interpolation should start</p></li>
+<li><p><strong>lambda_max</strong> (<em>float</em>) – wavelength value where interpolation should stop</p></li>
+<li><p><strong>crop_raster</strong> (<em>bool</em>) – Whether to crop raster before assigning centroids. If set to False,
 spectra which are -200 everywhere will be assigned to centroid 51 and
 spectra that are for some part -200 will be assigned to the nearest
-centroid.</li>
+centroid.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>centroids_df</strong> (<em>pd.DataFrame</em>) – Data frame with image ids and assigned centroids</li>
-<li><strong>assigned_centroids</strong> (<em>list</em>) – List with array of assigned centroids for every raster image</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>centroids_df</strong> (<em>pd.DataFrame</em>) – Data frame with image ids and assigned centroids</p></li>
+<li><p><strong>assigned_centroids</strong> (<em>list</em>) – List with array of assigned centroids for every raster image</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -363,16 +341,14 @@ centroid.</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="sample_data.html" class="btn btn-neutral" title="Sample Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="sample_data.html" class="btn btn-neutral float-left" title="Sample Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -381,11 +357,11 @@ centroid.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -398,37 +374,15 @@ centroid.</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

@@ -17,44 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="next" title="Preprocessing" href="preprocessing.html"/>
-        <link rel="prev" title="Configuration" href="configuration.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Preprocessing" href="preprocessing.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,7 +56,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -126,7 +119,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -134,9 +127,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -189,36 +183,32 @@
 opens all the SJI and raster files associated to an observation (in a given
 directory, as is the structure of IRIS data), possibly combines multiple
 raster to a combined_raster structure and sets a few observation parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path</strong> (<em>string</em>) – Path to the IRIS observation directory where the FITS files are stored.</li>
-<li><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>string</em>) – Path to the IRIS observation directory where the FITS files are stored.</p></li>
+<li><p><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed
 from the data cube. keep_null=True keeps NULL images and keep_null=False
-removes them.</li>
+removes them.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sji</strong> (<em>sji_loader</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">sji_loader</span></code> instance that holds the sji attributes.</li>
-<li><strong>raster</strong> (<em>raster_loader</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">raster_loader</span></code> instance that holds the raster attributes.</li>
-<li><strong>n_raster</strong> (<em>integer</em>) – Number of individual raster files in the selected observation.</li>
-<li><strong>n_sji</strong> (<em>integer</em>) – Number of individual sji files in the selected observation.</li>
-<li><strong>obsid</strong> (<em>string</em>) – Observation ID of the selected observation.</li>
-<li><strong>desc</strong> (<em>string</em>) – Description of the selected observation.</li>
-<li><strong>mode</strong> (<em>string</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
-<li><strong>start_date</strong> (<em>string</em>) – Start date of the selected observation.</li>
-<li><strong>end_date</strong> (<em>string</em>) – End date of the selected observation.</li>
-<li><strong>full_obsid</strong> (<em>string</em>) – Full OBSID uniquely specifying the observation, in the format YYYYmmdd_HHMMSS_OBSID</li>
-<li><strong>goes</strong> (<em>irisreader.coalignment.goes</em>) – Instance of irisreader.coalignment.goes containing GOES X-ray data for this observation</li>
-<li><strong>hek</strong> (<em>irisreader.coalignment.hek</em>) – Instance of irisreader.coalignment.hek containing HEK event data for this observation</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>sji</strong> (<em>sji_loader</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">sji_loader</span></code> instance that holds the sji attributes.</p></li>
+<li><p><strong>raster</strong> (<em>raster_loader</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">raster_loader</span></code> instance that holds the raster attributes.</p></li>
+<li><p><strong>n_raster</strong> (<em>integer</em>) – Number of individual raster files in the selected observation.</p></li>
+<li><p><strong>n_sji</strong> (<em>integer</em>) – Number of individual sji files in the selected observation.</p></li>
+<li><p><strong>obsid</strong> (<em>string</em>) – Observation ID of the selected observation.</p></li>
+<li><p><strong>desc</strong> (<em>string</em>) – Description of the selected observation.</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</p></li>
+<li><p><strong>start_date</strong> (<em>string</em>) – Start date of the selected observation.</p></li>
+<li><p><strong>end_date</strong> (<em>string</em>) – End date of the selected observation.</p></li>
+<li><p><strong>full_obsid</strong> (<em>string</em>) – Full OBSID uniquely specifying the observation, in the format YYYYmmdd_HHMMSS_OBSID</p></li>
+<li><p><strong>goes</strong> (<em>irisreader.coalignment.goes</em>) – Instance of irisreader.coalignment.goes containing GOES X-ray data for this observation</p></li>
+<li><p><strong>hek</strong> (<em>irisreader.coalignment.hek</em>) – Instance of irisreader.coalignment.hek containing HEK event data for this observation</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.observation.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/observation.html#observation.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.observation.close" title="Permalink to this definition">¶</a></dt>
@@ -237,29 +227,25 @@ removes them.</li>
 observations that is given as a path. In case of a reading error, the
 iterator automatically jumps to the next valid observation.
 As this iterator is not a regular list, it can only be iterated once.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path</strong> (<em>string</em>) – Path to the directory holding all the observations. This function assumes
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>string</em>) – Path to the directory holding all the observations. This function assumes
 IRIS data structure where observations are stored in directories with the
-format &lt;DATE&gt;_&lt;TIME&gt;_&lt;OBSID&gt;.</li>
-<li><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</li>
-<li><strong>read_v4</strong> (<em>boolean</em>) – Whether to read observations with an OBSID starting with 4 (obs table generation v4, mostly for tests and maintenance, see ITN 31).</li>
-<li><strong>display_errors</strong> (<em>boolean</em>) – Whether to show errors that occured in opening individual observations or just to ignore them</li>
-<li><strong>error_log</strong> (<em>str</em>) – Path to logfile for errors (will be appended, clear the file if necessary)</li>
+format &lt;DATE&gt;_&lt;TIME&gt;_&lt;OBSID&gt;.</p></li>
+<li><p><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</p></li>
+<li><p><strong>read_v4</strong> (<em>boolean</em>) – Whether to read observations with an OBSID starting with 4 (obs table generation v4, mostly for tests and maintenance, see ITN 31).</p></li>
+<li><p><strong>display_errors</strong> (<em>boolean</em>) – Whether to show errors that occured in opening individual observations or just to ignore them</p></li>
+<li><p><strong>error_log</strong> (<em>str</em>) – Path to logfile for errors (will be appended, clear the file if necessary)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path</strong> (<em>string</em>) – Path that has been passed as a parameter.</li>
-<li><strong>directories</strong> (<em>string</em>) – List of valid IRIS data directories that have been found during the traversal.</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>path</strong> (<em>string</em>) – Path that has been passed as a parameter.</p></li>
+<li><p><strong>directories</strong> (<em>string</em>) – List of valid IRIS data directories that have been found during the traversal.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -270,19 +256,18 @@ format &lt;DATE&gt;_&lt;TIME&gt;_&lt;OBSID&gt;.</li>
 <code class="descclassname">irisreader.</code><code class="descname">get_lines</code><span class="sig-paren">(</span><em>file_object</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/get_lines.html#get_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.get_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the available lines in a raster or SJI file. Both filenames and
 open iris_data_cube objects are accepted.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_object</strong> (<em>string</em><em> or </em><em>iris_data_cube</em>) – The function accepts either an open iris_data_cube or the path to the
-FITS file to assess the lines in the observation.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Data frame with info about available lines.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pandas.DataFrame</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_object</strong> (<em>string</em><em> or </em><em>iris_data_cube</em>) – The function accepts either an open iris_data_cube or the path to the
+FITS file to assess the lines in the observation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data frame with info about available lines.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -294,25 +279,21 @@ FITS file to assess the lines in the observation.</td>
 <dd><p>Returns True if the supplied raster or SJI contains the line in question
 and False if not. If the line is ambiguously specified, an error will be
 raised. Both filenames and open iris_data_cube objects are accepted.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file_object</strong> (<em>string</em><em> or </em><em>iris_data_cube</em>) – The function accepts either an open iris_data_cube or the path to the
-FITS file to assess the lines in the observation.</li>
-<li><strong>description</strong> (<em>string</em>) – Any abbreviation of the line description to look for.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_object</strong> (<em>string</em><em> or </em><em>iris_data_cube</em>) – The function accepts either an open iris_data_cube or the path to the
+FITS file to assess the lines in the observation.</p></li>
+<li><p><strong>description</strong> (<em>string</em>) – Any abbreviation of the line description to look for.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True / False</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True / False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -322,34 +303,30 @@ FITS file to assess the lines in the observation.</li>
 <dt id="irisreader.sji_cube">
 <em class="property">class </em><code class="descclassname">irisreader.</code><code class="descname">sji_cube</code><span class="sig-paren">(</span><em>file</em>, <em>keep_null=False</em>, <em>force_valid_steps=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/sji_cube.html#sji_cube"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.sji_cube" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class implements an abstraction of an IRIS SJI FITS file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file</strong> (<em>string</em>) – Path to the IRIS SJI FITS file.</li>
-<li><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>string</em>) – Path to the IRIS SJI FITS file.</p></li>
+<li><p><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>type</strong> (<em>str</em>) – Observation type: ‘sji’ or ‘raster’.</li>
-<li><strong>obsid</strong> (<em>str</em>) – Observation ID of the selected observation.</li>
-<li><strong>desc</strong> (<em>str</em>) – Description of the selected observation.</li>
-<li><strong>start_date</strong> (<em>str</em>) – Start date of the selected observation.</li>
-<li><strong>end_date</strong> (<em>str</em>) – Endt date of the selected observation.</li>
-<li><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
-<li><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</li>
-<li><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</li>
-<li><strong>n_files</strong> (<em>int</em>) – Number of FITS files (always =1 for SJI)</li>
-<li><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</li>
-<li><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</li>
-<li><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Observation type: ‘sji’ or ‘raster’.</p></li>
+<li><p><strong>obsid</strong> (<em>str</em>) – Observation ID of the selected observation.</p></li>
+<li><p><strong>desc</strong> (<em>str</em>) – Description of the selected observation.</p></li>
+<li><p><strong>start_date</strong> (<em>str</em>) – Start date of the selected observation.</p></li>
+<li><p><strong>end_date</strong> (<em>str</em>) – Endt date of the selected observation.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</p></li>
+<li><p><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</p></li>
+<li><p><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</p></li>
+<li><p><strong>n_files</strong> (<em>int</em>) – Number of FITS files (always =1 for SJI)</p></li>
+<li><p><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</p></li>
+<li><p><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.sji_cube.animate">
 <code class="descname">animate</code><span class="sig-paren">(</span><em>raster_pos=None</em>, <em>index_start=None</em>, <em>index_stop=None</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.animate" title="Permalink to this definition">¶</a></dt>
@@ -357,35 +334,33 @@ FITS file to assess the lines in the observation.</li>
 <div><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
 Faster alternatives than matplotlib will be researched in the future.</p>
-<dl class="docutils">
-<dt>data_cube <span class="classifier-delimiter">:</span> <span class="classifier">iris_data_cube</span></dt>
-<dd>instance of sji_cube or raster_cube</dd>
-<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
-<dt>interval_ms <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>number of milliseconds between two frames</dd>
-<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</dd>
-<dt>figsize <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>figure size: (width,height)</dd>
-<dt>cutoff_percentile <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+<dl class="simple">
+<dt>data_cube<span class="classifier">iris_data_cube</span></dt><dd><p>instance of sji_cube or raster_cube</p>
+</dd>
+<dt>raster_pos<span class="classifier">int</span></dt><dd><p>If not None, only display images at raster postion <em>raster_pos</em></p>
+</dd>
+<dt>interval_ms<span class="classifier">int</span></dt><dd><p>number of milliseconds between two frames</p>
+</dd>
+<dt>gamma<span class="classifier">float</span></dt><dd><p>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</p>
+</dd>
+<dt>figsize<span class="classifier">tuple</span></dt><dd><p>figure size: (width,height)</p>
+</dd>
+<dt>cutoff_percentile<span class="classifier">float</span></dt><dd><p>Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
-in a range between 0 and 100.</dd>
-<dt>save_path <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>path to file where animation output will be written to (use .mp4 extension)</dd>
+in a range between 0 and 100.</p>
+</dd>
+<dt>save_path<span class="classifier">str</span></dt><dd><p>path to file where animation output will be written to (use .mp4 extension)</p>
+</dd>
 </dl>
 </div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTML object with the animation</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">IPython.HTML</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HTML object with the animation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>IPython.HTML</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -398,38 +373,32 @@ in a range between 0 and 100.</dd>
 <dt id="irisreader.sji_cube.coords2pix">
 <code class="descname">coords2pix</code><span class="sig-paren">(</span><em>step</em>, <em>wl_solar_coordinates</em>, <em>round_pixels=True</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.coords2pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the pixel coordinates for.</li>
-<li><strong>wl_solar_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (coordinate_pairs,2) that contains wavelength in
-angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the pixel coordinates for.</p></li>
+<li><p><strong>wl_solar_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (coordinate_pairs,2) that contains wavelength in
+angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.crop">
 <code class="descname">crop</code><span class="sig-paren">(</span><em>remove_bad=True</em>, <em>check_coverage=True</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crops the images in the data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>remove_bad</strong> (<em>boolean</em>) – Whether to remove corrupt images.</li>
-<li><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_bad</strong> (<em>boolean</em>) – Whether to remove corrupt images.</p></li>
+<li><p><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
 there are patches of negative values in images, either due to loss of
 data during transmission (typically a band or a large rectangular patch
 of negative data) or due to overall low data counts (missing data is no
@@ -440,64 +409,55 @@ data counts (and therefore many missing pixels) and the user is advised
 to disable the coverage check for such lines.
 A method that is able to distinguish missing data arising from
 transmission errors from missing data due to low data counts could be
-helpful here.</li>
+helpful here.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.cut">
 <code class="descname">cut</code><span class="sig-paren">(</span><em>i_start</em>, <em>i_stop</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.cut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cuts out only a part of the observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</li>
-<li><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</p></li>
+<li><p><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_axis_coordinates">
 <code class="descname">get_axis_coordinates</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_axis_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns coordinates for the image at the given time step.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the coordinates for.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List [coordinates along x axis, coordinates along y axis]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the coordinates for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List [coordinates along x axis, coordinates along y axis]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_exptimes">
 <code class="descname">get_exptimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_exptimes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of exposure times throughout the observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of exposure times.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of exposure times.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -511,40 +471,34 @@ of the whole raster.</p>
 <p>raster image step: 0, 1, 2, 3, 4, 5, 6, 7, 8
 raster position:   0, 1, 2, 0, 1, 2, 0, 1, 2
 raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</li>
-<li><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p></li>
+<li><p><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">global raster image step</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>global raster image step</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_goes_flux">
 <code class="descname">get_goes_flux</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_goes_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates GOES X-ray flux to time steps of the data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of X-ray fluxes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of X-ray fluxes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -553,27 +507,23 @@ raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
 <dd><p>Returns the image at position step. This function uses the section
 routine of astropy to only return a slice of the image and avoid
 memory problems.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – Time step in the data cube</li>
-<li><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
-return the image_step on the given raster position.</li>
-<li><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
-time will present a normalized image instead of the usual data numbers.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – Time step in the data cube</p></li>
+<li><p><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
+return the image_step on the given raster position.</p></li>
+<li><p><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
+time will present a normalized image instead of the usual data numbers.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2D image at time step &lt;step&gt;. Format: [y,x].</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2D image at time step &lt;step&gt;. Format: [y,x].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -581,90 +531,85 @@ time will present a normalized image instead of the usual data numbers.</li>
 <code class="descname">get_nsatpix</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_nsatpix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of saturated pixels in an image. According to
 iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> (<em>int</em>) – Time step in the data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of saturated pixels at time step &lt;step&gt;.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – Time step in the data cube.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of saturated pixels at time step &lt;step&gt;.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_raster_pos_data">
 <code class="descname">get_raster_pos_data</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_raster_pos_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a data cube only for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Data cube with dimensions [t,y,x/lambda]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data cube with dimensions [t,y,x/lambda]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_raster_pos_headers">
 <code class="descname">get_raster_pos_headers</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_raster_pos_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns headers only for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of header dictionaries for the given raster position</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of header dictionaries for the given raster position</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_raster_pos_steps">
 <code class="descname">get_raster_pos_steps</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_raster_pos_steps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total number of image steps for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of available image steps</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of available image steps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.get_slit_pos">
 <code class="descname">get_slit_pos</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/sji_cube.html#sji_cube.get_slit_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.sji_cube.get_slit_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns position of the slit in pixels (takes into account cropping).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> (<em>int</em>) – Time step in the data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>slit_position</strong> – Slit position in pixels</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – Time step in the data cube.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>slit_position</strong> – Slit position in pixels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -672,18 +617,17 @@ iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
 <code class="descname">get_timestamps</code><span class="sig-paren">(</span><em>raster_pos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.sji_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts DATE_OBS to milliseconds since 1970 with the aim to make
 timestamp comparisons easier.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of millisecond timestamps.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -692,49 +636,41 @@ timestamp comparisons easier.</p>
 <dd><p>Returns solar coordinates for the list of given pixel coordinates.</p>
 <p><strong>Caution</strong>: This function takes pixel coordinates in the form [x,y] while
 images come as [y,x]</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the solar coordinates for.</li>
-<li><strong>pixel_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
-in the format [x,y]</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the solar coordinates for.</p></li>
+<li><p><strong>pixel_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
+in the format [x,y]</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Numpy array with shape (pixel_pairs,2) containing solar coordinates</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array with shape (pixel_pairs,2) containing solar coordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.sji_cube.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>units='pixels'</em>, <em>grid=False</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/sji_cube.html#sji_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.sji_cube.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the slit-jaw image at time step &lt;step&gt;.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI.</li>
-<li><strong>units</strong> (<em>str</em>) – Tick units: ‘pixels’ for indices in the array or ‘coordinates’ for units in arcseconds on the sun.</li>
-<li><strong>grid</strong> (<em>bool</em>) – Whether to draw a grid on the plot.</li>
-<li><strong>gamma</strong> (<em>float</em>) – Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
-gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</li>
-<li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI.</p></li>
+<li><p><strong>units</strong> (<em>str</em>) – Tick units: ‘pixels’ for indices in the array or ‘coordinates’ for units in arcseconds on the sun.</p></li>
+<li><p><strong>grid</strong> (<em>bool</em>) – Whether to draw a grid on the plot.</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
+gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</p></li>
+<li><p><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
-in a range between 0 and 100.</li>
+in a range between 0 and 100.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -753,35 +689,31 @@ corrupt image steps removed).</p>
 <dt id="irisreader.raster_cube">
 <em class="property">class </em><code class="descclassname">irisreader.</code><code class="descname">raster_cube</code><span class="sig-paren">(</span><em>files</em>, <em>line=''</em>, <em>keep_null=False</em>, <em>force_valid_steps=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/raster_cube.html#raster_cube"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.raster_cube" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class implements an abstraction of an IRIS raster FITS file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>files</strong> (<em>string</em>) – Path or list of paths to the (sorted) IRIS FITS file(s).</li>
-<li><strong>line</strong> (<em>string</em>) – Line to select: this can be any unique abbreviation of the line name (e.g. “Mg”). For non-unique abbreviations, an error is thrown.</li>
-<li><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<em>string</em>) – Path or list of paths to the (sorted) IRIS FITS file(s).</p></li>
+<li><p><strong>line</strong> (<em>string</em>) – Line to select: this can be any unique abbreviation of the line name (e.g. “Mg”). For non-unique abbreviations, an error is thrown.</p></li>
+<li><p><strong>keep_null</strong> (<em>boolean</em>) – Controls whether images that are NULL (-200) everywhere are removed from the data cube. keep_null=True keeps NULL images and keep_null=False removes them.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>type</strong> (<em>str</em>) – Observation type: ‘sji’ or ‘raster’.</li>
-<li><strong>obsid</strong> (<em>str</em>) – Observation ID of the selected observation.</li>
-<li><strong>desc</strong> (<em>str</em>) – Description of the selected observation.</li>
-<li><strong>start_date</strong> (<em>str</em>) – Start date of the selected observation.</li>
-<li><strong>end_date</strong> (<em>str</em>) – Endt date of the selected observation.</li>
-<li><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</li>
-<li><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</li>
-<li><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</li>
-<li><strong>n_files</strong> (<em>int</em>) – Number of FITS files (abstracted to one)</li>
-<li><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</li>
-<li><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</li>
-<li><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</li>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Observation type: ‘sji’ or ‘raster’.</p></li>
+<li><p><strong>obsid</strong> (<em>str</em>) – Observation ID of the selected observation.</p></li>
+<li><p><strong>desc</strong> (<em>str</em>) – Description of the selected observation.</p></li>
+<li><p><strong>start_date</strong> (<em>str</em>) – Start date of the selected observation.</p></li>
+<li><p><strong>end_date</strong> (<em>str</em>) – Endt date of the selected observation.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Observation mode of the selected observation (‘sit-and-stare’ or ‘raster’).</p></li>
+<li><p><strong>line_info</strong> (<em>str</em>) – Description of the selected line.</p></li>
+<li><p><strong>n_steps</strong> (<em>int</em>) – Number of time steps in the data cube.</p></li>
+<li><p><strong>n_files</strong> (<em>int</em>) – Number of FITS files (abstracted to one)</p></li>
+<li><p><strong>primary_headers</strong> (<em>dict</em>) – Dictionary with primary headers of the FITS file (lazy loaded).</p></li>
+<li><p><strong>time_specific_headers</strong> (<em>dict</em>) – List of dictionaries with time-specific headers of the selected line (lazy loaded).</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – List of combined primary and time-specific headers (lazy loaded).</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="irisreader.raster_cube.animate">
 <code class="descname">animate</code><span class="sig-paren">(</span><em>raster_pos=None</em>, <em>index_start=None</em>, <em>index_stop=None</em>, <em>interval_ms=50</em>, <em>gamma=0.4</em>, <em>figsize=(7</em>, <em>7)</em>, <em>cutoff_percentile=99.9</em>, <em>save_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.animate" title="Permalink to this definition">¶</a></dt>
@@ -789,35 +721,33 @@ corrupt image steps removed).</p>
 <div><p>Creates an animation from the individual images of a data cube.
 This function can be pretty slow and take 1-2 minutes.
 Faster alternatives than matplotlib will be researched in the future.</p>
-<dl class="docutils">
-<dt>data_cube <span class="classifier-delimiter">:</span> <span class="classifier">iris_data_cube</span></dt>
-<dd>instance of sji_cube or raster_cube</dd>
-<dt>raster_pos <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>If not None, only display images at raster postion <em>raster_pos</em></dd>
-<dt>interval_ms <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd>number of milliseconds between two frames</dd>
-<dt>gamma <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</dd>
-<dt>figsize <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
-<dd>figure size: (width,height)</dd>
-<dt>cutoff_percentile <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd>Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+<dl class="simple">
+<dt>data_cube<span class="classifier">iris_data_cube</span></dt><dd><p>instance of sji_cube or raster_cube</p>
+</dd>
+<dt>raster_pos<span class="classifier">int</span></dt><dd><p>If not None, only display images at raster postion <em>raster_pos</em></p>
+</dd>
+<dt>interval_ms<span class="classifier">int</span></dt><dd><p>number of milliseconds between two frames</p>
+</dd>
+<dt>gamma<span class="classifier">float</span></dt><dd><p>gamma correction for plotting: number between 0 (infinitely gamma correction) and 1 (no gamma correction)</p>
+</dd>
+<dt>figsize<span class="classifier">tuple</span></dt><dd><p>figure size: (width,height)</p>
+</dd>
+<dt>cutoff_percentile<span class="classifier">float</span></dt><dd><p>Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
-in a range between 0 and 100.</dd>
-<dt>save_path <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd>path to file where animation output will be written to (use .mp4 extension)</dd>
+in a range between 0 and 100.</p>
+</dd>
+<dt>save_path<span class="classifier">str</span></dt><dd><p>path to file where animation output will be written to (use .mp4 extension)</p>
+</dd>
 </dl>
 </div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTML object with the animation</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">IPython.HTML</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HTML object with the animation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>IPython.HTML</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -830,38 +760,32 @@ in a range between 0 and 100.</dd>
 <dt id="irisreader.raster_cube.coords2pix">
 <code class="descname">coords2pix</code><span class="sig-paren">(</span><em>step</em>, <em>wl_solar_coordinates</em>, <em>round_pixels=True</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.coords2pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns pixel coordinates for the list of given wavelength in angstrom / solar y coordinates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the pixel coordinates for.</li>
-<li><strong>wl_solar_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (coordinate_pairs,2) that contains wavelength in
-angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the pixel coordinates for.</p></li>
+<li><p><strong>wl_solar_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (coordinate_pairs,2) that contains wavelength in
+angstrom / solar y coordinates in the form [lat/lon] in units of arcseconds</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array with shape (coordinate_pairs,2) containing pixel coordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.crop">
 <code class="descname">crop</code><span class="sig-paren">(</span><em>remove_bad=True</em>, <em>check_coverage=True</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crops the images in the data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>remove_bad</strong> (<em>boolean</em>) – Whether to remove corrupt images.</li>
-<li><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_bad</strong> (<em>boolean</em>) – Whether to remove corrupt images.</p></li>
+<li><p><strong>check_coverage</strong> (<em>boolean</em>) – Whether to check the coverage of the cropped image. It can happen that
 there are patches of negative values in images, either due to loss of
 data during transmission (typically a band or a large rectangular patch
 of negative data) or due to overall low data counts (missing data is no
@@ -872,64 +796,55 @@ data counts (and therefore many missing pixels) and the user is advised
 to disable the coverage check for such lines.
 A method that is able to distinguish missing data arising from
 transmission errors from missing data due to low data counts could be
-helpful here.</li>
+helpful here.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.cut">
 <code class="descname">cut</code><span class="sig-paren">(</span><em>i_start</em>, <em>i_stop</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.cut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cuts out only a part of the observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</li>
-<li><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_start</strong> (<em>int</em>) – Index where to start the cut</p></li>
+<li><p><strong>i_stop</strong> (<em>int</em>) – Index where to stop the cut (not including this index)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_axis_coordinates">
 <code class="descname">get_axis_coordinates</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_axis_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns coordinates for the image at the given time step.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the coordinates for.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List [coordinates along x axis, coordinates along y axis]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the coordinates for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List [coordinates along x axis, coordinates along y axis]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_exptimes">
 <code class="descname">get_exptimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_exptimes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of exposure times throughout the observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of exposure times.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of exposure times.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -943,40 +858,34 @@ of the whole raster.</p>
 <p>raster image step: 0, 1, 2, 3, 4, 5, 6, 7, 8
 raster position:   0, 1, 2, 0, 1, 2, 0, 1, 2
 raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</li>
-<li><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p></li>
+<li><p><strong>raster_step</strong> (<em>int</em>) – raster step (between 0 and the maximum raster step, can be determined with get_raster_pos_steps( raster_pos ) )</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">global raster image step</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>global raster image step</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_goes_flux">
 <code class="descname">get_goes_flux</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_goes_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates GOES X-ray flux to time steps of the data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of X-ray fluxes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of X-ray fluxes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -985,27 +894,23 @@ raster step:       0, 0, 0, 1, 1, 1, 2, 2, 2</p>
 <dd><p>Returns the image at position step. This function uses the section
 routine of astropy to only return a slice of the image and avoid
 memory problems.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – Time step in the data cube.</li>
-<li><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
-time will present a normalized image instead of the usual data numbers.</li>
-<li><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
-return the image_step on the given raster position.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – Time step in the data cube.</p></li>
+<li><p><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
+time will present a normalized image instead of the usual data numbers.</p></li>
+<li><p><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
+return the image_step on the given raster position.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2D image at time step &lt;step&gt;. Format: [y,wavelength].</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2D image at time step &lt;step&gt;. Format: [y,wavelength].</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1016,30 +921,26 @@ routine of astropy to only return a slice of the image and avoid
 memory problems.</p>
 <p><strong>Warning</strong>: This function by default divides by exposure time, as this
 is more suitable for automatic processing.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – Time step in the data cube.</li>
-<li><strong>lambda_min</strong> (<em>float</em>) – Minimum wavelength of the interpolation region</li>
-<li><strong>lambda_max</strong> (<em>float</em>) – Maximum wavelength of the interpolation region</li>
-<li><strong>n_breaks</strong> (<em>int</em>) – Number of uniform breaks in the interpolation region</li>
-<li><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
-time will present a normalized image instead of the usual data numbers.</li>
-<li><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
-return the image_step on the given raster position.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – Time step in the data cube.</p></li>
+<li><p><strong>lambda_min</strong> (<em>float</em>) – Minimum wavelength of the interpolation region</p></li>
+<li><p><strong>lambda_max</strong> (<em>float</em>) – Maximum wavelength of the interpolation region</p></li>
+<li><p><strong>n_breaks</strong> (<em>int</em>) – Number of uniform breaks in the interpolation region</p></li>
+<li><p><strong>divide_by_exptime</strong> (<em>bool</em>) – Whether to divide image by its exposure time or not. Dividing by exposure
+time will present a normalized image instead of the usual data numbers.</p></li>
+<li><p><strong>raster_pos</strong> (<em>int</em>) – Raster position. If raster_pos is not None, get_image_step will
+return the image_step on the given raster position.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">interpolated 2D image at time step &lt;step&gt;. Format: [y,x] (SJI), [y,wavelength] (raster).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>interpolated 2D image at time step &lt;step&gt;. Format: [y,x] (SJI), [y,wavelength] (raster).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1047,72 +948,68 @@ return the image_step on the given raster position.</li>
 <code class="descname">get_nsatpix</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_nsatpix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of saturated pixels in an image. According to
 iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> (<em>int</em>) – Time step in the data cube.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of saturated pixels at time step &lt;step&gt;.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – Time step in the data cube.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of saturated pixels at time step &lt;step&gt;.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_raster_pos_data">
 <code class="descname">get_raster_pos_data</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_raster_pos_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a data cube only for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Data cube with dimensions [t,y,x/lambda]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data cube with dimensions [t,y,x/lambda]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_raster_pos_headers">
 <code class="descname">get_raster_pos_headers</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_raster_pos_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns headers only for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of header dictionaries for the given raster position</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of header dictionaries for the given raster position</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.get_raster_pos_steps">
 <code class="descname">get_raster_pos_steps</code><span class="sig-paren">(</span><em>raster_pos</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_raster_pos_steps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total number of image steps for the given raster position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of available image steps</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of available image steps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1120,18 +1017,17 @@ iris_prep.pro, a pixel is saturated if it has a data number &gt;= 1.6e4.</p>
 <code class="descname">get_timestamps</code><span class="sig-paren">(</span><em>raster_pos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#irisreader.raster_cube.get_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts DATE_OBS to milliseconds since 1970 with the aim to make
 timestamp comparisons easier.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of millisecond timestamps.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raster_pos</strong> (<em>int</em>) – raster position (between 0 and n_raster_pos)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of millisecond timestamps.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1140,49 +1036,41 @@ timestamp comparisons easier.</p>
 <dd><p>Returns solar coordinates for the list of given pixel coordinates.</p>
 <p><strong>Caution</strong>: This function takes pixel coordinates in the form [x,y] while
 images come as [y,x]</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the solar coordinates for.</li>
-<li><strong>pixel_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
-in the format [x,y]</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI to get the solar coordinates for.</p></li>
+<li><p><strong>pixel_coordinates</strong> (<em>np.array</em>) – Numpy array with shape (pixel_pairs,2) that contains pixel coordinates
+in the format [x,y]</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Numpy array with shape (pixel_pairs,2) containing solar coordinates</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array with shape (pixel_pairs,2) containing solar coordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="irisreader.raster_cube.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>step</em>, <em>y=None</em>, <em>units='pixels'</em>, <em>gamma=None</em>, <em>cutoff_percentile=99.9</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/raster_cube.html#raster_cube.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.raster_cube.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the raster image at time step &lt;step&gt;.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>step</strong> (<em>int</em>) – The time step in the SJI.</li>
-<li><strong>y</strong> (<em>int</em>) – A pixel position on the slit. If set, only values for this position will be plotted.</li>
-<li><strong>units</strong> (<em>str</em>) – Tick units: ‘pixels’ for indices in the array or ‘coordinates’ for units in arcseconds on the sun.</li>
-<li><strong>gamma</strong> (<em>float</em>) – Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
-gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</li>
-<li><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>int</em>) – The time step in the SJI.</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – A pixel position on the slit. If set, only values for this position will be plotted.</p></li>
+<li><p><strong>units</strong> (<em>str</em>) – Tick units: ‘pixels’ for indices in the array or ‘coordinates’ for units in arcseconds on the sun.</p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – Gamma exponent for gamma correction that adjusts the plot scale. If gamma is None (default),
+gamma=1 is used for the photospheric SJI 2832 and gamma=0.4 otherwise.</p></li>
+<li><p><strong>cutoff_percentile</strong> (<em>float</em>) – Often the maximum pixels shine out everything else, even after gamma correction. In order to reduce
 this effect, the percentile at which to cut the intensity off can be specified with cutoff_percentile
-in a range between 0 and 100.</li>
+in a range between 0 and 100.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1201,24 +1089,20 @@ corrupt image steps removed).</p>
 <dt id="irisreader.get_obs_path">
 <code class="descclassname">irisreader.</code><code class="descname">get_obs_path</code><span class="sig-paren">(</span><em>full_obsid</em>, <em>basedir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/observation.html#get_obs_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.get_obs_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the full path for a given full OBSID (in the style of ‘20140910_003955_3860358888’).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>full_obsid</strong> (<em>str</em>) – full OBSID of the observation as a string</li>
-<li><strong>basedir</strong> (<em>str</em>) – base directory for search (where iris data lies in the structure year/month/day/observation)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>full_obsid</strong> (<em>str</em>) – full OBSID of the observation as a string</p></li>
+<li><p><strong>basedir</strong> (<em>str</em>) – base directory for search (where iris data lies in the structure year/month/day/observation)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>obs_path</strong> – full path to observation</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obs_path</strong> – full path to observation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -1226,9 +1110,7 @@ corrupt image steps removed).</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1237,7 +1119,7 @@ corrupt image steps removed).</p>
         <a href="preprocessing.html" class="btn btn-neutral float-right" title="Preprocessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="configuration.html" class="btn btn-neutral" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1246,11 +1128,11 @@ corrupt image steps removed).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1263,37 +1145,15 @@ corrupt image steps removed).</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

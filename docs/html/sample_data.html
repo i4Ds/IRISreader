@@ -17,44 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="irisreader 0.3 documentation" href="index.html"/>
-        <link rel="next" title="Centroid data" href="centroid_data.html"/>
-        <link rel="prev" title="Utils" href="utils.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Centroid data" href="centroid_data.html" />
+    <link rel="prev" title="Utils" href="utils.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,7 +56,7 @@
 
           
             
-            <img src="_static/irisreader.png" class="logo" />
+            <img src="_static/irisreader.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -122,7 +115,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">irisreader</a>
@@ -130,9 +123,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -182,18 +176,17 @@
 <dt id="irisreader.data.sample_observation">
 <code class="descclassname">irisreader.data.</code><code class="descname">sample_observation</code><span class="sig-paren">(</span><em>keep_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/sample.html#sample_observation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.sample_observation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a sample IRIS observation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sample IRIS observation</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="reading.html#irisreader.observation" title="irisreader.observation">observation</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample IRIS observation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="reading.html#irisreader.observation" title="irisreader.observation">observation</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -203,18 +196,17 @@
 <dt id="irisreader.data.sample_sji">
 <code class="descclassname">irisreader.data.</code><code class="descname">sample_sji</code><span class="sig-paren">(</span><em>keep_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/sample.html#sample_sji"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.sample_sji" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a sample SJI data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sample SJI data</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube">sji_cube</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample SJI data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube">sji_cube</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -224,24 +216,20 @@
 <dt id="irisreader.data.sample_raster">
 <code class="descclassname">irisreader.data.</code><code class="descname">sample_raster</code><span class="sig-paren">(</span><em>line='Mg'</em>, <em>keep_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/data/sample.html#sample_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.data.sample_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a sample raster data cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>line</strong> (<em>str</em>) – name or (unique) abbreviation of the desired line</li>
-<li><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<em>str</em>) – name or (unique) abbreviation of the desired line</p></li>
+<li><p><strong>keep_null</strong> (<em>boolean</em>) – whether to load images that are NULL (-200) everywhere</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">sample raster data</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube">raster_cube</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample raster data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube">raster_cube</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -249,9 +237,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -260,7 +246,7 @@
         <a href="centroid_data.html" class="btn btn-neutral float-right" title="Centroid data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="utils.html" class="btn btn-neutral" title="Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-left" title="Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -269,11 +255,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Cédric Huwyler.
+        &copy; Copyright 2018, Cédric Huwyler
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -286,37 +272,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
