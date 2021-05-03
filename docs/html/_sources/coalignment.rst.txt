@@ -1,6 +1,6 @@
 Co-alignment
 ******************************************
-
+ 
 
 ==========================================
 irisreader.coalignment.find_closest_sji

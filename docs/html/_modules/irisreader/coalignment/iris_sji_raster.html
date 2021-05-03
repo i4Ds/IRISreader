@@ -167,41 +167,26 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 
-<div class="viewcode-block" id="find_closest_sji"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.find_closest_sji">[docs]</a><span class="k">def</span> <span class="nf">find_closest_sji</span><span class="p">(</span> <span class="n">sji</span><span class="p">,</span> <span class="n">raster</span><span class="p">,</span> <span class="n">raster_step</span> <span class="p">):</span>
+<span class="c1"># internal function to sort steps of an observation in a dataframe</span>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sort_steps</span><span class="p">(</span> <span class="n">raster</span><span class="p">,</span> <span class="n">sji</span> <span class="p">):</span>
+    <span class="n">rts</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span>
+    <span class="n">sts</span> <span class="o">=</span> <span class="n">sji</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">rts</span><span class="p">,</span> <span class="n">sts</span><span class="p">]),</span>
+        <span class="s1">&#39;origin&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([[</span><span class="s1">&#39;raster&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">rts</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;sji&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">sts</span><span class="p">)]),</span>
+        <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rts</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sts</span><span class="p">))])</span>
+    <span class="p">})</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="find_closest_raster"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.find_closest_raster">[docs]</a><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">find_closest_raster</span><span class="p">(</span> <span class="n">raster</span><span class="p">,</span> <span class="n">sji</span> <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Finds closest sji step to raster step &lt;raster_step&gt; in time.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    sji : irisreader.sji_cube</span>
-<span class="sd">        sji_cube_instance</span>
-<span class="sd">    raster : irisreader.raster_cube</span>
-<span class="sd">        raster_cube instance</span>
-<span class="sd">    raster_step : int</span>
-<span class="sd">        raster step</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    sji_step : int</span>
-<span class="sd">        SJI step</span>
-<span class="sd">    diff : float</span>
-<span class="sd">        Difference in seconds</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="c1"># check if data cubes come from the same observation and raise exception if not</span>
-    <span class="k">if</span> <span class="n">raster</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sji</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;data cubes are not from the same observation!&quot;</span><span class="p">)</span>
-    
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">sji</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span> <span class="p">)</span><span class="o">-</span><span class="n">raster</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()[</span><span class="n">raster_step</span><span class="p">]</span>
-    <span class="n">sji_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span> <span class="n">diff</span> <span class="p">)</span> <span class="p">)</span>
-    
-    <span class="k">return</span> <span class="p">[</span><span class="n">sji_step</span><span class="p">,</span> <span class="n">diff</span><span class="p">[</span><span class="n">sji_step</span><span class="p">]]</span></div>
-    
-    
-<div class="viewcode-block" id="find_closest_raster"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.find_closest_raster">[docs]</a><span class="k">def</span> <span class="nf">find_closest_raster</span><span class="p">(</span> <span class="n">raster</span><span class="p">,</span> <span class="n">sji</span><span class="p">,</span> <span class="n">sji_step</span> <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Finds closest raster step to SJI step &lt;sji_step&gt; in time.</span>
+<span class="sd">    Finds closest raster steps to sji steps for a given raster and sji object.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -209,26 +194,56 @@
 <span class="sd">        raster_cube instance</span>
 <span class="sd">    sji : irisreader.sji_cube</span>
 <span class="sd">        sji_cube_instance</span>
-<span class="sd">    sji_step : int</span>
-<span class="sd">        sji step</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    raster_steps : numpy.array</span>
+<span class="sd">        array with closest raster steps</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="c1"># sort steps</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">sort_steps</span><span class="p">(</span> <span class="n">raster</span><span class="p">,</span> <span class="n">sji</span> <span class="p">)</span>
+    
+    <span class="c1"># get available sji steps</span>
+    <span class="n">raster_steps</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">sji_step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sji</span><span class="o">.</span><span class="n">n_steps</span><span class="p">):</span>
+    
+        <span class="c1"># timestamp of sji</span>
+        <span class="n">sji_tstamp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">origin</span><span class="o">==</span><span class="s1">&#39;sji&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">step</span><span class="o">==</span><span class="n">sji_step</span><span class="p">)]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># get closest rasters on both sides</span>
+        <span class="n">below</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">origin</span><span class="o">==</span><span class="s1">&#39;raster&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">&lt;=</span><span class="n">sji_tstamp</span><span class="p">)]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">above</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">origin</span><span class="o">==</span><span class="s1">&#39;raster&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">&gt;</span><span class="n">sji_tstamp</span><span class="p">)]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span> <span class="p">[</span><span class="n">below</span><span class="p">,</span> <span class="n">above</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span> <span class="p">)</span>
+        
+        <span class="c1"># append closest raster step of both</span>
+        <span class="n">raster_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">candidates</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">candidates</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="n">sji_tstamp</span><span class="p">))]</span> <span class="p">)</span>
+     
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raster_steps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_closest_sji"><a class="viewcode-back" href="../../../coalignment.html#irisreader.coalignment.find_closest_sji">[docs]</a><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">find_closest_sji</span><span class="p">(</span> <span class="n">raster</span><span class="p">,</span> <span class="n">sji</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds closest sji steps to raster steps for a given sji and raster object.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raster : irisreader.raster_cube</span>
+<span class="sd">        raster_cube instance</span>
+<span class="sd">    sji : irisreader.sji_cube</span>
+<span class="sd">        sji_cube_instance</span>
+
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    raster_step : int</span>
-<span class="sd">        SJI step</span>
-<span class="sd">    diff : float</span>
-<span class="sd">        Difference in seconds</span>
+<span class="sd">    sji_steps : numpy.array</span>
+<span class="sd">        array with closest sji steps</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="c1"># check if data cubes come from the same observation and raise exception if not</span>
-    <span class="k">if</span> <span class="n">raster</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sji</span><span class="o">.</span><span class="n">primary_headers</span><span class="p">[</span><span class="s1">&#39;STARTOBS&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;data cubes are not from the same observation!&quot;</span><span class="p">)</span>
-    
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">raster</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()</span> <span class="p">)</span><span class="o">-</span><span class="n">sji</span><span class="o">.</span><span class="n">get_timestamps</span><span class="p">()[</span><span class="n">sji_step</span><span class="p">]</span>
-    <span class="n">raster_step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="p">)</span>
-    
-    <span class="k">return</span> <span class="p">[</span><span class="n">raster_step</span><span class="p">,</span> <span class="n">diff</span><span class="p">[</span><span class="n">raster_step</span><span class="p">]]</span></div>
-    
+
+    <span class="k">return</span> <span class="n">find_closest_raster</span><span class="p">(</span> <span class="n">sji</span><span class="p">,</span> <span class="n">raster</span> <span class="p">)</span></div>
 </pre></div>
 
            </div>

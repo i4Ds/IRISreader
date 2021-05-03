@@ -175,22 +175,20 @@
 <h2>irisreader.coalignment.find_closest_sji<a class="headerlink" href="#irisreader-coalignment-find-closest-sji" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.coalignment.find_closest_sji">
-<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_sji</code><span class="sig-paren">(</span><em>sji</em>, <em>raster</em>, <em>raster_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_sji"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_sji" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds closest sji step to raster step &lt;raster_step&gt; in time.</p>
+<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_sji</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_sji"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_sji" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds closest sji steps to raster steps for a given sji and raster object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</p></li>
 <li><p><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</p></li>
-<li><p><strong>raster_step</strong> (<em>int</em>) – raster step</p></li>
+<li><p><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>sji_step</strong> (<em>int</em>) – SJI step</p></li>
-<li><p><strong>diff</strong> (<em>float</em>) – Difference in seconds</p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>sji_steps</strong> – array with closest sji steps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -200,22 +198,20 @@
 <h2>irisreader.coalignment.find_closest_raster<a class="headerlink" href="#irisreader-coalignment-find-closest-raster" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="irisreader.coalignment.find_closest_raster">
-<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_raster</code><span class="sig-paren">(</span><em>raster</em>, <em>sji</em>, <em>sji_step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_raster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds closest raster step to SJI step &lt;sji_step&gt; in time.</p>
+<code class="descclassname">irisreader.coalignment.</code><code class="descname">find_closest_raster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/irisreader/coalignment/iris_sji_raster.html#find_closest_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#irisreader.coalignment.find_closest_raster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds closest raster steps to sji steps for a given raster and sji object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raster</strong> (<a class="reference internal" href="reading.html#irisreader.raster_cube" title="irisreader.raster_cube"><em>irisreader.raster_cube</em></a>) – raster_cube instance</p></li>
 <li><p><strong>sji</strong> (<a class="reference internal" href="reading.html#irisreader.sji_cube" title="irisreader.sji_cube"><em>irisreader.sji_cube</em></a>) – sji_cube_instance</p></li>
-<li><p><strong>sji_step</strong> (<em>int</em>) – sji step</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>raster_step</strong> (<em>int</em>) – SJI step</p></li>
-<li><p><strong>diff</strong> (<em>float</em>) – Difference in seconds</p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>raster_steps</strong> – array with closest raster steps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
 </dd>
 </dl>
 </dd></dl>
