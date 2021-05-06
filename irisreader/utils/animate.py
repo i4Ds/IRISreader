@@ -10,7 +10,7 @@ import irisreader as ir
 # set a huge animation limit for matplotlib
 matplotlib.rcParams['animation.embed_limit'] = 2**128
 
-def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
+def animate( data_cube, slit_data=None, slit_cmap="viridis", raster_pos=None, index_start=None, index_stop=None, interval_ms=50, gamma=0.4, figsize=(7,7), cutoff_percentile=99.9, save_path=None ):
     """
     Creates an animation from the individual images of a data cube.
     This function can be pretty slow and take 1-2 minutes.
@@ -20,6 +20,10 @@ def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, inte
     ----------
     data_cube : iris_data_cube
         instance of sji_cube or raster_cube
+    slit_data : numpy.array
+        array with shape [n_steps, n_y] that is drawn on the slit for each step
+    slit_cmap : str
+        colormap to use for the visualisation of slit_data
     raster_pos : int
         If not None, only display images at raster postion *raster_pos*
     index_start : int
@@ -69,7 +73,16 @@ def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, inte
     fig = plt.figure( figsize=figsize )
     image = data_cube.get_image_step( 0, raster_pos ).clip(min=0.01)**gamma
     vmax = np.percentile( image, cutoff_percentile )
-    im = plt.imshow( image, cmap="gist_heat", vmax=vmax, origin='lower' )
+    im = plt.imshow( image, cmap="gist_heat", vmax=vmax, origin='lower', interpolation="none" )
+    
+    if slit_data is not None:
+        slit_pos = data_cube.get_slit_pos(0)
+        line = plt.scatter( 
+            [slit_pos]*image.shape[0], np.arange(image.shape[0]),
+            c=slit_data[0,:], s=5, cmap=slit_cmap, marker='_',
+            vmin=np.min(slit_data), vmax=np.max(slit_data)
+        )
+        plt.colorbar()
 
     # do nothing in the initialization function
     def init():
@@ -82,6 +95,11 @@ def animate( data_cube, raster_pos=None, index_start=None, index_stop=None, inte
         date_obs = data_cube.headers[i+index_start]['DATE_OBS']
         im.axes.set_title( "Frame {}: {}\nXCENIX: {:.3f}, YCENIX: {:.3f}".format( i+index_start, date_obs, xcenix, ycenix ) )
         im.set_data( data_cube.get_image_step( i+index_start, raster_pos ).clip(min=0.01)**gamma )
+        if slit_data is not None:
+            slit_pos = data_cube.get_slit_pos(i)
+            line_data = np.vstack([[slit_pos]*image.shape[0], np.arange(image.shape[0])]).T
+            line.set_offsets(line_data)
+            line.set_array(slit_data[i,:])
         return im,
 
     # Call the animator.  blit=True means only re-draw the parts that have changed.
