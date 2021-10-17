@@ -82,8 +82,10 @@ class goes_data:
             try:
                 os.mkdir( self._data_dir )
             except: # write to the local folder if no permission to create directory
+                print("No write permissions to {} - writing to local folder.".format(self._data_dir))
                 self._data_dir = "goes_data"
-                os.mkdir( self._data_dir )
+                if not os.path.exists( self._data_dir ):
+                    os.mkdir( self._data_dir )
                 
             
         # download files
