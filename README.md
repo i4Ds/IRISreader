@@ -9,9 +9,8 @@ replacement for IDL code and is well-integrated into SunPy, have a look at
 [IRISpy](https://github.com/sunpy/irispy).
 
 __Warning__:
+Due to the end of project funding, IRISreader is no longer maintained. If you are interested in maintaining it, let me know!
 
-IRISreader is under constant development and a stable version cannot always be guaranteed. Documentation is available but might not reflect the newest
-additions.
 
 ## Installation ##
 
